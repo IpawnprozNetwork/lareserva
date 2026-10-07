@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva · Build Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700&family=IBM+Plex+Sans:wght@400;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#08111c;color:#a8bccf;font-family:'IBM Plex Sans',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#1c3247;border-radius:3px}
+::selection{background:#00c9a7;color:#08111c}
+.wrap{display:flex}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:255px;height:100vh;overflow-y:auto;background:#060d16;border-right:1px solid #14283a;flex-shrink:0;padding:0 0 40px;z-index:50}
+.brand{padding:20px 22px 16px;border-bottom:1px solid #14283a}
+.brand b{display:block;font:400 19px 'Space Grotesk',sans-serif;color:#eef3f8}
+.brand span{display:block;font:700 9px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.22em;margin-top:4px}
+.nav a{display:block;padding:5px 22px;color:#7d95ab;text-decoration:none;border-left:2px solid transparent;font-size:12px;transition:all .12s}
+.nav a:hover{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622}
+.nav-label{padding:13px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.16em}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#0e1c2a;color:#eef3f8;border:1px solid #23405a;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+main{flex:1;min-width:0;padding:44px 46px 90px;max-width:1000px}
+section[id]{scroll-margin-top:20px;margin-bottom:52px}
+h1{font:400 40px 'Space Grotesk',sans-serif;color:#eef3f8;line-height:1.1;margin:0 0 14px}
+h2{font:700 25px 'Space Grotesk',sans-serif;color:#eef3f8;margin:0 0 10px}
+h3{font:700 16px 'Space Grotesk',sans-serif;color:#00c9a7;margin:26px 0 8px}
+h4{font:700 12px 'Space Grotesk',sans-serif;color:#f5a623;margin:18px 0 6px;letter-spacing:.02em;text-transform:uppercase}
+p,li{font-size:13.5px;line-height:1.7;color:#8fa7bd;margin:0 0 10px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+strong{color:#cfe0ee}
+a{color:#00c9a7}
+.tag{font:700 10px 'JetBrains Mono',monospace;color:#f0398b;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.lede{font-size:16px;line-height:1.7;color:#9fb6ca;margin-bottom:18px}
+.tip{padding:11px 15px;background:#08161a;border:1px solid #123a35;border-left:3px solid #00c9a7;border-radius:0 8px 8px 0;font-size:13px;color:#8fb5ad;margin:12px 0}
+.stop{padding:11px 15px;background:#170a0f;border:1px solid #3d1622;border-left:3px solid #f0398b;border-radius:0 8px 8px 0;font-size:13px;color:#c49aa6;margin:12px 0}
+.warn{padding:11px 15px;background:#181205;border:1px solid #3d2f10;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;font-size:13px;color:#c4ab7d;margin:12px 0}
+.step{border:1px solid #16293a;border-radius:10px;padding:16px 18px 8px;margin:14px 0;background:#0a1420}
+.step .n{font:800 11px 'JetBrains Mono',monospace;color:#f5a623;letter-spacing:.14em;text-transform:uppercase}
+.step h3{margin:4px 0 8px;color:#eef3f8}
+.cb{border:1px solid #16293a;border-radius:8px;overflow:hidden;margin:12px 0}
+.ch{display:flex;align-items:center;justify-content:space-between;padding:6px 14px;background:#0e1c2a;border-bottom:1px solid #16293a}
+.cl{font:700 11px 'JetBrains Mono',monospace;color:#00c9a7}
+.cn{font:500 10px 'JetBrains Mono',monospace;color:#3d5a72}
+pre{margin:0;padding:14px;overflow-x:auto;font:11.5px/1.65 'JetBrains Mono',monospace;color:#b9cddd;white-space:pre;background:#070f18}
+code{font:500 11.5px 'JetBrains Mono',monospace;color:#00c9a7;background:#0b1826;padding:1px 5px;border-radius:4px}
+.tw{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:12.5px;min-width:520px}
+th{text-align:left;padding:8px 10px;background:#0b1826;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #16293a;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #101d2a;color:#8fa7bd;vertical-align:top}
+tr:hover td{background:#0a1420}
+.pill{display:inline-block;font:700 9px 'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;padding:2px 8px;border-radius:20px;margin-left:6px;vertical-align:middle}
+.pill.must{background:#3d1622;color:#f0398b}
+.pill.ok{background:#0f2a1f;color:#3ddb8f}
+.pill.info{background:#0f2530;color:#00c9a7}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.card{border:1px solid #16293a;border-radius:10px;padding:15px 17px;background:#0a1420}
+.card b{display:block;color:#eef3f8;font:700 13px 'Space Grotesk',sans-serif;margin-bottom:4px}
+.card p{font-size:12.5px;margin:0}
+hr{border:0;border-top:1px solid #14283a;margin:34px 0}
+.foot{color:#3d5a72;font-size:11.5px;border-top:1px solid #14283a;padding-top:16px;margin-top:40px}
+@media(max-width:900px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .scrim.on{display:block}
+  main{padding:64px 20px 70px}
+  .grid2{grid-template-columns:1fr}
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="tog()">&#9776;</button>
+<div class="scrim" id="scrim" onclick="tog()"></div>
+<div class="wrap">
+
+<aside class="sidebar" id="sb">
+  <div class="brand"><b>La Reserva</b><span>Build Guide</span></div>
+  <nav class="nav">
+    <div class="nav-label">Start here</div>
+    <a href="#que">What this site is</a>
+    <a href="#stack">Stack and hosting</a>
+    <a href="#mapa">Site map</a>
+
+    <div class="nav-label">The public site</div>
+    <a href="#p-index">index.php</a>
+    <a href="#p-espacios">espacios.php</a>
+    <a href="#p-retiros">retiros.php</a>
+    <a href="#p-retiro">retiro.php</a>
+    <a href="#p-resto">galeria, historia, contacto</a>
+
+    <div class="nav-label">The panel</div>
+    <a href="#admin">Admin overview</a>
+    <a href="#a-inbox">Inbox</a>
+    <a href="#a-consultas">Consultas</a>
+    <a href="#a-referidos">Referidos</a>
+    <a href="#a-seguridad">Trafico y seguridad</a>
+
+    <div class="nav-label">How it works</div>
+    <a href="#db">Database</a>
+    <a href="#atribucion">ref vs boton</a>
+    <a href="#correo">Mail into the panel</a>
+    <a href="#antispam">Anti-spam</a>
+    <a href="#uploads">Uploads</a>
+
+    <div class="nav-label">Operating it</div>
+    <a href="#reglas">Hard rules</a>
+    <a href="#historia">What broke and why</a>
+    <a href="#runbook">Runbook</a>
+    <a href="#pendiente">Still open</a>
+  </nav>
+</aside>
+
+<main>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="que">
+  <div class="tag">La Reserva Naturaleza Arte</div>
+  <h1>lareserva.net.ar</h1>
+  <p class="lede">A 250 hectare retreat property in Capilla del Senor, Buenos Aires. The site does three
+  jobs: show the place, publish the agenda of retreats, and capture enquiries. Everything else in here
+  exists to serve one of those three.</p>
+
+  <p>There is no CMS, no framework and no build step. It is PHP talking to MySQL, rendering HTML, with
+  vanilla JavaScript on top. Files are uploaded by hand through cPanel File Manager. That constraint
+  shaped every decision below, and it is worth understanding before changing anything.</p>
+
+  <div class="tip"><strong>The one thing to internalise:</strong> this site has two separate tracking
+  ideas that look similar and are not. <code>ref</code> is where a visitor came from.
+  <code>boton</code> is what they clicked once they arrived. Mixing them destroys the reporting. See
+  <a href="#atribucion">ref vs boton</a>.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="stack">
+  <h2>Stack and hosting</h2>
+  <div class="tw"><table>
+    <tr><th>Layer</th><th>What</th><th>Notes</th></tr>
+    <tr><td>Language</td><td>PHP 8.1, alt-php81 via mod_lsapi</td><td>No composer, no autoloader</td></tr>
+    <tr><td>Database</td><td>MySQL, PDO, <code>lareserv_admin</code></td><td>Prepared statements, emulation off</td></tr>
+    <tr><td>Front end</td><td>Vanilla JS, hand written CSS</td><td>No npm, no bundler</td></tr>
+    <tr><td>Host</td><td>HoboHost cPanel shared</td><td>No SSH. File Manager only</td></tr>
+    <tr><td>Repo</td><td>github.com/IpawnprozNetwork/lareserva</td><td>Private. Not a deploy target</td></tr>
+    <tr><td>Mail</td><td>cPanel mailbox + Exim filter pipe</td><td><code>mail()</code> is unreliable here</td></tr>
+  </table></div>
+
+  <div class="stop"><strong>No SSH means no deploy pipeline.</strong> Every change is a file uploaded by
+  hand. That is why every file carries a version marker in an HTML comment: it is the only way to
+  confirm what is actually on the server. Ctrl+U and look for
+  <code>&lt;!-- espacios.php VERSION 2.4 --&gt;</code>.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="mapa">
+  <h2>Site map</h2>
+  <h4>Public</h4>
+  <div class="tw"><table>
+    <tr><th>File</th><th>Purpose</th><th>Writes to DB?</th></tr>
+    <tr><td><code>welcome.html</code></td><td>Entry splash, DirectoryIndex</td><td>No</td></tr>
+    <tr><td><code>index.php</code></td><td>Home. Hero, agenda preview, space modules, contact form</td><td>Via contacto.php</td></tr>
+    <tr><td><code>espacios.php</code></td><td>The five spaces, each with a lightbox, calendar and enquiry form</td><td>Yes, <code>consultas</code></td></tr>
+    <tr><td><code>retiros.php</code></td><td>Agenda. Each row opens a lightbox with an RSVP form</td><td>Yes, <code>consultas</code></td></tr>
+    <tr><td><code>retiro.php?r=slug</code></td><td>Full page for one retreat, plus reviews</td><td>Yes, <code>resenas</code></td></tr>
+    <tr><td><code>galeria.php</code></td><td>Photo gallery and Instagram embed</td><td>No</td></tr>
+    <tr><td><code>historia.php</code></td><td>The story of the property</td><td>No</td></tr>
+    <tr><td><code>contacto.php</code></td><td>Main enquiry form</td><td>Yes, <code>consultas</code></td></tr>
+    <tr><td><code>track.php</code></td><td>Beacon endpoint. No output, returns 204</td><td>Yes, <code>eventos</code></td></tr>
+  </table></div>
+
+  <h4>Shared includes</h4>
+  <div class="tw"><table>
+    <tr><th>File</th><th>Purpose</th></tr>
+    <tr><td><code>includes/config.php</code></td><td>Constants, PDO, session start, CSRF, <code>?ref=</code> capture</td></tr>
+    <tr><td><code>includes/auth.php</code></td><td>Login state, <code>exigirSesion()</code></td></tr>
+    <tr><td><code>includes/antispam.php</code></td><td>IP blocking, rate limits, email validation, event logging</td></tr>
+    <tr><td><code>includes/nav.php</code></td><td>Public nav. Self contained, id selectors only</td></tr>
+    <tr><td><code>includes/footer.php</code></td><td>Public footer plus the <code>lrBoton()</code> beacon helper</td></tr>
+    <tr><td><code>admin/_sidebar.php</code></td><td>The one admin sidebar, included by every panel page</td></tr>
+  </table></div>
+</section>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="p-index">
+  <div class="tag">Public page</div>
+  <h2>index.php</h2>
+  <p>The home page. Full bleed hero video, a short pitch, an agenda preview pulled live from
+  <code>retiros</code>, alternating photo modules for each space, the numbers block, location, and a
+  contact form that posts to <code>contacto.php</code>.</p>
+
+  <h3>Tagged buttons</h3>
+  <div class="tw"><table>
+    <tr><th>Button</th><th>Goes to</th><th>boton tag</th></tr>
+    <tr><td>Organizá tu retiro</td><td><code>contacto.php</code></td><td><code>contacto</code></td></tr>
+    <tr><td>Conocer los espacios</td><td><code>espacios.php</code></td><td><code>lr</code></td></tr>
+    <tr><td>Consultar disponibilidad</td><td><code>contacto.php</code></td><td><code>johnny</code></td></tr>
+  </table></div>
+
+  <div class="warn"><strong>Known limitation.</strong> The four space modules are hardcoded and read a
+  single <code>imagen</code> column. They are not clickable and they do not use <code>espacio_media</code>,
+  so adding a second photo or a video in the panel does not change them. Fixing this is the largest
+  item still open.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="p-espacios">
+  <div class="tag">Public page</div>
+  <h2>espacios.php</h2>
+  <p>A card per space. The card shows a photo by default and plays its video only while the pointer is
+  over it. Clicking opens a lightbox: media carousel on the left, everything else on the right.</p>
+
+  <h3>What the lightbox panel holds</h3>
+  <ol>
+    <li>Badge, name, description, capacity</li>
+    <li>Upcoming retreats on the property</li>
+    <li><strong>Occupancy calendar</strong> with month arrows</li>
+    <li>Enquiry form writing to <code>consultas</code></li>
+    <li>WhatsApp button and Instagram link</li>
+  </ol>
+
+  <h3>The calendar is a range picker</h3>
+  <p>First tap sets the start, second sets the end, tapping the start again clears it. The range is
+  written to <code>fecha_tentativa</code> and <code>fecha_fin</code>, and spelled out above the form as
+  "Del 10 de noviembre al 13 de noviembre (3 noches)".</p>
+
+  <div class="tip"><strong>A range cannot cross a booked day.</strong> Once a start is picked, any day
+  whose path back to that start crosses an occupied day is greyed and struck through. Nobody can request
+  14 to 20 September when the 17th already has a retreat, so you never receive an enquiry you have to
+  turn down.</div>
+
+  <div class="stop"><strong>The calendar shows property-wide occupancy, not this space.</strong> The
+  <code>retiros</code> table has no <code>espacio_id</code> column, so there is nothing to filter on.
+  The label says "Fechas ocupadas en el predio" for exactly this reason. The same gap is why every space
+  lists all upcoming retreats under "Próximos retiros en este espacio". Fixing it means adding
+  <code>espacio_id</code> to <code>retiros</code> plus a dropdown in the panel.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="p-retiros">
+  <div class="tag">Public page</div>
+  <h2>retiros.php</h2>
+  <p>The agenda. Each row is a real link to <code>retiro.php?r=slug</code>, intercepted by JavaScript to
+  open a lightbox instead. If the JS payload has no entry for that id the handler returns
+  <code>true</code> and the link goes through, so crawlers and no-JS visitors are unaffected.</p>
+
+  <h3>The RSVP endpoint</h3>
+  <p>The same file answers its own form. A POST with <code>accion=rsvp</code> returns JSON and exits
+  before any HTML, so the lightbox stays open while the row is written.</p>
+
+  <div class="cb"><div class="ch"><span class="cl">retiros.php</span><span class="cn">rsvp flow</span></div>
+<pre>POST accion=rsvp
+  honeypot filled?        -> pretend success, write nothing
+  CSRF token bad?         -> "La sesion expiro"
+  IP on ip_bloqueadas?    -> generic failure, no detail leaked
+  over 5 posts per hour?  -> ask them to wait
+  email disposable?       -> reject, log rsvp_rechazado
+  otherwise               -> INSERT consultas, log rsvp_ok</pre></div>
+
+  <h3>The calendar here is informational</h3>
+  <p>It shows the retreat's own dates and is deliberately not a picker. You book the encounter, not
+  individual nights, and the caption underneath says so.</p>
+
+  <div class="tw"><table>
+    <tr><th>Button</th><th>boton tag</th><th>What it records</th></tr>
+    <tr><td>Solicitar lugar</td><td><code>lr</code></td><td><code>click_rsvp</code> then <code>rsvp_ok</code></td></tr>
+    <tr><td>Consultar por WhatsApp</td><td><code>whatsapp</code></td><td><code>click_wa</code></td></tr>
+  </table></div>
+
+  <div class="warn"><strong>You cannot know if a WhatsApp message was sent.</strong> Once the visitor
+  leaves for wa.me you get nothing back. <code>click_wa</code> means the button was pressed. The gap
+  between that and a message in your phone is invisible, and anyone claiming otherwise is guessing.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="p-retiro">
+  <div class="tag">Public page</div>
+  <h2>retiro.php</h2>
+  <p>The full page for a single retreat, reached by slug. Hero video, a two column layout with the media
+  gallery on the left and all the detail copy on the right, then approved reviews with a rating summary
+  and a submission form.</p>
+  <p>Reviews land in <code>resenas</code> with <code>aprobada = 0</code> and only appear publicly once
+  approved from the Retiros tab in the panel.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="p-resto">
+  <div class="tag">Public pages</div>
+  <h2>galeria, historia, contacto</h2>
+
+  <h3>galeria.php</h3>
+  <p>Photo grid from the <code>galeria</code> table plus an Instagram embed. Three separate Instagram
+  links, all tagged <code>instagram</code>.</p>
+
+  <h3>historia.php</h3>
+  <p>Static narrative. One CTA to <code>contacto.php</code>, tagged <code>johnny</code>.</p>
+
+  <h3>contacto.php</h3>
+  <p>The main enquiry form. Writes to <code>consultas</code> with the visitor's <code>ref</code> and
+  <code>boton = contacto</code>, and logs a <code>contacto_ok</code> event.</p>
+
+  <div class="stop"><strong>Do not trust the email notification.</strong> <code>mail()</code> is
+  unreliable on this host. The form shows a success message based on the database write, not on the mail
+  being delivered. Always check <code>admin/consultas.php</code>, never your inbox.</div>
+</section>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="admin">
+  <div class="tag">The panel</div>
+  <h2>admin/</h2>
+  <p>Session gated by <code>exigirSesion()</code> on line 2 of every page, before any output. Users live
+  in <code>usuarios</code> with bcrypt hashes and a role of <code>admin</code> or <code>editor</code>.</p>
+
+  <div class="tw"><table>
+    <tr><th>Page</th><th>What it does</th></tr>
+    <tr><td><code>index.php</code></td><td>Dashboard. Counters and the latest enquiries</td></tr>
+    <tr><td><code>inbox.php</code></td><td>Email received at johnny@lareserva.net.ar</td></tr>
+    <tr><td><code>retiros.php</code></td><td>Create and edit retreats, media, reviews</td></tr>
+    <tr><td><code>espacios.php</code></td><td>Create and edit spaces and their media</td></tr>
+    <tr><td><code>consultas.php</code></td><td>Enquiry inbox. Change estado, add internal notes</td></tr>
+    <tr><td><code>referidos.php</code></td><td>Referral codes, button counts, payout ledger</td></tr>
+    <tr><td><code>seguridad.php</code></td><td>Traffic, conversion, IP blocking, event log</td></tr>
+    <tr><td><code>media.php</code></td><td>Gallery images and page hero videos</td></tr>
+    <tr><td><code>usuarios.php</code></td><td>Panel users <span class="pill must">admin only</span></td></tr>
+  </table></div>
+
+  <h3>One sidebar, one file</h3>
+  <p>Every panel page includes <code>admin/_sidebar.php</code>. The active item is detected from the
+  filename, so there is nothing to pass in and nothing to keep in sync. It carries its own style block
+  with literal colours rather than CSS variables, because several pages never defined
+  <code>--teal-dim</code> and the user chip rendered unstyled without it.</p>
+
+  <div class="cb"><div class="ch"><span class="cl">any admin page</span><span class="cn">that is the whole integration</span></div>
+<pre>&lt;?php include __DIR__.'/_sidebar.php'; ?&gt;</pre></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="a-inbox">
+  <h2>Inbox</h2>
+  <p>Reads the <code>mensajes</code> table, filled by a mail pipe. Read only: Reply opens your own mail
+  client rather than calling <code>mail()</code>, because a reply that silently vanishes is worse than no
+  button. The original always stays in webmail. Attachments are counted, never stored.</p>
+  <div class="tip">Writing uploaded files to disk from unauthenticated senders is the single most
+  dangerous thing this codebase could do. It is deliberately not done.</div>
+</section>
+
+<section id="a-consultas">
+  <h2>Consultas</h2>
+  <p>Every enquiry from every form. Filter by estado, change estado, add internal notes.</p>
+  <div class="stop"><strong>This page is load bearing for the reports.</strong> "Concretadas" on the
+  Referidos page counts enquiries whose estado you moved to <code>coordinada</code> or
+  <code>cerrada</code>. If everything stays on <code>nueva</code>, every referrer and every button shows
+  zero conversions forever. That is the manual work the reporting costs you.</div>
+</section>
+
+<section id="a-referidos">
+  <h2>Referidos</h2>
+  <p>Three tables on one page.</p>
+  <ul>
+    <li><strong>Codigos</strong> per referrer or channel: aperturas, consultas, concretadas, conversion,
+      WhatsApp clicks, total paid. Direct traffic appears as its own row.</li>
+    <li><strong>Codigos vistos sin registrar</strong>: traffic that arrived with a <code>?ref=</code>
+      matching no code. Usually a typo in a shared link.</li>
+    <li><strong>Botones del sitio</strong>: clicks per button, with consultas and concretadas.</li>
+  </ul>
+  <p>Opening a code gives four ready made links to copy, for agenda, espacios, inicio and galeria.</p>
+
+  <div class="warn"><strong>Nothing computes money.</strong> The system has no payment data: an enquiry
+  is an enquiry, <code>precio_desde</code> is a starting price nobody has paid, and space enquiries carry
+  no price. Commission is a text note you agreed with the person, and the payout table is a ledger of what
+  you already paid. A calculated "owed" figure would look authoritative and be fiction.</div>
+</section>
+
+<section id="a-seguridad">
+  <h2>Trafico y seguridad</h2>
+  <p>Event counters over 7, 30, 90 or 365 days. Conversion per retreat. Breakdown per <code>ref</code>.
+  Most active IPs with a one click block. The blocked list. The last 60 raw events. A purge button for
+  events older than 180 days.</p>
+  <div class="warn"><strong>IP blocking is weaker than it sounds.</strong> Argentine domestic IPs rotate
+  and a VPN defeats it in one click. It stops a repeat bot, not a determined person. The disposable email
+  check and the honeypot do more work than the IP list ever will.</div>
+</section>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="db">
+  <h2>Database</h2>
+  <div class="tw"><table>
+    <tr><th>Table</th><th>Holds</th><th>Written by</th></tr>
+    <tr><td><code>retiros</code></td><td>Retreats: slug, dates, coordinator, price, cupos, estado</td><td>admin/retiros.php</td></tr>
+    <tr><td><code>retiro_media</code></td><td>Photos and videos per retreat</td><td>admin/retiros.php</td></tr>
+    <tr><td><code>espacios</code></td><td>The five spaces</td><td>admin/espacios.php</td></tr>
+    <tr><td><code>espacio_media</code></td><td>Photos and videos per space</td><td>admin/espacios.php</td></tr>
+    <tr><td><code>galeria</code></td><td>Gallery images</td><td>admin/media.php</td></tr>
+    <tr><td><code>consultas</code></td><td>Every enquiry from every form</td><td>3 public pages</td></tr>
+    <tr><td><code>resenas</code></td><td>Reviews, pending until approved</td><td>retiro.php</td></tr>
+    <tr><td><code>mensajes</code></td><td>Email delivered into the panel</td><td>pipe_correo.php</td></tr>
+    <tr><td><code>eventos</code></td><td>Every tracked click</td><td>track.php, antispam.php</td></tr>
+    <tr><td><code>ip_bloqueadas</code></td><td>Blocked IPs</td><td>admin/seguridad.php</td></tr>
+    <tr><td><code>referidos</code></td><td>Referral codes and their owners</td><td>admin/referidos.php</td></tr>
+    <tr><td><code>referido_pagos</code></td><td>Manual payout ledger</td><td>admin/referidos.php</td></tr>
+    <tr><td><code>usuarios</code></td><td>Panel logins</td><td>admin/usuarios.php</td></tr>
+    <tr><td><code>ajustes</code></td><td>Key/value settings</td><td>panel</td></tr>
+  </table></div>
+
+  <h3>consultas, the important one</h3>
+  <div class="cb"><div class="ch"><span class="cl">consultas</span><span class="cn">the columns that matter</span></div>
+<pre>nombre, email, telefono         who
+tipo                            organizar | participar | visita | otro
+fecha_tentativa, fecha_fin      requested range
+personas                        group size
+mensaje                         free text, prefixed with context
+origen                          retiro:slug | espacio:slug | contacto
+retiro_id                       link to the retreat, when there is one
+ref                             WHERE THEY CAME FROM
+boton                           WHAT THEY CLICKED
+estado                          nueva | contactada | coordinada | cerrada | descartada
+ip, ip_txt, user_agent          for rate limiting and blocking</pre></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="atribucion">
+  <div class="tag">Read this twice</div>
+  <h2>ref vs boton</h2>
+  <p class="lede">Two questions that sound like one. Keeping them apart is the difference between a
+  report you can act on and a report that lies to you.</p>
+
+  <div class="grid2">
+    <div class="card"><b>ref</b><p>Where the visitor came from. Set once on arrival from
+    <code>?ref=</code> or <code>?utm_source=</code>, lowercased, kept in the session for the whole visit.
+    Anyone with no code is tagged <code>directo</code>.</p></div>
+    <div class="card"><b>boton</b><p>What they clicked once they were here. Baked into the page, so it
+    counts without anyone sharing a link. Recorded on the event and on the enquiry.</p></div>
+  </div>
+
+  <div class="stop"><strong>Why they cannot be the same field.</strong> If clicking "Solicitar lugar"
+  set <code>ref=lr</code>, then a visitor who arrived from your WhatsApp status would be relabelled at the
+  moment they book. Every booking would be credited to <code>lr</code>, and whatsapp, instagram and johnny
+  would all show clicks with zero conversions, forever. The one number worth having becomes unreadable.</div>
+
+  <div class="cb"><div class="ch"><span class="cl">a real row</span><span class="cn">both facts survive</span></div>
+<pre>Visitor clicks your Instagram bio link
+  ?ref=instagram           -> session ref = instagram
+Browses, opens Main Hall
+  event abrir_espacio        ref=instagram  boton=(none)
+Fills the form, clicks Solicitar fecha
+  event consulta_esp_ok      ref=instagram  boton=lr
+  consulta                   ref=instagram  boton=lr
+
+Reads as: Instagram brought them, the form converted them.</pre></div>
+
+  <h3>Button tags in use</h3>
+  <div class="tw"><table>
+    <tr><th>Tag</th><th>Where</th></tr>
+    <tr><td><code>lr</code></td><td>Solicitar lugar, Solicitar fecha, Conocer los espacios</td></tr>
+    <tr><td><code>whatsapp</code></td><td>Consultar por WhatsApp, on retiros and espacios</td></tr>
+    <tr><td><code>instagram</code></td><td>The three Instagram links on galeria</td></tr>
+    <tr><td><code>johnny</code></td><td>Instagram in the espacios panel, Consultar disponibilidad</td></tr>
+    <tr><td><code>contacto</code></td><td>Enviar consulta, Organizá tu retiro</td></tr>
+  </table></div>
+
+  <h3>How a click is recorded</h3>
+  <div class="cb"><div class="ch"><span class="cl">includes/footer.php</span><span class="cn">one helper, every page</span></div>
+<pre>lrBoton('click_wa', 'whatsapp', 'Summer Retreat 2027')
+  -> navigator.sendBeacon('track.php', {...})
+  -> falls back to fetch(keepalive) on old browsers
+  -> never blocks or delays the click</pre></div>
+
+  <div class="tip"><code>sendBeacon</code> is the reason a WhatsApp or Instagram click still counts. A
+  normal <code>fetch</code> is cancelled when the browser navigates away. A beacon is handed to the OS and
+  survives.</div>
+
+  <div class="warn"><code>track.php</code> only accepts event types on its whitelist. Anything else is
+  dropped silently. Adding a new event type means adding it there too, or it will look like the tracking
+  is broken when it is actually working exactly as designed.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="correo">
+  <h2>Mail into the panel</h2>
+  <p>A PHP page cannot receive email. It can only read mail already delivered somewhere. On cPanel with no
+  SSH there is one clean route.</p>
+
+  <div class="step"><div class="n">Step 1</div><h3>The mailbox</h3>
+  <p><code>johnny@lareserva.net.ar</code>, created in cPanel. Real mailbox, real webmail, real storage.</p></div>
+
+  <div class="step"><div class="n">Step 2</div><h3>The pipe script</h3>
+  <p><code>/home/lareserv/pipe_correo.php</code>, chmod <strong>755</strong>, outside public_html. Exim
+  hands it the raw message on stdin. It unfolds headers, decodes MIME encoded subjects, walks multipart
+  bodies preferring text/plain, counts attachments, and writes one row into <code>mensajes</code>.</p>
+  <div class="stop">It <strong>always</strong> exits 0. A non-zero exit makes Exim bounce the message back
+  to the sender, so a bug in the parser must never become a bounce in front of a customer. Failures go to
+  <code>/home/lareserv/pipe_correo.log</code> instead.</div></div>
+
+  <div class="step"><div class="n">Step 3</div><h3>The Exim filter</h3>
+  <p>cPanel &gt; Email &gt; <strong>Email Filters</strong>, not Forwarders and not Roundcube's own filters.
+  Two actions, both required:</p>
+  <div class="cb"><div class="ch"><span class="cl">Inbox al panel</span><span class="cn">order matters</span></div>
+<pre>Rule    To  contains  johnny@lareserva.net.ar
+
+Action  Deliver to folder    INBOX
+Action  Pipe to a Program    $home/pipe_correo.php</pre></div>
+  <p>Without the first action, mail stops arriving in webmail. The pipe path must be
+  <code>$home/pipe_correo.php</code> or an absolute path. A bare relative filename is not resolved against
+  your home directory and the script silently never runs.</p></div>
+
+  <div class="tip">Diagnosing it: no <code>pipe_correo.log</code> at all means the pipe never executed,
+  which is a path or permissions problem. A log with lines in it means PHP ran and hit something, and the
+  line names it.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="antispam">
+  <h2>Anti-spam</h2>
+  <p>Four layers in <code>includes/antispam.php</code>, applied to every public form.</p>
+  <div class="tw"><table>
+    <tr><th>Layer</th><th>Behaviour</th></tr>
+    <tr><td>Honeypot</td><td>Hidden <code>apodo</code> field. Filled means bot: pretend success, write nothing</td></tr>
+    <tr><td>CSRF</td><td>Session token per form</td></tr>
+    <tr><td>IP block</td><td><code>ip_bloqueadas</code> lookup, generic failure message</td></tr>
+    <tr><td>Rate limit</td><td>5 submissions per IP per hour, 120 click events</td></tr>
+    <tr><td>Email gate</td><td>Format, disposable blocklist with subdomains, MX or A record must resolve</td></tr>
+  </table></div>
+
+  <div class="cb"><div class="ch"><span class="cl">email gate</span><span class="cn">tested output</span></div>
+<pre>carlos@gmail.com                  ACEPTADO
+a@vstech.app                      ACEPTADO      custom domains pass
+x@mailinator.com                  RECHAZADO     desechable
+y@inbox.mailinator.com            RECHAZADO     desechable, subdomain
+b@nope                            RECHAZADO     formato
+c@dominioquenoexiste-zzz.com      RECHAZADO     dominio, no MX and no A</pre></div>
+
+  <div class="warn"><strong>There is an allowlist mode and it should stay off.</strong>
+  <code>LR_SOLO_PROVEEDORES_CONOCIDOS</code> restricts to Gmail, Outlook, Yahoo, iCloud and Proton. Turn it
+  on and every facilitator with a custom domain, every corporate organiser and every agency is rejected.
+  Those are the highest value enquiries. Blocking throwaway domains is the right shape; allowlisting the
+  big five is not.</div>
+
+  <div class="tip">Every check fails open if its table is missing. A broken log must never block a real
+  booking.</div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="uploads">
+  <h2>Uploads</h2>
+  <div class="tw"><table>
+    <tr><th>Type</th><th>Directory</th></tr>
+    <tr><td>Images</td><td><code>assets/img/galeria/</code></td></tr>
+    <tr><td>Videos</td><td><code>assets/video/pages/</code></td></tr>
+    <tr><td>Page heroes</td><td><code>assets/video/hero.mp4</code>, <code>assets/video/pages/*.mp4</code></td></tr>
+  </table></div>
+  <p>File inputs must be named <code>imagen</code> and <code>video</code>. Only one is enabled at a time;
+  the other is disabled so it drops out of the request. <code>mime_content_type()</code> works on this
+  server and must not be swapped for extension checks. No <code>mkdir()</code> in upload handlers.</p>
+
+  <h3>The limits are set in .htaccess</h3>
+  <div class="cb"><div class="ch"><span class="cl">public_html/.htaccess</span><span class="cn">.user.ini is ignored on this account</span></div>
+<pre>&lt;IfModule lsapi_module&gt;
+  php_value upload_max_filesize 180M
+  php_value post_max_size       210M
+  php_value memory_limit        256M
+&lt;/IfModule&gt;</pre></div>
+
+  <div class="tip">The forms read the live limit from PHP and refuse an oversized file in the browser,
+  with the real figure in the message. If the body ever does exceed <code>post_max_size</code>, the
+  handler detects the discarded POST and says so instead of blaming the session.</div>
+</section>
+
+<hr>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="reglas">
+  <h2>Hard rules</h2>
+  <ul>
+    <li><strong>No em dashes anywhere.</strong> Plain hyphen only, in code and in copy.</li>
+    <li><strong>No references to AI tools</strong> in code or comments.</li>
+    <li><strong>Version markers in filenames and in an HTML comment.</strong> With no SSH it is the only
+      way to confirm what is deployed.</li>
+    <li><strong>From-scratch rewrites over patches</strong> when a file has accumulated too many fixes.</li>
+    <li><strong>Never open Sitejet in cPanel.</strong> It overwrites files.</li>
+    <li><strong>Delete <code>generar-hash.php</code></strong> immediately after use.</li>
+    <li><strong>Nav uses id selectors, never classes.</strong> Classes collide with cached CSS.</li>
+    <li><strong>Check <code>consultas</code>, not email.</strong> <code>mail()</code> is unreliable here.</li>
+    <li><strong><code>DB_PASS</code> is the MySQL password</strong>, not a bcrypt hash.</li>
+  </ul>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="historia">
+  <div class="tag">Post mortem</div>
+  <h2>What broke and why</h2>
+  <p class="lede">Six bugs that cost real time. Each one is worth reading because the same class of
+  mistake will happen again.</p>
+
+  <div class="step"><div class="n">Bug 1</div><h3>Every form said "La sesión expiró"</h3>
+  <p>Not a session problem. <code>csrfToken()</code> started the session lazily, and on public pages it
+  was first called in the middle of the HTML. By then the headers were gone,
+  <code>session_start()</code> could not send the cookie, and the token was never stored. The browser
+  posted a token the server had no record of.</p>
+  <p><strong>Fix:</strong> start the session at the top of <code>config.php</code>, before any output.
+  Admin pages were never affected because <code>exigirSesion()</code> runs on line 2.</p>
+  <p><strong>Evidence it was that:</strong> <code>consultas</code> had zero rows. Not one message had
+  ever been stored, from any form, since launch.</p></div>
+
+  <div class="step"><div class="n">Bug 2</div><h3>admin/retiros.php returned 500 on every request</h3>
+  <p>A parse error, not an upload bug. <code>if ($accion === 'guardar') {</code> was never closed, so the
+  following <code>elseif</code> landed inside its body. A stray extra brace further down made the total
+  count balance, which is why a brace counter passed and told us nothing.</p>
+  <div class="tip"><strong>Lesson:</strong> balanced braces are not valid syntax. Run <code>php -l</code>.
+  A counting heuristic gives false confidence.</div></div>
+
+  <div class="step"><div class="n">Bug 3</div><h3>Video uploads over 5MB said "Sesion expirada"</h3>
+  <p>PHP discards <code>$_POST</code> and <code>$_FILES</code> together when the body exceeds
+  <code>post_max_size</code>. With no <code>accion</code> field the CSRF bypass never triggered, so the
+  code blamed the session. The real limit was 8M / 2M: <code>.user.ini</code> was being ignored entirely.</p>
+  <p><strong>Fix:</strong> the limits moved to <code>.htaccess</code>, and the handler now detects a
+  discarded POST and reports the actual size against the actual limit.</p>
+  <div class="stop">A related false lead: "media.php uploads 86MB files fine". It does not. That screen
+  shows <code>filesize()</code> of a file already on disk, put there by File Manager. Reading a UI label as
+  evidence of a code path cost an hour.</div></div>
+
+  <div class="step"><div class="n">Bug 4</div><h3>The espacios lightbox could not be scrolled</h3>
+  <p>The panel is a CSS grid item. Grid items default to <code>min-height:auto</code> and refuse to shrink
+  below their content, and <code>max-height</code> caps the box but not the row. So the row grew to full
+  content height, <code>overflow:hidden</code> clipped it, and the panel had no overflow of its own to
+  scroll.</p>
+  <p><strong>Fix:</strong> <code>grid-template-rows: minmax(0, 1fr)</code> plus a definite box height.
+  <code>min-height:0</code> alone, tried first, changed nothing.</p></div>
+
+  <div class="step"><div class="n">Bug 5</div><h3>The mail pipe never ran</h3>
+  <p>No <code>pipe_correo.log</code> at all, which meant PHP never started. Not the shebang: all eight PHP
+  binaries on the server worked when tested directly. The filter's pipe path was a bare relative filename,
+  which Exim does not resolve against the home directory.</p>
+  <p><strong>Fix:</strong> <code>$home/pipe_correo.php</code>.</p></div>
+
+  <div class="step"><div class="n">Bug 6</div><h3>"directo" was reported as an unregistered code</h3>
+  <p>Self inflicted. <code>config.php</code> assigns <code>directo</code> to visitors with no code, then
+  the referidos page compared every seen code against the registered list and flagged it as an orphan.</p>
+  <p><strong>Fix:</strong> it gets its own row and is excluded from the orphan check.</p></div>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="runbook">
+  <h2>Runbook</h2>
+
+  <h3>A form says the session expired</h3>
+  <ol>
+    <li>Check the browser has a <code>PHPSESSID</code> cookie for lareserva.net.ar</li>
+    <li>If not, <code>config.php</code> is not starting the session before output. Check its version marker</li>
+  </ol>
+
+  <h3>An upload fails</h3>
+  <ol>
+    <li>Open <code>admin/diag.php</code> and read the <strong>local</strong> value of <code>post_max_size</code></li>
+    <li>If it is 8M, the <code>.htaccess</code> block is missing or the handler ignores <code>php_value</code></li>
+    <li>Fall back to cPanel &gt; MultiPHP INI Editor</li>
+  </ol>
+
+  <h3>A page returns a blank 500</h3>
+  <ol>
+    <li>Read <code>/home/lareserv/logs/php.error.log</code>. It is always there</li>
+    <li>A blank 500 with no visible error is almost always a parse error, which happens before
+      <code>display_errors</code> can be set</li>
+    <li><code>display_errors</code> must be set <strong>after</strong> the <code>require</code>, because
+      <code>config.php</code> turns it off at the bottom</li>
+  </ol>
+
+  <h3>Mail is not reaching the panel</h3>
+  <ol>
+    <li>Does it reach webmail? If not, it is DNS or MX, not the code</li>
+    <li>Does <code>/home/lareserv/pipe_correo.log</code> exist? No file means the pipe never executed</li>
+    <li>Check the filter's pipe path and that the script is 755</li>
+    <li>cPanel &gt; Metrics &gt; Track Delivery shows Exim's actual result per message</li>
+  </ol>
+
+  <h3>The referral report shows zero conversions</h3>
+  <p>Almost certainly correct. "Concretadas" counts enquiries moved to <code>coordinada</code> or
+  <code>cerrada</code> in the Consultas inbox. If everything is still <code>nueva</code>, the answer is
+  zero and the code is fine.</p>
+</section>
+
+<!-- ═══════════════════════════════════════════════ -->
+<section id="pendiente">
+  <h2>Still open</h2>
+  <div class="tw"><table>
+    <tr><th>Item</th><th>Why it matters</th><th>Size</th></tr>
+    <tr><td>index.php space modules</td><td>Hardcoded, single image, not clickable, ignore
+      <code>espacio_media</code>. Editing media in the panel does not change them</td><td>Large</td></tr>
+    <tr><td><code>espacio_id</code> on retiros</td><td>Every space shows every retreat, and the occupancy
+      calendar is property wide rather than per space</td><td>Medium</td></tr>
+    <tr><td>Privacy policy</td><td>You store IP addresses. Ley 25.326 applies, and GDPR for European
+      visitors. Needs a line about retention</td><td>Small</td></tr>
+    <tr><td>Delete the test files</td><td><code>admin/pipe_test.php</code> and
+      <code>admin/upload_test.php</code>. The second has no session check
+      <span class="pill must">do this</span></td><td>One minute</td></tr>
+    <tr><td>PostHog</td><td>Optional. Heatmaps and session replay install with a script tag. A/B testing
+      needs traffic you do not have yet</td><td>Small</td></tr>
+  </table></div>
+</section>
+
+<div class="foot">
+  La Reserva Naturaleza Arte · lareserva.net.ar · build guide for Carlos Verbelen<br>
+  Every claim about behaviour in this document was verified against a running copy of the code, not
+  assumed from reading it.
+</div>
+
+</main>
+</div>
+<script>
+function tog(){
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('on');
+}
+document.querySelectorAll('.nav a').forEach(function(a){
+  a.addEventListener('click', function(){
+    if (window.innerWidth <= 900) tog();
+  });
+});
+</script>
+</body>
+</html>

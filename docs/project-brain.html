@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva · Project Brain</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#08111c;color:#a8bccf;font-family:'Karla',system-ui,sans-serif;min-height:100vh;scroll-behavior:smooth}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#1c3247;border-radius:3px}
+::selection{background:#00c9a7;color:#08111c}
+.wrap{display:flex}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:250px;height:100vh;overflow-y:auto;background:#060d16;border-right:1px solid #14283a;flex-shrink:0;padding:0 0 40px;z-index:50}
+.brand{padding:20px 22px 16px;border-bottom:1px solid #14283a}
+.brand b{display:block;font:300 20px 'Fraunces',Georgia,serif;color:#eef3f8}
+.brand span{display:block;font:700 9px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.22em;margin-top:4px}
+.nav a{display:block;padding:6px 22px;color:#7d95ab;text-decoration:none;border-left:2px solid transparent;font-size:12.5px}
+.nav a:hover{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622}
+.nav a.on{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622;font-weight:600}
+.nav a small{display:block;color:#3d5a72;font-size:10.5px;margin-top:1px}
+.nav-label{padding:14px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.16em}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#0e1c2a;color:#eef3f8;border:1px solid #23405a;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+main{flex:1;min-width:0;padding:44px 46px 90px;max-width:920px}
+h1{font:300 36px 'Fraunces',Georgia,serif;color:#eef3f8;line-height:1.15;margin:0 0 18px}
+h2{font:300 25px 'Fraunces',Georgia,serif;color:#eef3f8;margin:34px 0 10px;padding-top:8px;border-top:1px solid #14283a}
+h2:first-of-type{border-top:0;margin-top:16px}
+h3{font:600 15px 'Karla',sans-serif;color:#00c9a7;margin:22px 0 8px}
+p,li{font-size:14px;line-height:1.75;color:#8fa7bd;margin:0 0 10px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+strong{color:#cfe0ee}
+a{color:#00c9a7}
+hr{border:0;border-top:1px solid #14283a;margin:30px 0}
+blockquote{padding:11px 15px;background:#181205;border:1px solid #3d2f10;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;margin:14px 0}
+blockquote p{color:#c4ab7d;font-size:13.5px;margin:0}
+blockquote p+p{margin-top:8px}
+code{font:500 12px 'JetBrains Mono',monospace;color:#00c9a7;background:#0b1826;padding:1px 5px;border-radius:4px}
+pre{margin:14px 0;padding:14px;overflow-x:auto;background:#070f18;border:1px solid #16293a;border-radius:8px}
+pre code{background:none;padding:0;color:#b9cddd;font-size:11.5px;line-height:1.65}
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:480px}
+th{text-align:left;padding:8px 10px;background:#0b1826;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #16293a;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #101d2a;color:#8fa7bd;vertical-align:top}
+tr:hover td{background:#0a1420}
+.foot{color:#3d5a72;font-size:12px;border-top:1px solid #14283a;padding-top:16px;margin-top:44px}
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0}
+.tarjeta{border:1px solid #16293a;border-radius:10px;padding:15px 17px;background:#0a1420;text-decoration:none;display:block}
+.tarjeta:hover{border-color:#1f4a5e;background:#0c1a28}
+.tarjeta b{display:block;color:#eef3f8;font:600 14px 'Karla',sans-serif;margin-bottom:3px}
+.tarjeta span{font-size:12.5px;color:#7d95ab;line-height:1.5}
+@media(max-width:900px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .scrim.on{display:block}
+  main{padding:64px 20px 70px}
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="tog()">&#9776;</button>
+<div class="scrim" id="scrim" onclick="tog()"></div>
+<div class="wrap">
+<aside class="sidebar" id="sb">
+  <div class="brand"><b>La Reserva</b><span>Documentacion</span></div>
+  <nav class="nav"><div class="nav-label">Documentos</div><a href="readme.html">README<small>Vista general del proyecto</small></a><a href="operar.html">GUIA DE DESARROLLO<small>GitHub, healthcheck y deploy</small></a><a href="github.html">GitHub<small>Crear el repo y subir desde la Mac</small></a><a href="setup.html">Setup<small>De un cPanel vacio a un sitio andando</small></a><a href="architecture.html">Arquitectura<small>Como encajan las piezas</small></a><a href="decisions.html">Decisiones<small>Por que estan asi, con el bug detras</small></a><a href="project-brain.html" class="on">Project Brain<small>Contexto completo para retomar</small></a><a href="db-readme.html">Base de datos<small>Los scripts SQL, en orden</small></a><div class="nav-label">Guias</div><a href="guia-usuario.html">GUIA DE USUARIO<small>Las 6 paginas del sitio y todo el panel</small></a><a href="guia-completa.html">Guia completa<small>Visitantes, organizadores, equipo y desarrollo</small></a><a href="manual-usuario.html">Manual de uso<small>Version corta para el panel</small></a><a href="guia-tecnica.html">Guia tecnica<small>Arquitectura y post mortem de los bugs</small></a><div class="nav-label">Indice</div><a href="index.html">Todos los documentos</a></nav>
+</aside>
+<main>
+<h1>PROJECT BRAIN</h1>
+<p>Everything a new session needs to be useful immediately. Read this first, then <code>ARCHITECTURE.md</code> for how it works and <code>DECISIONS.md</code> for why.</p>
+<hr>
+<h2>Who and what</h2>
+<p><strong>Carlos Verbelen</strong>, co-founder and CMO at Verbelen Senatus Technologies, Buenos Aires. He builds and maintains this himself. He knows PHP, MySQL, HTML, CSS and JavaScript. He does not need concepts explained. He catches bugs, spots inconsistencies and pushes back when something does not work.</p>
+<p><strong>What he wants from a collaborator:</strong> working files, not option lists. Diagnosis from evidence, not the same fix attempted twice. If an approach has failed twice, stop and ask for the actual error message.</p>
+<p><strong>La Reserva Naturaleza Arte</strong>, a 250 hectare property in Capilla del Señor, Buenos Aires, about 77 km from the city. Retreats and gatherings. The site shows the property, publishes the agenda and captures enquiries.</p>
+<p><strong>Johnny</strong> runs the panel day to day.</p>
+<hr>
+<h2>Hard constraints</h2>
+<div class="tw"><table><tr><th>Constraint</th><th>Consequence</th></tr><tr><td>No SSH</td><td>Every change is a file uploaded by hand through cPanel</td></tr><tr><td>No composer, no npm</td><td>No dependencies, no build, no autoloader</td></tr><tr><td><code>.user.ini</code> ignored on this account</td><td>PHP limits live in <code>.htaccess</code></td></tr><tr><td><code>fileinfo</code> extension absent</td><td>Use <code>lrMime()</code>, never <code>mime_content_type()</code></td></tr><tr><td><code>mail()</code> unreliable</td><td>Enquiries are read in the panel, never by email</td></tr><tr><td>Shared hosting</td><td>No cron, no queue, no background jobs</td></tr></table></div>
+<hr>
+<h2>Coordinates</h2>
+<pre><code>Site      lareserva.net.ar
+cPanel    shadow.hobohost.com:2083     user lareserv
+DB        lareserv_admin               user lareserv_charliee
+Panel     lareserva.net.ar/admin/
+Mail      johnny@lareserva.net.ar
+WhatsApp  +54 9 11 3362-9514
+Instagram @lareservanaturalezaarte
+Repo      github.com/IpawnprozNetwork/lareserva   private</code></pre>
+<p>Credentials are in <code>includes/config.php</code> on the server, which is not in this repo and must never be.</p>
+<hr>
+<h2>House rules</h2>
+<ul><li><strong>No em dashes anywhere.</strong> Plain hyphen, in code and in visible copy</li><li><strong>No references to AI tools</strong> in code or comments</li><li><strong>Version in the filename and in an HTML comment.</strong> Without SSH it is the only</li></ul>
+<p>way to confirm what is deployed</p>
+<ul><li><strong>From-scratch rewrites over patches</strong> when a file has accumulated too many</li></ul>
+<p>fixes</p>
+<ul><li><strong>Never open Sitejet in cPanel.</strong> It overwrites the site files</li><li><strong>Nav uses id selectors, never classes.</strong> Classes collide with cached CSS</li><li><strong><code>display_errors</code> goes after the <code>require</code></strong>, because <code>config.php</code> turns it</li></ul>
+<p>off at the bottom</p>
+<ul><li><strong>No <code>mkdir()</code> in upload handlers.</strong> Existing directories only</li><li><strong><code>DB_PASS</code> is the MySQL password, not a bcrypt hash</strong></li></ul>
+<hr>
+<h2>The one concept to understand</h2>
+<p><code>ref</code> and <code>boton</code> are separate and must stay separate.</p>
+<ul><li><strong><code>ref</code></strong> = where the visitor came from. Set once on arrival, held in the</li></ul>
+<p>session. No code means <code>directo</code></p>
+<ul><li><strong><code>boton</code></strong> = what they clicked. Baked into the page, counts without anyone</li></ul>
+<p>sharing a link</p>
+<p>Merging them destroys attribution permanently. See DECISION 2.</p>
+<hr>
+<h2>Current state</h2>
+<p>Everything below is live and working.</p>
+<p><strong>Public:</strong> home, espacios with lightbox + occupancy calendar + date range picker + enquiry form, agenda with lightbox + RSVP, single retreat page with reviews, gallery, history, contact, access.</p>
+<p><strong>Panel:</strong> dashboard, inbox fed by a mail pipe, retreats with media and review approval, spaces with media, enquiries with states, referral codes and button counters, traffic and IP blocking, media manager, users.</p>
+<p><strong>Cross-cutting:</strong> CSRF on every form, honeypot, IP blocking, per-IP rate limiting, disposable-email rejection, event tracking on every button, referral attribution, video player with progress bar and mute.</p>
+<p>Content is in Argentine Spanish. Eight spaces, four retreats, 22 gallery photos.</p>
+<hr>
+<h2>Deployed versions</h2>
+<p>Bump these here and in <code>healthcheck.py</code> when you deploy.</p>
+<pre><code>index.php                1.8    espacios.php             3.1
+retiros.php              2.8    retiro.php               1.3
+galeria.php              1.3    welcome.html             1.3
+track.php                1.3
+
+includes/config.php      2.8    includes/nav.php         2.1
+includes/footer.php      1.1    includes/ajustes.php     1.0
+includes/antispam.php    1.3
+
+admin/_sidebar.php       2.4    admin/portada.php        1.0
+admin/espacios.php       3.7    admin/retiros.php        3.6
+admin/referidos.php      1.4    admin/seguridad.php      1.2
+admin/inbox.php          1.1</code></pre>
+<hr>
+<h2>Open items</h2>
+<div class="tw"><table><tr><th>Item</th><th>Why it matters</th><th>Size</th></tr><tr><td><code>espacio_id</code> on <code>retiros</code></td><td>Every space lists every retreat, and the occupancy calendar is property-wide rather than per space</td><td>Medium</td></tr><tr><td>Privacy policy</td><td>IP addresses are stored. Ley 25.326 applies, GDPR for European visitors</td><td>Small</td></tr></table></div>
+<hr>
+<h2>Things that will waste your time if you do not know them</h2>
+<p><strong>A blank 500 is a syntax error.</strong> It happens before <code>display_errors</code> can be turned on. Read <code>/home/lareserv/logs/php.error.log</code>.</p>
+<p><strong>Balanced braces are not valid syntax.</strong> Run <code>php -l</code>.</p>
+<p><strong>"Sesión expirada" on a large upload is not a session problem.</strong> The body exceeded <code>post_max_size</code> and PHP discarded <code>$_POST</code> and <code>$_FILES</code> together, so the CSRF token never arrived.</p>
+<p><strong>A grid item will not scroll without <code>minmax(0, 1fr)</code> on the row.</strong> <code>min-height: 0</code> alone changes nothing.</p>
+<p><strong>A full-width block cannot be centred with <code>margin: auto</code>.</strong> It needs <code>width: fit-content</code>.</p>
+<p><strong>A relative path in an Exim pipe is not resolved against the home directory.</strong> Use <code>$home/pipe_correo.php</code>.</p>
+<p><strong>Never rebuild a file from a stale working copy.</strong> It happened twice on this project and both times silently removed working features. Check the base file has the functions it should before packaging anything.</p>
+<p><strong>A UI label is not evidence of a code path.</strong> "media.php uploads 86 MB fine" was <code>filesize()</code> of a file that File Manager had put there. That reading cost an hour.</p>
+<hr>
+<h2>Verifying a deploy</h2>
+<pre><code>python3 healthcheck.py</code></pre>
+<p>Checks every page, the version markers, the redirects, that the panel is not reachable without a session, and that no diagnostic file is exposed. Exit 0 means clean.</p>
+<hr>
+<h2>Documentation</h2>
+<div class="tw"><table><tr><th>File</th><th>For</th></tr><tr><td><code>README.md</code></td><td>Overview, Spanish</td></tr><tr><td><code>SETUP.md</code></td><td>Empty server to running site</td></tr><tr><td><code>ARCHITECTURE.md</code></td><td>How the pieces fit</td></tr><tr><td><code>DECISIONS.md</code></td><td>Why, with the bug behind each one</td></tr><tr><td><code>docs/guia-completa.html</code></td><td>Visitors, organisers, staff, developers. Spanish</td></tr><tr><td><code>docs/manual-usuario.html</code></td><td>Daily panel use. Spanish</td></tr><tr><td><code>docs/guia-tecnica.html</code></td><td>Technical guide with the post mortems</td></tr></table></div>
+<div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
+</main>
+</div>
+<script>
+function tog(){
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('on');
+}
+document.querySelectorAll('.nav a').forEach(function(a){
+  a.addEventListener('click', function(){ if (window.innerWidth <= 900) tog(); });
+});
+</script>
+</body>
+</html>

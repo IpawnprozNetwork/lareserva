@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva · Manual de uso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#08111c;color:#a8bccf;font-family:'Karla',sans-serif;min-height:100vh}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#1c3247;border-radius:3px}
+::selection{background:#00c9a7;color:#08111c}
+.wrap{display:flex}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:250px;height:100vh;overflow-y:auto;background:#060d16;border-right:1px solid #14283a;flex-shrink:0;padding:0 0 40px;z-index:50}
+.brand{padding:20px 22px 16px;border-bottom:1px solid #14283a}
+.brand b{display:block;font:300 20px 'Fraunces',Georgia,serif;color:#eef3f8}
+.brand span{display:block;font:700 9px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.22em;margin-top:4px}
+.nav a{display:block;padding:5px 22px;color:#7d95ab;text-decoration:none;border-left:2px solid transparent;font-size:12.5px}
+.nav a:hover{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622}
+.nav-label{padding:13px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.16em}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#0e1c2a;color:#eef3f8;border:1px solid #23405a;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+main{flex:1;min-width:0;padding:44px 46px 90px;max-width:940px}
+section[id]{scroll-margin-top:20px;margin-bottom:48px}
+h1{font:300 40px 'Fraunces',Georgia,serif;color:#eef3f8;line-height:1.1;margin:0 0 14px}
+h2{font:300 27px 'Fraunces',Georgia,serif;color:#eef3f8;margin:0 0 12px}
+h3{font:600 16px 'Karla',sans-serif;color:#00c9a7;margin:24px 0 8px}
+p,li{font-size:14px;line-height:1.75;color:#8fa7bd;margin:0 0 10px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+strong{color:#cfe0ee}
+a{color:#00c9a7}
+.lede{font-size:16px;line-height:1.75;color:#9fb6ca;margin-bottom:18px}
+.tag{font:700 10px 'JetBrains Mono',monospace;color:#f0398b;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.ok{padding:11px 15px;background:#08161a;border:1px solid #123a35;border-left:3px solid #00c9a7;border-radius:0 8px 8px 0;font-size:13.5px;color:#8fb5ad;margin:12px 0}
+.no{padding:11px 15px;background:#170a0f;border:1px solid #3d1622;border-left:3px solid #f0398b;border-radius:0 8px 8px 0;font-size:13.5px;color:#c49aa6;margin:12px 0}
+.oj{padding:11px 15px;background:#181205;border:1px solid #3d2f10;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;font-size:13.5px;color:#c4ab7d;margin:12px 0}
+.paso{border:1px solid #16293a;border-radius:10px;padding:15px 18px 6px;margin:12px 0;background:#0a1420}
+.paso .n{font:800 11px 'JetBrains Mono',monospace;color:#f5a623;letter-spacing:.14em;text-transform:uppercase}
+.paso h3{margin:4px 0 8px;color:#eef3f8}
+.tw{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:500px}
+th{text-align:left;padding:8px 10px;background:#0b1826;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #16293a;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #101d2a;color:#8fa7bd;vertical-align:top}
+tr:hover td{background:#0a1420}
+code{font:500 12px 'JetBrains Mono',monospace;color:#00c9a7;background:#0b1826;padding:1px 5px;border-radius:4px}
+.card{border:1px solid #16293a;border-radius:10px;padding:15px 17px;background:#0a1420;margin:10px 0}
+.card b{display:block;color:#eef3f8;font:600 14px 'Karla',sans-serif;margin-bottom:4px}
+.card p{font-size:13px;margin:0}
+.foot{color:#3d5a72;font-size:12px;border-top:1px solid #14283a;padding-top:16px;margin-top:40px}
+@media(max-width:900px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .scrim.on{display:block}
+  main{padding:64px 20px 70px}
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="tog()">&#9776;</button>
+<div class="scrim" id="scrim" onclick="tog()"></div>
+<div class="wrap">
+
+<aside class="sidebar" id="sb">
+  <div class="brand"><b>La Reserva</b><span>Manual de uso</span></div>
+  <nav class="nav">
+    <div class="nav-label">Empezar</div>
+    <a href="#intro">Para quien es esto</a>
+
+    <div class="nav-label">El sitio publico</div>
+    <a href="#menu">El menu de arriba</a>
+    <a href="#s-lugar">El lugar</a>
+    <a href="#s-espacios">Espacios</a>
+    <a href="#s-agenda">Agenda</a>
+    <a href="#s-galeria">Galeria</a>
+    <a href="#s-historia">Historia</a>
+    <a href="#s-organiza">Organiza tu retiro</a>
+    <a href="#s-fechas">Consultar fechas</a>
+    <a href="#s-ingresar">Ingresar</a>
+
+    <div class="nav-label">El panel</div>
+    <a href="#panel">Como entrar</a>
+    <a href="#p-dashboard">Dashboard</a>
+    <a href="#p-inbox">Inbox</a>
+    <a href="#p-retiros">Retiros</a>
+    <a href="#p-espacios">Espacios</a>
+    <a href="#p-consultas">Consultas</a>
+    <a href="#p-referidos">Referidos</a>
+    <a href="#p-galeria">Galeria y Usuarios</a>
+    <a href="#p-media">Imagenes y videos</a>
+    <a href="#p-seguridad">Trafico y seguridad</a>
+
+    <div class="nav-label">Tareas del dia</div>
+    <a href="#t-retiro">Publicar un retiro</a>
+    <a href="#t-consulta">Responder una consulta</a>
+    <a href="#t-codigo">Armar un codigo</a>
+    <a href="#reglas">Reglas y errores comunes</a>
+  </nav>
+</aside>
+
+<main>
+
+<section id="intro">
+  <div class="tag">Manual de uso</div>
+  <h1>Como se usa La Reserva</h1>
+  <p class="lede">Este manual es para quien maneja el sitio todos los dias: publicar retiros, responder
+  consultas, subir fotos y entender los numeros. No hace falta saber programar. No hay nada tecnico aca.</p>
+
+  <p>El sitio tiene dos mitades. La <strong>publica</strong>, que ve cualquier persona que entra a
+  lareserva.net.ar. Y el <strong>panel</strong>, en <code>/admin/</code>, que se ve solo con usuario y
+  contrasena. Todo lo que cargas en el panel aparece en la parte publica al instante, sin publicar ni
+  confirmar nada.</p>
+
+  <div class="ok">Si algo sale mal, casi nunca se rompe: los datos quedan guardados en la base. Lo peor
+  que suele pasar es que algo no se vea. Recarga la pagina con Ctrl+F5 antes de asumir que se perdio.</div>
+</section>
+
+<section id="menu">
+  <div class="tag">Sitio publico</div>
+  <h2>El menu de arriba</h2>
+  <p>Son ocho accesos y estan en todas las paginas. Vale la pena saber a donde lleva cada uno porque los
+  visitantes te van a preguntar.</p>
+  <div class="tw"><table>
+    <tr><th>Menu</th><th>Va a</th><th>Para que sirve</th></tr>
+    <tr><td>El lugar</td><td>Inicio, seccion de arriba</td><td>Presentacion del predio</td></tr>
+    <tr><td>Espacios</td><td>espacios.php</td><td>Los cinco espacios, con fotos y consulta</td></tr>
+    <tr><td>Agenda</td><td>retiros.php</td><td>Los retiros con fecha publicada</td></tr>
+    <tr><td>Galeria</td><td>galeria.php</td><td>Fotos y el feed de Instagram</td></tr>
+    <tr><td>Historia</td><td>historia.php</td><td>El relato del proyecto</td></tr>
+    <tr><td>Organiza tu retiro</td><td>contacto.php</td><td>Para quien quiere traer su propuesta</td></tr>
+    <tr><td>Consultar fechas</td><td>contacto.php</td><td>El formulario principal</td></tr>
+    <tr><td>Ingresar</td><td>acceso.php</td><td>Puerta de entrada al panel</td></tr>
+  </table></div>
+</section>
+
+<section id="s-lugar">
+  <h2>El lugar (inicio)</h2>
+  <p>La portada. Video de fondo, la presentacion, un adelanto de la agenda que se arma solo con los
+  retiros publicados, los modulos de cada espacio, las cifras del predio, la ubicacion y un formulario de
+  contacto al final.</p>
+  <div class="oj">Las cuatro fotos grandes de los espacios en el inicio <strong>no se editan desde el
+  panel todavia</strong>. Son fijas. Si cambias las fotos de un espacio en Espacios, el inicio sigue
+  mostrando la de siempre. Esta pendiente.</div>
+</section>
+
+<section id="s-espacios">
+  <h2>Espacios</h2>
+  <p>Una tarjeta por espacio. La tarjeta muestra una foto quieta y, si pasas el mouse por encima,
+  reproduce el video. Al hacer clic se abre una ventana grande con todo el detalle.</p>
+  <h3>Que hay adentro de esa ventana</h3>
+  <ol>
+    <li>Las fotos y videos del espacio, con flechas para pasarlas</li>
+    <li>La descripcion y la capacidad</li>
+    <li>Los proximos retiros del predio</li>
+    <li>Un <strong>calendario de fechas ocupadas</strong></li>
+    <li>El formulario para pedir una fecha</li>
+    <li>Boton de WhatsApp e Instagram</li>
+  </ol>
+  <h3>El calendario</h3>
+  <p>Los dias en rojo ya tienen un retiro en el predio. El visitante toca el primer dia y despues el
+  ultimo, y arriba del formulario le queda escrito "Del 10 de noviembre al 13 de noviembre (3 noches)".</p>
+  <div class="ok">No se puede elegir un rango que pase por encima de un dia ocupado. El sistema lo bloquea
+  solo. Eso significa que nunca te va a llegar una consulta por fechas que ya estan tomadas.</div>
+  <div class="oj">El calendario marca los dias ocupados <strong>de todo el predio</strong>, no de ese
+  espacio en particular. Hoy el sistema no sabe en que espacio se hace cada retiro. Por eso el titulo dice
+  "en el predio" y por eso los tres espacios muestran los mismos retiros.</div>
+</section>
+
+<section id="s-agenda">
+  <h2>Agenda</h2>
+  <p>La lista de retiros con fecha. Cada fila muestra las fechas, el titulo, quien coordina y una etiqueta
+  a la derecha: <strong>DE LA RESERVA</strong> si lo organizan ustedes, el tipo de encuentro si es de un
+  tercero, o <strong>SIN CUPOS</strong> si esta agotado.</p>
+  <p>Al hacer clic en una fila se abre la ventana del retiro con las fotos, la descripcion, que incluye,
+  el precio, el calendario de sus fechas, el formulario para reservar y el WhatsApp de quien coordina.</p>
+  <div class="oj">El calendario de un retiro <strong>no se toca</strong>. Muestra las fechas del encuentro
+  y nada mas. La reserva es por el retiro completo, no por noches sueltas.</div>
+  <p>Mas abajo aparece la seccion "Ya sucedieron" con los ultimos ocho retiros pasados.</p>
+</section>
+
+<section id="s-galeria">
+  <h2>Galeria</h2>
+  <p>Las fotos que cargas desde el panel, mas el feed de Instagram. Los tres links a Instagram de esta
+  pagina estan contados por separado, asi que se puede ver cuanta gente se va de la galeria al perfil.</p>
+</section>
+
+<section id="s-historia">
+  <h2>Historia</h2>
+  <p>El relato del proyecto. Es texto fijo, no se edita desde el panel. Al final hay un boton a Consultar
+  disponibilidad.</p>
+</section>
+
+<section id="s-organiza">
+  <h2>Organiza tu retiro</h2>
+  <p>Lleva al formulario de contacto. Es para el facilitador o la organizacion que quiere traer su
+  propuesta al predio, no para alguien que quiere anotarse a un retiro existente.</p>
+</section>
+
+<section id="s-fechas">
+  <h2>Consultar fechas</h2>
+  <p>El formulario principal del sitio. Nombre, e-mail, telefono, motivo, fecha tentativa, cantidad de
+  personas y mensaje.</p>
+  <div class="no"><strong>Lo mas importante de todo el manual.</strong> El aviso por mail de este
+  formulario no es confiable en este hosting. Puede llegar tarde, ir a spam o no llegar nunca.
+  <strong>Las consultas se revisan siempre en el panel, en Consultas.</strong> Nunca esperes el mail.</div>
+</section>
+
+<section id="s-ingresar">
+  <h2>Ingresar</h2>
+  <p>La puerta al panel. Tiene el formulario de acceso y, para quien llego por error, un formulario de
+  contacto y el WhatsApp.</p>
+</section>
+
+<section id="panel">
+  <div class="tag">El panel</div>
+  <h2>Como entrar</h2>
+  <p>Anda a <strong>lareserva.net.ar/admin/</strong> y entra con tu e-mail y contrasena. Arriba a la
+  izquierda vas a ver tu inicial, tu nombre y tu rol.</p>
+  <div class="tw"><table>
+    <tr><th>Rol</th><th>Que puede hacer</th></tr>
+    <tr><td>admin</td><td>Todo, incluido crear y borrar usuarios del panel</td></tr>
+    <tr><td>editor</td><td>Todo menos Usuarios</td></tr>
+  </table></div>
+  <p>La sesion dura dos horas sin actividad. Si al guardar algo aparece "Sesion expirada", recarga,
+  volve a entrar y guarda de nuevo. No se pierde lo que ya estaba guardado, si lo que estabas escribiendo
+  en ese momento.</p>
+
+  <h3>El menu del panel</h3>
+  <div class="tw"><table>
+    <tr><th>Seccion</th><th>Item</th><th>Para que</th></tr>
+    <tr><td rowspan="2">Principal</td><td>Dashboard</td><td>Resumen del dia</td></tr>
+    <tr><td>Inbox</td><td>Los mails que llegan a johnny@lareserva.net.ar</td></tr>
+    <tr><td rowspan="5">Contenido</td><td>Retiros</td><td>Crear y editar retiros</td></tr>
+    <tr><td>Espacios</td><td>Editar los espacios y sus fotos</td></tr>
+    <tr><td>Consultas</td><td>Las consultas que llegan del sitio</td></tr>
+    <tr><td>Referidos</td><td>Codigos de difusion y clicks en botones</td></tr>
+    <tr><td>Usuarios</td><td>Quien puede entrar al panel</td></tr>
+    <tr><td rowspan="3">Herramientas</td><td>Imagenes y videos</td><td>Galeria y videos de fondo</td></tr>
+    <tr><td>Gestor de videos</td><td>Los videos de cada pagina</td></tr>
+    <tr><td>Trafico y seguridad</td><td>Numeros de visitas y bloqueo de spam</td></tr>
+  </table></div>
+  <p>El boton <strong>Ver el sitio</strong> abre la parte publica en otra pestana. Los items con una
+  flechita chiquita tambien abren en pestana nueva.</p>
+</section>
+
+<section id="p-dashboard">
+  <h2>Dashboard</h2>
+  <p>Cuatro numeros arriba: consultas sin responder, retiros publicados, retiros en borrador y espacios
+  activos. Debajo, las ultimas consultas y accesos rapidos.</p>
+  <p>Si "Consultas sin responder" no esta en cero, ese es el trabajo del dia.</p>
+</section>
+
+<section id="p-inbox">
+  <h2>Inbox</h2>
+  <p>Los mails que llegan a <strong>johnny@lareserva.net.ar</strong>, dentro del panel. El numerito rojo
+  al lado de Inbox son los que no leiste.</p>
+  <p>Se puede marcar leido, marcar sin leer y eliminar. <strong>Responder</strong> abre tu programa de
+  mail habitual con el destinatario y el asunto ya puestos.</p>
+  <div class="oj">Los archivos adjuntos <strong>no se guardan</strong> aca. Si un mensaje traia adjuntos
+  lo dice, y para verlos tenes que abrir la casilla en webmail. Es a proposito, por seguridad.</div>
+  <div class="ok">Todos los mails siguen llegando igual a webmail. El Inbox del panel es una copia para
+  que no tengas que salir del sistema.</div>
+</section>
+
+<section id="p-retiros">
+  <h2>Retiros</h2>
+  <p>La lista de todos los retiros con su estado. Al editar uno aparecen tres pestanas.</p>
+  <div class="card"><b>Informacion</b><p>Titulo, bajada, quien coordina y su Instagram, fechas, modalidad,
+  estado, precio, cupos, WhatsApp de contacto, URL de inscripcion externa, descripcion y que incluye.</p></div>
+  <div class="card"><b>Fotos y videos</b><p>Subir imagenes JPG, PNG o WEBP y videos MP4. Elegi el tipo
+  arriba y el recuadro cambia solo.</p></div>
+  <div class="card"><b>Resenas</b><p>Los comentarios que deja la gente. <strong>No se publican hasta que
+  los apruebas.</strong></p></div>
+
+  <h3>Los cuatro estados</h3>
+  <div class="tw"><table>
+    <tr><th>Estado</th><th>Se ve en el sitio</th></tr>
+    <tr><td>borrador</td><td>No. Solo vos lo ves</td></tr>
+    <tr><td>publicado</td><td>Si, en la agenda</td></tr>
+    <tr><td>agotado</td><td>Si, con el cartel SIN CUPOS</td></tr>
+    <tr><td>finalizado</td><td>Solo en "Ya sucedieron"</td></tr>
+  </table></div>
+  <div class="oj">Un retiro sin <strong>fecha de inicio</strong> no aparece en la agenda aunque este
+  publicado. Es el olvido mas comun.</div>
+</section>
+
+<section id="p-espacios">
+  <h2>Espacios</h2>
+  <p>Igual que Retiros pero para los cinco espacios. Nombre, tipo, resumen, descripcion, capacidad, orden
+  y si esta visible. La pestana de fotos y videos alimenta lo que se ve en la ventana grande de la pagina
+  publica.</p>
+  <p>El campo <strong>Orden</strong> decide en que posicion aparece. Numero mas chico, mas arriba.</p>
+</section>
+
+<section id="p-consultas">
+  <h2>Consultas</h2>
+  <p class="lede">La pantalla mas importante del panel. Todo lo que manda cualquier formulario del sitio
+  cae aca.</p>
+  <p>Cada consulta muestra nombre, fecha, e-mail, telefono, motivo, fecha tentativa, cantidad de personas,
+  el mensaje y de donde vino.</p>
+  <h3>Los cinco estados</h3>
+  <div class="tw"><table>
+    <tr><th>Estado</th><th>Cuando ponerlo</th></tr>
+    <tr><td>nueva</td><td>Recien llego, nadie la toco</td></tr>
+    <tr><td>contactada</td><td>Ya le escribiste</td></tr>
+    <tr><td>coordinada</td><td>Hay fecha acordada <strong>cuenta como conversion</strong></td></tr>
+    <tr><td>cerrada</td><td>Termino bien <strong>cuenta como conversion</strong></td></tr>
+    <tr><td>descartada</td><td>No prospero o era spam</td></tr>
+  </table></div>
+  <div class="no"><strong>Si no movés estos estados, los informes no sirven.</strong> Las columnas
+  "Concretadas" de Referidos y Trafico cuentan solo las consultas en coordinada o cerrada. Si todo queda
+  en "nueva", todos los numeros de conversion van a ser cero para siempre, y no es un error del sistema.</div>
+</section>
+
+<section id="p-referidos">
+  <h2>Referidos</h2>
+  <p>Mide dos cosas distintas que conviene no mezclar.</p>
+  <div class="card"><b>Codigos: de donde vino la persona</b><p>Un codigo por canal o por persona.
+  Compartis <code>lareserva.net.ar/retiros.php?ref=instagram</code> y todo lo que haga quien entre por ahi
+  queda marcado como instagram.</p></div>
+  <div class="card"><b>Botones del sitio: que toco una vez adentro</b><p>Cada boton del sitio ya viene
+  con su etiqueta puesta. No hace falta compartir nada para que cuente.</p></div>
+
+  <p>Una misma persona puede venir de <code>instagram</code> y convertir por el boton
+  <code>whatsapp</code>. Son dos datos, se guardan por separado y por eso hay dos tablas.</p>
+
+  <h3>Las columnas</h3>
+  <div class="tw"><table>
+    <tr><th>Columna</th><th>Que cuenta</th></tr>
+    <tr><td>Aperturas</td><td>Veces que alguien con ese codigo abrio un retiro o un espacio</td></tr>
+    <tr><td>Consultas</td><td>Formularios completados. Se puede hacer clic para ver cuales</td></tr>
+    <tr><td>Concretadas</td><td>De esas, cuantas pusiste en coordinada o cerrada</td></tr>
+    <tr><td>Conv.</td><td>Concretadas sobre aperturas, en porcentaje</td></tr>
+    <tr><td>WhatsApp</td><td>Clicks al boton de WhatsApp</td></tr>
+    <tr><td>Pagado</td><td>Suma de los pagos que registraste a mano</td></tr>
+  </table></div>
+
+  <h3>Filas que aparecen solas</h3>
+  <ul>
+    <li><strong>Trafico directo</strong>: gente que escribio la direccion o llego por Google. No es un
+      codigo tuyo, aparece siempre.</li>
+    <li><strong>Codigos vistos sin registrar</strong>: alguien entro con un <code>?ref=</code> que no esta
+      en tu lista. Casi siempre es un error de tipeo en un link compartido.</li>
+  </ul>
+
+  <div class="no"><strong>El sistema no calcula plata.</strong> No sabe cuanto cobraste: una consulta es
+  una consulta, no un pago. La comision es una nota de texto y los pagos los cargas vos cuando ya pagaste.</div>
+  <p>En el celular, el panel de la derecha se abre y se cierra con el boton que dice
+  <strong>Editar codigo, links y pagos</strong>.</p>
+</section>
+
+<section id="p-galeria">
+  <h2>Galeria y Usuarios</h2>
+  <p><strong>Galeria</strong> en el menu abre la galeria publica en otra pestana, para chequear como
+  quedo.</p>
+  <p><strong>Usuarios</strong> es solo para rol admin. Crear usuarios, cambiar contrasenas, desactivar y
+  eliminar. La contrasena minima es de diez caracteres.</p>
+  <div class="oj">No borres el ultimo usuario admin. Te quedas afuera del panel y hay que arreglarlo desde
+  la base de datos.</div>
+</section>
+
+<section id="p-media">
+  <h2>Imagenes y videos, Gestor de videos</h2>
+  <p><strong>Imagenes y videos</strong> tiene dos pestanas: la galeria de imagenes y los videos de fondo
+  de cada pagina. Inicio y la pantalla de bienvenida comparten el mismo video.</p>
+  <p>Los videos son pesados. Si uno da error, comprimilo con HandBrake antes de subirlo: preset Fast 720p
+  y que quede por debajo de 30 MB. Un video de fondo no necesita mas calidad que eso.</p>
+</section>
+
+<section id="p-seguridad">
+  <h2>Trafico y seguridad</h2>
+  <p>Los numeros del sitio en 7, 30, 90 o 365 dias: retiros abiertos, espacios abiertos, formularios
+  enviados, reservas guardadas, rechazados y clicks de WhatsApp. Debajo, el detalle por retiro, por origen
+  y las IP mas activas, con un boton para bloquear.</p>
+  <div class="oj">Bloquear una IP sirve contra un bot insistente y poco mas. Las conexiones de casa cambian
+  de IP y una VPN la cambia en un clic. Lo que de verdad frena el spam es el filtro de mails temporales,
+  que ya funciona solo.</div>
+  <div class="ok">Un click de WhatsApp significa que la persona abrio wa.me. <strong>No hay forma de saber
+  si despues mando el mensaje</strong>: WhatsApp no devuelve ninguna senal al sitio.</div>
+</section>
+
+<section id="t-retiro">
+  <div class="tag">Tareas del dia</div>
+  <h2>Publicar un retiro</h2>
+  <div class="paso"><div class="n">Paso 1</div><h3>Crearlo</h3>
+  <p>Retiros, boton <strong>+ Nuevo retiro</strong>. Titulo y fecha de inicio son lo minimo. Dejalo en
+  borrador mientras lo armas.</p></div>
+  <div class="paso"><div class="n">Paso 2</div><h3>Cargar las fotos</h3>
+  <p>Guardas, y recien ahi aparece la pestana Fotos y videos. Subi primero la foto que queres que se vea
+  como principal.</p></div>
+  <div class="paso"><div class="n">Paso 3</div><h3>Completar el detalle</h3>
+  <p>Bajada, descripcion, que incluye con un item por linea, precio, cupos y el WhatsApp de quien
+  coordina. Si la inscripcion va por otro lado, poné la URL de inscripcion.</p></div>
+  <div class="paso"><div class="n">Paso 4</div><h3>Publicar y verificar</h3>
+  <p>Estado a <strong>publicado</strong>, guardar, y abrir la agenda publica para confirmar que aparece.
+  Si no aparece, casi seguro le falta la fecha de inicio.</p></div>
+</section>
+
+<section id="t-consulta">
+  <h2>Responder una consulta</h2>
+  <ol>
+    <li>Consultas, filtro <strong>nueva</strong></li>
+    <li>Leer el mensaje y de donde vino</li>
+    <li>Responder por mail o WhatsApp, por fuera del panel</li>
+    <li>Volver y poner <strong>contactada</strong>, con una nota interna de lo que quedo hablado</li>
+    <li>Cuando hay fecha acordada, pasarla a <strong>coordinada</strong></li>
+  </ol>
+  <div class="ok">La nota interna no la ve nadie de afuera. Usala sin miedo: dentro de un mes no vas a
+  acordarte de que quedo hablado.</div>
+</section>
+
+<section id="t-codigo">
+  <h2>Armar un codigo de difusion</h2>
+  <ol>
+    <li>Referidos, panel de la derecha, <strong>Nuevo codigo</strong></li>
+    <li>Persona o canal, por ejemplo <code>instagram</code>, <code>whatsapp</code>, <code>flyer-octubre</code></li>
+    <li>Guardar y abrirlo: aparecen cuatro links listos para copiar</li>
+    <li>Compartir el que corresponda segun donde lo vayas a pegar</li>
+  </ol>
+  <p>Usa siempre minusculas y sin espacios. <code>Flyer Octubre</code> y <code>flyer-octubre</code> serian
+  dos codigos distintos y los numeros quedarian partidos al medio.</p>
+</section>
+
+<section id="reglas">
+  <h2>Reglas y errores comunes</h2>
+  <div class="tw"><table>
+    <tr><th>Sintoma</th><th>Que pasa en realidad</th></tr>
+    <tr><td>El retiro no aparece en la agenda</td><td>Le falta la fecha de inicio, o quedo en borrador</td></tr>
+    <tr><td>La resena no se ve</td><td>Falta aprobarla en la pestana Resenas</td></tr>
+    <tr><td>El video no sube</td><td>Pesa demasiado. Comprimilo con HandBrake</td></tr>
+    <tr><td>"Sesion expirada" al guardar</td><td>Pasaron mas de dos horas. Recarga y volve a entrar</td></tr>
+    <tr><td>Todas las conversiones en cero</td><td>Las consultas siguen en estado nueva</td></tr>
+    <tr><td>No llega el mail de una consulta</td><td>Normal. Revisa siempre en Consultas</td></tr>
+    <tr><td>Cambie la foto del espacio y el inicio no cambia</td><td>Las fotos del inicio son fijas todavia</td></tr>
+  </table></div>
+
+  <div class="no"><strong>Nunca abras Sitejet Builder en cPanel.</strong> Sobreescribe los archivos del
+  sitio. Si aparece esa opcion, cerrala sin tocar nada.</div>
+
+  <div class="ok"><strong>Todo lo que cargas se publica al instante.</strong> No hay boton de publicar el
+  sitio ni cola de aprobacion. Si algo quedo mal, corregilo y guarda: se arregla igual de rapido.</div>
+</section>
+
+<div class="foot">
+  La Reserva Naturaleza Arte · lareserva.net.ar<br>
+  Manual para el uso diario del sitio y del panel. Para la parte tecnica, ver la guia de construccion.
+</div>
+
+</main>
+</div>
+<script>
+function tog(){
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('on');
+}
+document.querySelectorAll('.nav a').forEach(function(a){
+  a.addEventListener('click', function(){ if (window.innerWidth <= 900) tog(); });
+});
+</script>
+</body>
+</html>

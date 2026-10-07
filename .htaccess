@@ -1,0 +1,91 @@
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php8_module>
+   php_value error_log "/home/lareserv/logs/php.error.log"
+   php_flag log_errors On
+</IfModule>
+<IfModule lsapi_module>
+   php_value error_log "/home/lareserv/logs/php.error.log"
+   php_flag log_errors On
+</IfModule>
+# END cPanel-generated php ini directives, do not edit
+
+# ── PHP upload limits ─────────────────────────────────────────
+# public_html/.user.ini is being ignored on this account: diag.php reports
+# post_max_size 8M and upload_max_filesize 2M, the PHP compiled-in defaults,
+# not the 210M / 180M written in .user.ini.
+# The IfModule wrappers are required. If the matching module is not loaded
+# the block is skipped instead of throwing a 500 on the whole site.
+# If diag.php still shows 8M after this, use cPanel > Software >
+# MultiPHP INI Editor for the domain instead.
+
+<IfModule lsapi_module>
+  php_value upload_max_filesize 180M
+  php_value post_max_size 210M
+  php_value memory_limit 256M
+  php_value max_execution_time 300
+  php_value max_input_time 300
+</IfModule>
+
+<IfModule php8_module>
+  php_value upload_max_filesize 180M
+  php_value post_max_size 210M
+  php_value memory_limit 256M
+  php_value max_execution_time 300
+  php_value max_input_time 300
+</IfModule>
+
+# ── La Reserva · lareserva.net.ar · HoboHost ──────────────────
+
+# Default homepage: welcome.html first, then index.php
+DirectoryIndex welcome.html index.php index.html
+
+RewriteEngine On
+
+# ══════════════════════════════════════════════════════════════
+#  HTTPS REDIRECT
+# ══════════════════════════════════════════════════════════════
+
+RewriteCond %{HTTPS} !=on
+RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+RewriteCond %{HTTP_HOST} ^www\.(.+)$ [NC]
+RewriteRule ^(.*)$ https://%1/$1 [R=301,L]
+
+# ── Clean URLs: /retiros instead of /retiros.php ──────────────
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.php -f
+RewriteRule ^(.*)$ $1.php [L]
+
+# ── Block direct access to sensitive folders ──────────────────
+RedirectMatch 404 ^/(db|includes)/
+RedirectMatch 404 /\.git
+RedirectMatch 404 ^/\.cpanel\.yml
+
+# ── Static asset caching ──────────────────────────────────────
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/webp "access plus 1 month"
+  ExpiresByType video/mp4  "access plus 1 month"
+  ExpiresByType text/css   "access plus 1 week"
+</IfModule>
+
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css application/javascript image/svg+xml
+</IfModule>
+
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+ErrorDocument 404 /404.php
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “alt-php81” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-alt-php81 .php .php8 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit

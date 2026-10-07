@@ -1,0 +1,33 @@
+# ── Secretos. Nunca subir. ─────────────────────────────────────
+includes/config.php
+.user.ini
+*.log
+pipe_correo.log
+
+# ── Archivos subidos por el panel ──────────────────────────────
+# 137 MB de fotos y videos. No van a git: se suben por cPanel y se
+# registran en la base. Si entran al repo, cada clone pesa 137 MB y
+# cada cambio de video agrega otros tantos al historial para siempre.
+assets/img/galeria/*
+assets/video/*
+uploads/
+!assets/img/galeria/.gitkeep
+!assets/video/.gitkeep
+
+# ── Herramientas de diagnostico. Se borran del servidor. ───────
+admin/diag.php
+admin/pipe_test.php
+admin/upload_test.php
+generar-hash.php
+
+# ── Python del generador de docs y del healthcheck ─────────────
+__pycache__/
+*.pyc
+
+# ── Cosas del hosting y del sistema ────────────────────────────
+cgi-bin/
+.well-known/
+google*.html
+.DS_Store
+Thumbs.db
+*.swp

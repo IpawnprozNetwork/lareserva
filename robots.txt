@@ -1,0 +1,5 @@
+User-agent: *
+Disallow: /admin/
+Disallow: /includes/
+Disallow: /db/
+Sitemap: https://lareserva.net.ar/sitemap.php

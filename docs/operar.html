@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva · GUIA DE DESARROLLO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#08111c;color:#a8bccf;font-family:'Karla',system-ui,sans-serif;min-height:100vh;scroll-behavior:smooth}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#1c3247;border-radius:3px}
+::selection{background:#00c9a7;color:#08111c}
+.wrap{display:flex}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:250px;height:100vh;overflow-y:auto;background:#060d16;border-right:1px solid #14283a;flex-shrink:0;padding:0 0 40px;z-index:50}
+.brand{padding:20px 22px 16px;border-bottom:1px solid #14283a}
+.brand b{display:block;font:300 20px 'Fraunces',Georgia,serif;color:#eef3f8}
+.brand span{display:block;font:700 9px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.22em;margin-top:4px}
+.nav a{display:block;padding:6px 22px;color:#7d95ab;text-decoration:none;border-left:2px solid transparent;font-size:12.5px}
+.nav a:hover{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622}
+.nav a.on{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622;font-weight:600}
+.nav a small{display:block;color:#3d5a72;font-size:10.5px;margin-top:1px}
+.nav-label{padding:14px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.16em}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#0e1c2a;color:#eef3f8;border:1px solid #23405a;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+main{flex:1;min-width:0;padding:44px 46px 90px;max-width:920px}
+h1{font:300 36px 'Fraunces',Georgia,serif;color:#eef3f8;line-height:1.15;margin:0 0 18px}
+h2{font:300 25px 'Fraunces',Georgia,serif;color:#eef3f8;margin:34px 0 10px;padding-top:8px;border-top:1px solid #14283a}
+h2:first-of-type{border-top:0;margin-top:16px}
+h3{font:600 15px 'Karla',sans-serif;color:#00c9a7;margin:22px 0 8px}
+p,li{font-size:14px;line-height:1.75;color:#8fa7bd;margin:0 0 10px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+strong{color:#cfe0ee}
+a{color:#00c9a7}
+hr{border:0;border-top:1px solid #14283a;margin:30px 0}
+blockquote{padding:11px 15px;background:#181205;border:1px solid #3d2f10;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;margin:14px 0}
+blockquote p{color:#c4ab7d;font-size:13.5px;margin:0}
+blockquote p+p{margin-top:8px}
+code{font:500 12px 'JetBrains Mono',monospace;color:#00c9a7;background:#0b1826;padding:1px 5px;border-radius:4px}
+pre{margin:14px 0;padding:14px;overflow-x:auto;background:#070f18;border:1px solid #16293a;border-radius:8px}
+pre code{background:none;padding:0;color:#b9cddd;font-size:11.5px;line-height:1.65}
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:480px}
+th{text-align:left;padding:8px 10px;background:#0b1826;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #16293a;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #101d2a;color:#8fa7bd;vertical-align:top}
+tr:hover td{background:#0a1420}
+.foot{color:#3d5a72;font-size:12px;border-top:1px solid #14283a;padding-top:16px;margin-top:44px}
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0}
+.tarjeta{border:1px solid #16293a;border-radius:10px;padding:15px 17px;background:#0a1420;text-decoration:none;display:block}
+.tarjeta:hover{border-color:#1f4a5e;background:#0c1a28}
+.tarjeta b{display:block;color:#eef3f8;font:600 14px 'Karla',sans-serif;margin-bottom:3px}
+.tarjeta span{font-size:12.5px;color:#7d95ab;line-height:1.5}
+@media(max-width:900px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .scrim.on{display:block}
+  main{padding:64px 20px 70px}
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="tog()">&#9776;</button>
+<div class="scrim" id="scrim" onclick="tog()"></div>
+<div class="wrap">
+<aside class="sidebar" id="sb">
+  <div class="brand"><b>La Reserva</b><span>Documentacion</span></div>
+  <nav class="nav"><div class="nav-label">Documentos</div><a href="readme.html">README<small>Vista general del proyecto</small></a><a href="operar.html" class="on">GUIA DE DESARROLLO<small>GitHub, healthcheck y deploy</small></a><a href="github.html">GitHub<small>Crear el repo y subir desde la Mac</small></a><a href="setup.html">Setup<small>De un cPanel vacio a un sitio andando</small></a><a href="architecture.html">Arquitectura<small>Como encajan las piezas</small></a><a href="decisions.html">Decisiones<small>Por que estan asi, con el bug detras</small></a><a href="project-brain.html">Project Brain<small>Contexto completo para retomar</small></a><a href="db-readme.html">Base de datos<small>Los scripts SQL, en orden</small></a><div class="nav-label">Guias</div><a href="guia-usuario.html">GUIA DE USUARIO<small>Las 6 paginas del sitio y todo el panel</small></a><a href="guia-completa.html">Guia completa<small>Visitantes, organizadores, equipo y desarrollo</small></a><a href="manual-usuario.html">Manual de uso<small>Version corta para el panel</small></a><a href="guia-tecnica.html">Guia tecnica<small>Arquitectura y post mortem de los bugs</small></a><div class="nav-label">Indice</div><a href="index.html">Todos los documentos</a></nav>
+</aside>
+<main>
+<h1>OPERAR</h1>
+<p>Guia de desarrollo: GitHub, healthcheck y la rutina de deploy.</p>
+<p>Las paginas del sitio y el uso del panel estan en <a href="docs/guia-usuario.html">la guia de usuario</a>. Aca no se repiten.</p>
+<hr>
+<h2>1. Las dos cosas que hay que entender</h2>
+<h3><code>ref</code> y <code>boton</code> no son lo mismo</h3>
+<ul><li><strong><code>ref</code></strong> es de donde vino la persona. Se fija al llegar con <code>?ref=algo</code> y</li></ul>
+<p>queda toda la visita. Sin codigo queda <code>directo</code></p>
+<ul><li><strong><code>boton</code></strong> es que toco una vez adentro. Ya viene puesto en cada boton del</li></ul>
+<p>sitio, sin compartir ningun link</p>
+<p>Una persona puede venir de <code>instagram</code> y convertir por el boton <code>whatsapp</code>. Son dos datos distintos y se guardan por separado. Mezclarlos rompe el informe para siempre.</p>
+<h3>El estado de las consultas es trabajo manual</h3>
+<p>Las columnas "Concretadas" de Referidos y Trafico cuentan solo las consultas en estado <code>coordinada</code> o <code>cerrada</code>. Si todo queda en <code>nueva</code>, la conversion es cero para siempre y <strong>no es un error del sistema</strong>.</p>
+<hr>
+<h2>2. Subir el sitio a GitHub, desde tu Mac</h2>
+<p>El repositorio es historial y respaldo. <strong>Pushear no cambia nada en el servidor</strong>: el deploy sigue siendo subir archivos por cPanel a mano.</p>
+<h3>La primera vez</h3>
+<pre><code>cd ~
+mkdir -p lareserva &amp;&amp; cd lareserva
+
+# descomprimir aca el zip del repo, despues:
+git init
+git branch -M main
+git remote add origin https://github.com/IpawnprozNetwork/lareserva.git
+
+git add -A
+git commit -m "Sitio completo: panel, tracking, referidos, inbox, documentacion"
+git push -u origin main</code></pre>
+<p>Si GitHub pide usuario y contrasena, la contrasena <strong>no</strong> es la de tu cuenta. Es un token: github.com &gt; Settings &gt; Developer settings &gt; Personal access tokens &gt; Tokens (classic) &gt; Generate new token, con el permiso <code>repo</code>. Guardalo en el Llavero cuando el Mac te lo ofrezca.</p>
+<h3>Cada vez que cambies algo</h3>
+<pre><code>cd ~/lareserva
+git add -A
+git commit -m "espacios: calendario por rango de fechas"
+git push</code></pre>
+<p>Un mensaje util dice <strong>que</strong> cambio y <strong>por que</strong>. "cambios" y "update" no le sirven a nadie, empezando por vos dentro de tres meses.</p>
+<h3>Traer lo que esta en GitHub</h3>
+<pre><code>git pull</code></pre>
+<h3>Antes de cada commit, mira que estas por subir</h3>
+<pre><code>git status
+git diff</code></pre>
+<h3>Lo que NUNCA va al repositorio</h3>
+<p><code>.gitignore</code> ya lo bloquea, pero conviene saber por que:</p>
+<div class="tw"><table><tr><th>Que</th><th>Por que</th></tr><tr><td><code>includes/config.php</code></td><td>Tiene la password de MySQL</td></tr><tr><td><code>assets/</code></td><td>137 MB. En git, cada video reemplazado queda en el historial para siempre</td></tr><tr><td><code>*.log</code></td><td>Ruido</td></tr><tr><td><code>admin/diag.php</code>, <code>pipe_test.php</code>, <code>upload_test.php</code></td><td>Herramientas que se borran del servidor</td></tr></table></div>
+<blockquote><p><strong>Si <code>config.php</code> alguna vez entra a un commit, cambia la password de MySQL antes de hacer cualquier otra cosa.</strong> Una vez que esta en el historial de git sigue ahi aunque borres el archivo.</p></blockquote>
+<p>Para confirmar que no se te colo nada:</p>
+<pre><code>git ls-files | grep -E 'config\.php|assets/' || echo "limpio"</code></pre>
+<hr>
+<h2>3. Verificar la salud del sitio, desde tu Mac</h2>
+<p><code>healthcheck.py</code> corre <strong>en tu maquina</strong>, no en el servidor. HoboHost no da SSH ni Python ni cron, asi que revisa el sitio en vivo por HTTPS. Que es mejor: verifica lo que recibe el publico, no lo que dice el disco.</p>
+<h3>Correrlo</h3>
+<pre><code>cd ~/lareserva
+python3 healthcheck.py</code></pre>
+<p>macOS ya trae Python 3. Si <code>python3</code> no existe:</p>
+<pre><code>xcode-select --install</code></pre>
+<p>No hace falta instalar nada mas. El script usa solo la libreria estandar.</p>
+<h3>Que revisa</h3>
+<ol><li>Que todas las paginas devuelvan 200</li><li>Que la <strong>version publicada</strong> coincida con la que deberia estar</li><li>Que http redirija a https, y www al dominio pelado</li><li>Que sigan presentes los formularios, calendarios y beacons</li><li>Que el panel <strong>no</strong> se vea sin sesion</li><li>Que no haya quedado ningun archivo de diagnostico expuesto</li><li>Peso y tiempo de carga de cada pagina</li></ol>
+<h3>Como leer la salida</h3>
+<pre><code>  OK    GET /espacios.php                    0.42s  86 KB
+  OK    version /espacios.php                2.8
+  FAIL  version /retiros.php                 esperaba 2.7, encontro 2.3
+  OK    protegido /admin/consultas.php       pide login
+  FAIL  no expuesto /admin/upload_test.php   HTTP 200, 1840 bytes</code></pre>
+<ul><li><strong>OK</strong> anda</li><li><strong>WARN</strong> mirarlo, no urgente. Una pagina lenta o pesada</li><li><strong>FAIL</strong> arreglarlo. Sale exit code 1</li></ul>
+<p>Un <code>FAIL</code> de version significa casi siempre que subiste un archivo viejo encima de uno nuevo. Paso dos veces en este proyecto.</p>
+<h3>Salida para scripts</h3>
+<pre><code>python3 healthcheck.py --json &gt; salud.json</code></pre>
+<h3>Cuando correrlo</h3>
+<p>Despues de cada deploy, siempre. Y una vez por semana aunque no hayas tocado nada: sirve para detectar que el hosting cambio algo por su cuenta, que es exactamente lo que paso cuando desaparecio la extension <code>fileinfo</code> y se cayeron todas las subidas.</p>
+<h3>Cuando cambies una version</h3>
+<p>Editar el diccionario <code>VERSIONS</code> arriba del script:</p>
+<pre><code>VERSIONS = {
+    "/index.php":    "1.1",
+    "/espacios.php": "2.8",
+    "/retiros.php":  "2.7",
+    "/galeria.php":  "1.3",
+}</code></pre>
+<p>Si no lo actualizas, el script va a marcar FAIL en un archivo que esta bien.</p>
+<hr>
+<h2>4. Rutina despues de tocar algo</h2>
+<pre><code>1. Editar el archivo
+2. php -l archivo.php          llaves balanceadas no es sintaxis valida
+3. Subir por cPanel File Manager
+4. Ctrl+U en la pagina y confirmar el marcador de version
+5. python3 healthcheck.py
+6. git add -A &amp;&amp; git commit -m "..." &amp;&amp; git push</code></pre>
+<p>El paso 4 y el paso 5 hacen lo mismo. El 5 lo hace en todas las paginas a la vez y no se olvida de ninguna.</p>
+<hr>
+<h2>5. Si algo se rompe</h2>
+<div class="tw"><table><tr><th>Sintoma</th><th>Donde mirar</th></tr><tr><td>500 en blanco</td><td><code>/home/lareserv/logs/php.error.log</code>. Es un error de sintaxis</td></tr><tr><td>Los formularios dicen "sesion expiro"</td><td>Se subio un <code>config.php</code> viejo</td></tr><tr><td>Una subida falla</td><td><code>admin/diag.php</code>, valor <strong>local</strong> de <code>post_max_size</code></td></tr><tr><td>No llega correo al panel</td><td><code>/home/lareserv/pipe_correo.log</code>. Si no existe, el pipe nunca corrio</td></tr><tr><td>Los numeros estan en cero</td><td>Las consultas siguen en estado <code>nueva</code></td></tr></table></div>
+<p><strong>Los datos estan a salvo.</strong> Todo vive en MySQL. Romper un archivo PHP no borra nada: se sube la version anterior y el sitio vuelve. Lo unico irreversible es un <code>DROP</code> o un <code>DELETE</code> sin <code>WHERE</code>, y por eso se exporta antes de correr SQL que borre.</p>
+<div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
+</main>
+</div>
+<script>
+function tog(){
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('on');
+}
+document.querySelectorAll('.nav a').forEach(function(a){
+  a.addEventListener('click', function(){ if (window.innerWidth <= 900) tog(); });
+});
+</script>
+</body>
+</html>

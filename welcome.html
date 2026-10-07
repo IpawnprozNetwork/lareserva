@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<!-- welcome.html VERSION 1.3 -->
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>La Reserva - Naturaleza Arte</title>
+<!-- welcome.html VERSION 1.3 -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#0d1208}
+.stage{position:fixed;inset:0;z-index:0;background:#0d1208 url('assets/video/hero-poster.jpg') center/cover no-repeat}
+video{width:100%;height:100%;object-fit:cover;display:block}
+.veil{position:fixed;inset:0;z-index:1;
+  background:radial-gradient(ellipse 60% 55% at 50% 50%,rgba(13,18,8,.18) 0%,rgba(13,18,8,.82) 100%),
+  linear-gradient(180deg,rgba(13,18,8,.6) 0%,rgba(13,18,8,.08) 40%,rgba(13,18,8,.08) 60%,rgba(13,18,8,.7) 100%)}
+.centre{position:fixed;inset:0;z-index:2;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:96px 32px 88px}
+.marca{font-family:'Karla',sans-serif;font-weight:300;font-size:clamp(.72rem,.9vw,.85rem);letter-spacing:.38em;color:rgba(220,215,200,.55);text-transform:uppercase;margin-bottom:28px;opacity:0;transform:translateY(10px);animation:suave 1.4s .6s forwards}
+h1{font-family:'Fraunces',Georgia,serif;font-weight:300;font-size:clamp(3.2rem,8vw,7.4rem);line-height:1.04;color:#f5f0e8;letter-spacing:-.01em;max-width:14ch;opacity:0;transform:translateY(18px);animation:suave 1.6s 1.1s forwards}
+.linea{width:44px;height:1px;background:rgba(220,215,200,.35);margin:32px auto;opacity:0;animation:suave 1.2s 2s forwards}
+.bajada{font-family:'Karla',sans-serif;font-weight:300;font-size:clamp(.88rem,1.3vw,1.02rem);color:rgba(220,215,200,.6);letter-spacing:.08em;max-width:42ch;line-height:1.7;opacity:0;animation:suave 1.4s 2.2s forwards}
+.btns{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:48px;opacity:0;transform:translateY(8px);animation:suave 1.4s 2.8s forwards}
+.cta{display:inline-flex;align-items:center;gap:12px;padding:15px 32px;font-family:'Karla',sans-serif;font-weight:400;font-size:.84rem;letter-spacing:.16em;text-transform:uppercase;color:#f5f0e8;text-decoration:none;border:1px solid rgba(220,215,200,.3);border-radius:2px;background:rgba(220,215,200,.04);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);transition:background .3s,border-color .3s,letter-spacing .3s;cursor:pointer}
+.cta:hover{background:rgba(220,215,200,.1);border-color:rgba(220,215,200,.55);letter-spacing:.2em}
+.cta.outlined{background:transparent;border-color:rgba(220,215,200,.18);color:rgba(220,215,200,.65)}
+.cta.outlined:hover{background:rgba(220,215,200,.06);border-color:rgba(220,215,200,.4);color:#f5f0e8}
+.cta svg{opacity:.5;transition:opacity .3s,transform .3s}.cta:hover svg{opacity:1;transform:translateX(3px)}
+.grain{position:fixed;inset:0;z-index:3;opacity:.028;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px}
+.credito{position:fixed;bottom:12px;left:50%;transform:translateX(-50%);z-index:5;
+  font-family:'Karla',sans-serif;font-size:.62rem;letter-spacing:.14em;text-transform:uppercase;
+  color:rgba(220,215,200,.32);text-decoration:none;opacity:0;animation:suaveNav 1s 4.2s forwards}
+.credito:hover{color:rgba(0,201,167,.8)}
+.hint{position:fixed;bottom:36px;left:50%;transform:translateX(-50%);z-index:2;font-family:'Karla',sans-serif;font-size:.68rem;letter-spacing:.22em;color:rgba(220,215,200,.3);text-transform:uppercase;opacity:0;animation:suaveNav 1.2s 3.6s forwards}
+/* v1.1: centrado, no pegado a la derecha.
+   Con right:32px los links se cortaban contra el borde en ventanas
+   angostas, y como html/body tienen overflow:hidden no habia scroll
+   para alcanzarlos: quedaban inaccesibles. Centrado no puede pasar. */
+.nav-top{position:fixed;top:28px;left:50%;transform:translateX(-50%);z-index:4;
+  display:flex;gap:26px;flex-wrap:wrap;justify-content:center;
+  max-width:calc(100% - 48px);opacity:0;animation:suaveNav 1s 3.8s forwards}
+.nav-top a{font-family:'Karla',sans-serif;font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:rgba(220,215,200,.5);text-decoration:none;transition:color .2s}
+.nav-top a:hover{color:#f5f0e8}
+@keyframes suave{to{opacity:1;transform:translateY(0) translateX(0)}}
+/* El keyframe de arriba pisa el translateX(-50%) del nav, asi que el nav
+   lleva su propia animacion que solo toca la opacidad. */
+@keyframes suaveNav{to{opacity:1}}
+/* v1.2: .hint y .nav-top se centran con transform:translateX(-50%).
+   El keyframe compartido termina en translateX(0) y con forwards ese
+   estado queda fijo, borrando el centrado: el elemento se queda con su
+   borde izquierdo en el 50%. Los dos usan suaveNav, que solo anima la
+   opacidad. Va en la regla base, no como override, para no depender
+   del orden de las declaraciones. */
+
+@media(max-height:640px){
+  .centre{padding:76px 24px 64px}
+  .linea{margin:20px auto}
+  .btns{margin-top:28px}
+  .marca{margin-bottom:18px}
+}
+@media(max-width:520px){
+  .nav-top{gap:18px;top:22px}
+  .nav-top a{font-size:.66rem;letter-spacing:.16em}
+}
+.fade-out{animation:fadeOut .9s ease forwards !important}
+@keyframes fadeOut{to{opacity:0}}
+</style>
+</head>
+<body>
+<div class="stage" id="stage">
+  <video id="vid" autoplay muted loop playsinline preload="auto" poster="assets/video/hero-poster.jpg">
+    <source src="assets/video/hero.mp4" type="video/mp4">
+  </video>
+</div>
+<div class="veil" id="veil"></div>
+<div class="grain"></div>
+
+<nav class="nav-top">
+  <a href="historia.php">Historia</a>
+  <a href="galeria.php">Galería</a>
+  <a href="contacto.php">Contacto</a>
+</nav>
+
+<div class="centre" id="centre">
+  <p class="marca">Capilla del Señor · Buenos Aires · Ruta 8, Km 77</p>
+  <h1>La Reserva</h1>
+  <div class="linea"></div>
+  <p class="bajada">Naturaleza y arte para encuentros con sentido.<br>250 hectáreas a una hora de la ciudad.</p>
+
+  <div class="btns">
+    <a class="cta" href="index.php" id="cta-main">
+      Entrar al sitio
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+    </a>
+    <a class="cta outlined" href="admin/login.php" id="cta-admin">
+      Acceso staff &amp; admin
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+    </a>
+  </div>
+</div>
+
+<p class="hint">Naturaleza · Arte · Bienestar</p>
+
+<script>
+(function(){
+  var vid=document.getElementById('vid');
+  vid.addEventListener('canplay',function(){vid.playbackRate=0.80;});
+  function goTo(dest){
+    var els=[document.getElementById('veil'),document.getElementById('centre'),document.getElementById('stage')];
+    els.forEach(function(el){el.classList.add('fade-out');});
+    setTimeout(function(){window.location.href=dest;},900);
+  }
+  document.getElementById('cta-main').addEventListener('click',function(e){e.preventDefault();goTo('index.php');});
+  document.getElementById('cta-admin').addEventListener('click',function(e){e.preventDefault();goTo('admin/login.php');});
+})();
+</script>
+<a class="credito" href="https://letsmingle.ar/" target="_blank" rel="noopener">Made by Carlos Verbelen</a>
+</body>
+</html>

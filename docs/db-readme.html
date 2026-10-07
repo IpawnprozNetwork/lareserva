@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva · Base de datos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#08111c;color:#a8bccf;font-family:'Karla',system-ui,sans-serif;min-height:100vh;scroll-behavior:smooth}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#1c3247;border-radius:3px}
+::selection{background:#00c9a7;color:#08111c}
+.wrap{display:flex}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:250px;height:100vh;overflow-y:auto;background:#060d16;border-right:1px solid #14283a;flex-shrink:0;padding:0 0 40px;z-index:50}
+.brand{padding:20px 22px 16px;border-bottom:1px solid #14283a}
+.brand b{display:block;font:300 20px 'Fraunces',Georgia,serif;color:#eef3f8}
+.brand span{display:block;font:700 9px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.22em;margin-top:4px}
+.nav a{display:block;padding:6px 22px;color:#7d95ab;text-decoration:none;border-left:2px solid transparent;font-size:12.5px}
+.nav a:hover{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622}
+.nav a.on{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622;font-weight:600}
+.nav a small{display:block;color:#3d5a72;font-size:10.5px;margin-top:1px}
+.nav-label{padding:14px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.16em}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#0e1c2a;color:#eef3f8;border:1px solid #23405a;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+main{flex:1;min-width:0;padding:44px 46px 90px;max-width:920px}
+h1{font:300 36px 'Fraunces',Georgia,serif;color:#eef3f8;line-height:1.15;margin:0 0 18px}
+h2{font:300 25px 'Fraunces',Georgia,serif;color:#eef3f8;margin:34px 0 10px;padding-top:8px;border-top:1px solid #14283a}
+h2:first-of-type{border-top:0;margin-top:16px}
+h3{font:600 15px 'Karla',sans-serif;color:#00c9a7;margin:22px 0 8px}
+p,li{font-size:14px;line-height:1.75;color:#8fa7bd;margin:0 0 10px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+strong{color:#cfe0ee}
+a{color:#00c9a7}
+hr{border:0;border-top:1px solid #14283a;margin:30px 0}
+blockquote{padding:11px 15px;background:#181205;border:1px solid #3d2f10;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;margin:14px 0}
+blockquote p{color:#c4ab7d;font-size:13.5px;margin:0}
+blockquote p+p{margin-top:8px}
+code{font:500 12px 'JetBrains Mono',monospace;color:#00c9a7;background:#0b1826;padding:1px 5px;border-radius:4px}
+pre{margin:14px 0;padding:14px;overflow-x:auto;background:#070f18;border:1px solid #16293a;border-radius:8px}
+pre code{background:none;padding:0;color:#b9cddd;font-size:11.5px;line-height:1.65}
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:480px}
+th{text-align:left;padding:8px 10px;background:#0b1826;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #16293a;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #101d2a;color:#8fa7bd;vertical-align:top}
+tr:hover td{background:#0a1420}
+.foot{color:#3d5a72;font-size:12px;border-top:1px solid #14283a;padding-top:16px;margin-top:44px}
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0}
+.tarjeta{border:1px solid #16293a;border-radius:10px;padding:15px 17px;background:#0a1420;text-decoration:none;display:block}
+.tarjeta:hover{border-color:#1f4a5e;background:#0c1a28}
+.tarjeta b{display:block;color:#eef3f8;font:600 14px 'Karla',sans-serif;margin-bottom:3px}
+.tarjeta span{font-size:12.5px;color:#7d95ab;line-height:1.5}
+@media(max-width:900px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .scrim.on{display:block}
+  main{padding:64px 20px 70px}
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="tog()">&#9776;</button>
+<div class="scrim" id="scrim" onclick="tog()"></div>
+<div class="wrap">
+<aside class="sidebar" id="sb">
+  <div class="brand"><b>La Reserva</b><span>Documentacion</span></div>
+  <nav class="nav"><div class="nav-label">Documentos</div><a href="readme.html">README<small>Vista general del proyecto</small></a><a href="operar.html">GUIA DE DESARROLLO<small>GitHub, healthcheck y deploy</small></a><a href="github.html">GitHub<small>Crear el repo y subir desde la Mac</small></a><a href="setup.html">Setup<small>De un cPanel vacio a un sitio andando</small></a><a href="architecture.html">Arquitectura<small>Como encajan las piezas</small></a><a href="decisions.html">Decisiones<small>Por que estan asi, con el bug detras</small></a><a href="project-brain.html">Project Brain<small>Contexto completo para retomar</small></a><a href="db-readme.html" class="on">Base de datos<small>Los scripts SQL, en orden</small></a><div class="nav-label">Guias</div><a href="guia-usuario.html">GUIA DE USUARIO<small>Las 6 paginas del sitio y todo el panel</small></a><a href="guia-completa.html">Guia completa<small>Visitantes, organizadores, equipo y desarrollo</small></a><a href="manual-usuario.html">Manual de uso<small>Version corta para el panel</small></a><a href="guia-tecnica.html">Guia tecnica<small>Arquitectura y post mortem de los bugs</small></a><div class="nav-label">Indice</div><a href="index.html">Todos los documentos</a></nav>
+</aside>
+<main>
+<h1>Scripts SQL</h1>
+<p>Se corren en phpMyAdmin, base <code>lareserv_admin</code>, en este orden si se arma todo de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.</p>
+<div class="tw"><table><tr><th>Archivo</th><th>Que hace</th></tr><tr><td><code>01-consultas.sql</code></td><td>tabla de consultas</td></tr><tr><td><code>02-tracking.sql</code></td><td>eventos, ip_bloqueadas, columnas ref e ip_txt</td></tr><tr><td><code>03-mensajes.sql</code></td><td>bandeja de correo del panel</td></tr><tr><td><code>04-referidos.sql</code></td><td>codigos de difusion y pagos</td></tr><tr><td><code>05-boton.sql</code></td><td>columna boton en consultas y eventos</td></tr><tr><td><code>06-fecha-fin.sql</code></td><td>rango de fechas en consultas</td></tr><tr><td><code>99-borrar-pruebas.sql</code></td><td><strong>BORRA DATOS.</strong> Limpieza de datos de prueba. Leer antes de correr</td></tr></table></div>
+<p>Si phpMyAdmin responde <code>#1060 Duplicate column name</code>, esa columna ya existia. Se ignora y se sigue.</p>
+<h2>99-borrar-pruebas.sql</h2>
+<p>No es una migracion. Es una herramienta de limpieza y <strong>borra datos que no se recuperan</strong>. Tiene tres bloques y hay que correr uno solo:</p>
+<ul><li><strong>A</strong> mira que hay, no borra nada</li><li><strong>B</strong> borra solo lo de prueba, por direccion de mail</li><li><strong>C</strong> deja todo en cero</li></ul>
+<p>Exportar las tablas desde phpMyAdmin antes de correr B o C.</p>
+<div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
+</main>
+</div>
+<script>
+function tog(){
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('on');
+}
+document.querySelectorAll('.nav a').forEach(function(a){
+  a.addEventListener('click', function(){ if (window.innerWidth <= 900) tog(); });
+});
+</script>
+</body>
+</html>
