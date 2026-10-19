@@ -23,6 +23,7 @@ SALIDA = os.path.join(AQUI, "docs")
 DOCS = [
     ("README.md",          "README",          "Vista general del proyecto"),
     ("OPERAR.md",          "GUIA DE DESARROLLO", "GitHub, healthcheck y deploy"),
+    ("BIBLE.md",           "BIBLIA / SOP",    "Como agregar, sacar, cambiar y clonar cada pieza"),
     ("GITHUB.md",          "GitHub",          "Crear el repo y subir desde la Mac"),
     ("SETUP.md",           "Setup",           "De un cPanel vacio a un sitio andando"),
     ("ARCHITECTURE.md",    "Arquitectura",    "Como encajan las piezas"),

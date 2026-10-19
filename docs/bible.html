@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva · BIBLIA / SOP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,600&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#08111c;color:#a8bccf;font-family:'Karla',system-ui,sans-serif;min-height:100vh;scroll-behavior:smooth}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-thumb{background:#1c3247;border-radius:3px}
+::selection{background:#00c9a7;color:#08111c}
+.wrap{display:flex}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:250px;height:100vh;overflow-y:auto;background:#060d16;border-right:1px solid #14283a;flex-shrink:0;padding:0 0 40px;z-index:50}
+.brand{padding:20px 22px 16px;border-bottom:1px solid #14283a}
+.brand b{display:block;font:300 20px 'Fraunces',Georgia,serif;color:#eef3f8}
+.brand span{display:block;font:700 9px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.22em;margin-top:4px}
+.nav a{display:block;padding:6px 22px;color:#7d95ab;text-decoration:none;border-left:2px solid transparent;font-size:12.5px}
+.nav a:hover{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622}
+.nav a.on{color:#00c9a7;border-left-color:#00c9a7;background:#0b1622;font-weight:600}
+.nav a small{display:block;color:#3d5a72;font-size:10.5px;margin-top:1px}
+.nav-label{padding:14px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d5a72;letter-spacing:.16em}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#0e1c2a;color:#eef3f8;border:1px solid #23405a;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+main{flex:1;min-width:0;padding:44px 46px 90px;max-width:920px}
+h1{font:300 36px 'Fraunces',Georgia,serif;color:#eef3f8;line-height:1.15;margin:0 0 18px}
+h2{font:300 25px 'Fraunces',Georgia,serif;color:#eef3f8;margin:34px 0 10px;padding-top:8px;border-top:1px solid #14283a}
+h2:first-of-type{border-top:0;margin-top:16px}
+h3{font:600 15px 'Karla',sans-serif;color:#00c9a7;margin:22px 0 8px}
+p,li{font-size:14px;line-height:1.75;color:#8fa7bd;margin:0 0 10px}
+ul,ol{padding-left:20px;margin:0 0 12px}
+strong{color:#cfe0ee}
+a{color:#00c9a7}
+hr{border:0;border-top:1px solid #14283a;margin:30px 0}
+blockquote{padding:11px 15px;background:#181205;border:1px solid #3d2f10;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;margin:14px 0}
+blockquote p{color:#c4ab7d;font-size:13.5px;margin:0}
+blockquote p+p{margin-top:8px}
+code{font:500 12px 'JetBrains Mono',monospace;color:#00c9a7;background:#0b1826;padding:1px 5px;border-radius:4px}
+pre{margin:14px 0;padding:14px;overflow-x:auto;background:#070f18;border:1px solid #16293a;border-radius:8px}
+pre code{background:none;padding:0;color:#b9cddd;font-size:11.5px;line-height:1.65}
+.tw{overflow-x:auto;margin:12px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:480px}
+th{text-align:left;padding:8px 10px;background:#0b1826;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #16293a;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #101d2a;color:#8fa7bd;vertical-align:top}
+tr:hover td{background:#0a1420}
+.foot{color:#3d5a72;font-size:12px;border-top:1px solid #14283a;padding-top:16px;margin-top:44px}
+.tarjetas{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin:16px 0}
+.tarjeta{border:1px solid #16293a;border-radius:10px;padding:15px 17px;background:#0a1420;text-decoration:none;display:block}
+.tarjeta:hover{border-color:#1f4a5e;background:#0c1a28}
+.tarjeta b{display:block;color:#eef3f8;font:600 14px 'Karla',sans-serif;margin-bottom:3px}
+.tarjeta span{font-size:12.5px;color:#7d95ab;line-height:1.5}
+@media(max-width:900px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);transition:transform .2s}
+  .sidebar.open{transform:none}
+  .scrim.on{display:block}
+  main{padding:64px 20px 70px}
+}
+</style>
+</head>
+<body>
+<button class="menu-btn" onclick="tog()">&#9776;</button>
+<div class="scrim" id="scrim" onclick="tog()"></div>
+<div class="wrap">
+<aside class="sidebar" id="sb">
+  <div class="brand"><b>La Reserva</b><span>Documentacion</span></div>
+  <nav class="nav"><div class="nav-label">Documentos</div><a href="readme.html">README<small>Vista general del proyecto</small></a><a href="operar.html">GUIA DE DESARROLLO<small>GitHub, healthcheck y deploy</small></a><a href="bible.html" class="on">BIBLIA / SOP<small>Como agregar, sacar, cambiar y clonar cada pieza</small></a><a href="github.html">GitHub<small>Crear el repo y subir desde la Mac</small></a><a href="setup.html">Setup<small>De un cPanel vacio a un sitio andando</small></a><a href="architecture.html">Arquitectura<small>Como encajan las piezas</small></a><a href="decisions.html">Decisiones<small>Por que estan asi, con el bug detras</small></a><a href="project-brain.html">Project Brain<small>Contexto completo para retomar</small></a><a href="db-readme.html">Base de datos<small>Los scripts SQL, en orden</small></a><div class="nav-label">Guias</div><a href="guia-usuario.html">GUIA DE USUARIO<small>Las 6 paginas del sitio y todo el panel</small></a><a href="guia-completa.html">Guia completa<small>Visitantes, organizadores, equipo y desarrollo</small></a><a href="manual-usuario.html">Manual de uso<small>Version corta para el panel</small></a><a href="guia-tecnica.html">Guia tecnica<small>Arquitectura y post mortem de los bugs</small></a><div class="nav-label">Indice</div><a href="index.html">Todos los documentos</a></nav>
+</aside>
+<main>
+<h1>BIBLE</h1>
+<p>El manual de operaciones. Como agregar, sacar y cambiar cada pieza, y como clonar el sitio entero para otro proyecto.</p>
+<p><code>ARCHITECTURE.md</code> dice como encajan las piezas. Esto dice que hacer con ellas.</p>
+<hr>
+<h2>1. Anatomia de una pagina publica</h2>
+<p>Toda pagina publica tiene exactamente esta forma. Copiar una existente es siempre mas rapido que escribir desde cero.</p>
+<pre><code>&lt;?php
+/* nombre.php - VERSION 1.0 */
+require_once __DIR__.'/includes/config.php';     // sesion, PDO, constantes, ?ref=
+require_once __DIR__.'/includes/antispam.php';   // solo si tiene formulario
+require_once __DIR__.'/includes/ajustes.php';    // solo si lee textos editables
+$pagina = 'nombre';   // para marcar el item activo en el nav
+$raiz   = '';         // '' en la raiz, '../' desde una subcarpeta
+
+// 1. manejar POST si hay formulario
+// 2. consultar la base
+// 3. HTML
+?&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html lang="es-AR"&gt;
+&lt;head&gt;
+&lt;!-- nombre.php VERSION 1.0 --&gt;
+...
+&lt;link rel="stylesheet" href="css/style.css?v=4"&gt;
+&lt;/head&gt;
+&lt;body&gt;
+&lt;?php include __DIR__.'/includes/nav.php'; ?&gt;
+... contenido ...
+&lt;?php include __DIR__.'/includes/footer.php'; ?&gt;
+&lt;/body&gt;
+&lt;/html&gt;</code></pre>
+<p>Reglas que no se negocian:</p>
+<ul><li>El marcador <code>VERSION</code> va dos veces: en el comentario PHP de la linea 2 y en</li></ul>
+<p>un comentario HTML dentro del <code>&lt;head&gt;</code>. Los dos tienen que decir lo mismo</p>
+<ul><li><code>config.php</code> siempre primero. Arranca la sesion antes de cualquier salida</li><li><code>display_errors</code> nunca antes del <code>require</code>: config lo apaga al final</li><li>Guion comun, nunca raya larga, en codigo y en texto</li></ul>
+<hr>
+<h2>2. Agregar una pagina</h2>
+<ol><li>Copiar <code>historia.php</code> (la mas simple) a <code>nueva.php</code></li><li>Cambiar <code>$pagina</code>, el <code>&lt;title&gt;</code>, los dos marcadores de version</li><li>Si tiene que aparecer en el menu, agregar el <code>&lt;li&gt;</code> en</li></ol>
+<p><code>includes/nav.php</code> <strong>y</strong> marcar la version del nav</p>
+<ol><li>Agregarla a <code>sitemap.php</code></li><li>Agregarla a <code>healthcheck.py</code> en <code>PAGES</code>, y en <code>VERSIONS</code> si queres que</li></ol>
+<p>verifique la version</p>
+<ol><li>Subir, <code>Ctrl+U</code>, confirmar marcador, <code>python3 healthcheck.py</code></li></ol>
+<p>Una landing como <code>verano2027.php</code> <strong>no</strong> incluye <code>nav.php</code> ni <code>footer.php</code>: tiene un solo destino y el menu completo le quitaria foco. Lleva su propia copia del beacon de tracking por eso mismo.</p>
+<h2>3. Sacar una pagina</h2>
+<ol><li>Borrar el archivo del servidor</li><li>Sacarla de <code>nav.php</code>, <code>sitemap.php</code> y <code>healthcheck.py</code></li><li>Si alguien la enlazo desde afuera, agregar una redireccion en <code>.htaccess</code>:</li></ol>
+<p>``<code>apache Redirect 301 /vieja.php /nueva.php </code>``</p>
+<ol><li>No borrar sus filas en la base si otra pagina las usa</li></ol>
+<hr>
+<h2>4. Agregar un formulario</h2>
+<p>Todos los formularios escriben en <code>consultas</code>. No crear tablas nuevas por formulario: el panel, los informes y el inbox leen una sola.</p>
+<p>Copiar el bloque POST de <code>contacto.php</code>. Tiene, en este orden:</p>
+<pre><code>body descartado por tamano     -&gt; aviso de tamano, no de sesion
+honeypot lleno                 -&gt; fingir exito, no guardar
+csrfOk() falla                 -&gt; "la sesion expiro"
+validar nombre y mail          -&gt; aviso
+INSERT en consultas            -&gt; con origen, ref y boton
+lrEvento(db, 'algo_ok', ...)   -&gt; para los informes</code></pre>
+<p>Lo que distingue un formulario de otro son tres campos:</p>
+<div class="tw"><table><tr><th>Campo</th><th>Que poner</th></tr><tr><td><code>origen</code></td><td>De donde vino: <code>contacto</code>, <code>retiro:slug</code>, <code>espacio:slug</code>, <code>verano2027</code></td></tr><tr><td><code>tipo</code></td><td><code>organizar</code>, <code>participar</code>, <code>visita</code> u <code>otro</code></td></tr><tr><td><code>boton</code></td><td>La etiqueta del boton que lo mando. Ver seccion 9</td></tr></table></div>
+<p><code>ref</code> no se toca: viene de la sesion, lo puso <code>config.php</code> al llegar.</p>
+<p>En el HTML: <code>csrf</code> oculto, honeypot <code>apodo</code> fuera de pantalla, y el mismo <code>&lt;input type="hidden" name="origen"&gt;</code> que el handler espera.</p>
+<hr>
+<h2>5. Agregar una pantalla al panel</h2>
+<pre><code>&lt;?php
+/* admin/nueva.php - VERSION 1.0 */
+require_once __DIR__ . '/../includes/auth.php';
+exigirSesion();                       // linea 2, antes de cualquier salida
+ini_set('display_errors', '0');       // despues del require
+$db = getDB();
+// POST, consultas, HTML
+?&gt;
+...
+&lt;body&gt;
+&lt;?php include __DIR__ . '/_sidebar.php'; ?&gt;
+&lt;main&gt; ... &lt;/main&gt;</code></pre>
+<p>Para que aparezca en el menu, en <code>admin/_sidebar.php</code> agregar una linea <code>lrNav('nueva.php', 'Nueva', $lrPag);</code> en la seccion que corresponda, y subir la version del sidebar. Nada mas: el item activo se detecta solo por el nombre del archivo.</p>
+<p>Si solo la puede ver rol admin: <code>if ($lrRol === 'admin') lrNav(...)</code>.</p>
+<hr>
+<h2>6. Espacios y retiros</h2>
+<p>Se cargan desde el panel. No hay que tocar codigo.</p>
+<p><strong>Un espacio nuevo:</strong> <code>admin/espacios.php</code> &gt; Nuevo espacio. Nombre, tipo, resumen, descripcion, capacidad, orden, visible. Guardar y recien ahi aparece la pestana de fotos y videos.</p>
+<p><strong>Un retiro nuevo:</strong> <code>admin/retiros.php</code> &gt; Nuevo retiro. Titulo y fecha de inicio es el minimo. Dejarlo en borrador mientras se arma.</p>
+<p><strong>Media:</strong> cada espacio y retiro tiene su pestana. El primero de la lista es la portada de la tarjeta y lo que abre el visor. Con las flechas se reordena. Imagen y video son archivos distintos: una tarjeta muestra la primera imagen quieta y reproduce el primer video al pasar el mouse.</p>
+<p><strong>Con muchos archivos de una vez:</strong> subir por cPanel File Manager a <code>assets/img/galeria/</code> y <code>assets/video/pages/</code> con nombres limpios, y registrarlos con SQL. Ver <code>db/README.md</code> y los scripts <code>media_*.sql</code> del historial como modelo. Siempre: subir primero, correr el SQL despues.</p>
+<p><strong>Nombres de archivo:</strong> minusculas, ASCII, guiones. Sin espacios, acentos ni parentesis. <code>Salón amor (2).jpeg</code> rompe en una URL; <code>salon-amor-2.jpg</code> no.</p>
+<p><strong>Video:</strong> apaisado para fondos de pagina y tarjetas. Un vertical de Instagram funciona en el visor pero nunca como fondo. Comprimir antes de subir: 1280 de ancho, CRF 28, sin audio, <code>+faststart</code>. Un hero de 20 segundos pesa 4 MB, no 170.</p>
+<hr>
+<h2>7. Textos de la portada</h2>
+<p><code>admin/portada.php</code>. Hero, ubicacion y las cuatro cifras. Un campo vacio vuelve al texto original: no hay forma de dejar la portada en blanco.</p>
+<p>Para agregar un texto editable nuevo a cualquier pagina:</p>
+<ol><li>En la pagina: <code>&lt;?= e(lrAjuste('mi_clave', 'Texto original')) ?&gt;</code></li><li>En <code>admin/portada.php</code>: una entrada mas en el array <code>$campos</code></li></ol>
+<p>La clave tiene que ser unica. El texto por defecto es el que se muestra si la clave esta vacia o la tabla no existe: siempre poner el real, nunca <code>''</code>.</p>
+<hr>
+<h2>8. El visor</h2>
+<p><code>espacios.php</code>, <code>retiros.php</code> y <code>verano2027.php</code> usan el mismo patron:</p>
+<ol><li>PHP serializa los datos en un <code>&lt;script&gt;</code> como JSON, o en <code>data-*</code> sobre</li></ol>
+<p>cada tarjeta</p>
+<ol><li>Las tarjetas son HTML real con links reales</li><li>JS intercepta el clic y arma el visor desde esos datos</li><li>Si el JS no encuentra el dato, deja pasar el link: sin JS la pagina sigue</li></ol>
+<p>funcionando</p>
+<p>Para agregar una tarjeta al mosaico de <code>verano2027.php</code>: un <code>&lt;figure&gt;</code> mas con <code>data-img</code>, <code>data-t</code>, <code>data-d</code> y opcionalmente <code>data-vid</code>. El visor y el hover los leen solos. No hay que tocar el JS.</p>
+<p>Para llegar al visor con un link directo: <code>espacios.php#slug</code>. La pagina lee el hash al cargar y abre ese espacio.</p>
+<hr>
+<h2>9. Tracking: etiquetas de boton</h2>
+<p>Cada boton del sitio lleva una etiqueta fija. Van en <code>track.php</code> y en <code>admin/referidos.php</code>. Para agregar una:</p>
+<ol><li>Elegir el nombre: minusculas, sin espacios. <code>lr</code>, <code>whatsapp</code>, <code>verano2027</code></li><li>En el boton: <code>onclick="lrBoton('click_rsvp','etiqueta','detalle')"</code></li><li>Si el tipo de evento es nuevo, agregarlo a la lista blanca de <code>track.php</code></li></ol>
+<p>o se descarta en silencio</p>
+<ol><li>Agregarlo a la tabla "Etiquetas del sitio" en <code>admin/referidos.php</code></li></ol>
+<p><strong>Nunca cambiar una etiqueta que ya esta en uso.</strong> Los numeros historicos dejan de compararse con los nuevos.</p>
+<p>Tipos de evento que <code>track.php</code> acepta hoy: <code>abrir_retiro</code>, <code>abrir_espacio</code>, <code>click_rsvp</code>, <code>click_wa</code>, <code>click_ig</code>, <code>click_url</code>. Los <code>*_ok</code> los escribe el servidor desde <code>antispam.php</code>, no el navegador.</p>
+<hr>
+<h2>10. Base de datos</h2>
+<p>Las migraciones estan en <code>db/</code>, numeradas. Para un cambio de esquema nuevo:</p>
+<ol><li>Escribir <code>db/07-lo-que-sea.sql</code>, idempotente si se puede</li><li>Correrlo en phpMyAdmin con la base seleccionada en el panel izquierdo</li><li>Agregarlo a <code>db/README.md</code></li></ol>
+<p>Antes de cualquier <code>DELETE</code> o <code>UPDATE</code> masivo: Exportar &gt; Rapido. Es el unico seguro que hay.</p>
+<p>Las tablas no comparten collation: las viejas son <code>utf8mb4_general_ci</code>, las nuevas <code>utf8mb4_unicode_ci</code>. Comparar texto entre una y otra tira error 1267. Usar literales en <code>IN (...)</code>, nunca variables <code>@x</code>. O emparejarlas con <code>ALTER TABLE ... CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci</code>.</p>
+<hr>
+<h2>11. Deploy</h2>
+<p>No hay pipeline. Subir por cPanel File Manager. Un zip con la estructura interna correcta (<code>admin/</code>, <code>includes/</code>, <code>assets/...</code>) y Extract en <code>public_html</code> deja todo en su lugar de una vez.</p>
+<p>Despues de cada deploy:</p>
+<pre><code>python3 healthcheck.py</code></pre>
+<p>Y actualizar <code>VERSIONS</code> en el script cuando sube una version, o marca FAIL en un archivo que esta bien.</p>
+<p><strong>La trampa mas cara del proyecto:</strong> armar un archivo sobre una copia vieja. Paso tres veces y las tres borro funcionalidad en silencio. Antes de empaquetar cualquier cosa, confirmar que el archivo base tiene las funciones que ya deberia tener.</p>
+<hr>
+<h2>12. Clonar el sitio para otro proyecto</h2>
+<p>Todo lo que es de La Reserva esta en cuatro lugares. Cambiando esos cuatro, el resto sirve para cualquier predio, estudio, centro o espacio que publique una agenda y reciba consultas.</p>
+<h3>12.1 Identidad</h3>
+<p><code>includes/config.php</code>, a partir de <code>config.example.php</code>:</p>
+<pre><code>SITE_NAME, SITE_DOMAIN, SITE_EMAIL
+SITE_WA, SITE_WA_LABEL, SITE_IG
+SITE_LAT, SITE_LNG, SITE_HECTAREAS
+DB_NAME, DB_USER, DB_PASS</code></pre>
+<h3>12.2 Colores y tipografia</h3>
+<p><code>css/style.css</code>, las variables de <code>:root</code> al principio:</p>
+<pre><code>--bg:#0a1628  --card:#112233  --teal:#00c9a7
+--text:#e8f0f7  --text2:#7a9ab8  --text3:#4a6a85</code></pre>
+<p>Las paginas con <code>&lt;style&gt;</code> propio (<code>welcome.html</code>, <code>verano2027.php</code>, el panel) repiten estos valores. Buscar <code>#00c9a7</code> y <code>#0a1628</code> en el repositorio y reemplazar.</p>
+<p>Para La Reserva existe una segunda paleta, la del logo, que no esta aplicada: verde <code>#105838</code>, arena <code>#c0c098</code>, marron <code>#402810</code>, crema <code>#f4f1e8</code>. Esta en <code>DECISIONS.md</code> por si se decide usarla.</p>
+<h3>12.3 Contenido</h3>
+<p>Todo en la base: <code>espacios</code>, <code>retiros</code>, <code>galeria</code>, <code>ajustes</code>. Lo unico escrito en codigo es <code>historia.php</code> y la seccion "Que incluye" de <code>verano2027.php</code>.</p>
+<p>Para arrancar vacio: <code>db/99-borrar-pruebas.sql</code>, bloque C, y despues <code>DELETE FROM espacios; DELETE FROM retiros; DELETE FROM galeria;</code>.</p>
+<h3>12.4 Vocabulario</h3>
+<p>El sitio dice "retiros" y "espacios". Si el proyecto nuevo tiene "clases" y "salas", son busquedas y reemplazos en el texto visible, no en los nombres de tabla ni de columna. Los nombres de tabla se dejan: cambiarlos toca cincuenta archivos para no ganar nada.</p>
+<h3>12.5 Lo que no hay que cambiar</h3>
+<ul><li><code>includes/antispam.php</code>: funciona igual para cualquier sitio</li><li><code>includes/auth.php</code> y el sistema de usuarios</li><li><code>track.php</code> y el modelo <code>ref</code> / <code>boton</code></li><li>La estructura de <code>consultas</code>, <code>eventos</code>, <code>referidos</code></li><li><code>healthcheck.py</code>: solo cambiar <code>HOST_DEFAULT</code> y las listas</li></ul>
+<h3>12.6 Orden para levantar un clon</h3>
+<ol><li><code>SETUP.md</code> de punta a punta con los valores del proyecto nuevo</li><li><code>config.php</code> con la identidad</li><li><code>style.css</code> con la paleta</li><li>Cargar espacios, retiros y fotos desde el panel</li><li><code>admin/portada.php</code> para los textos del hero</li><li><code>healthcheck.py</code> con el host nuevo</li><li>Repositorio nuevo, mismo <code>.gitignore</code></li></ol>
+<p>Un clon completo con contenido cargado es un dia de trabajo. Lo que lo hace posible es que nada de La Reserva esta hardcodeado fuera de esos cuatro lugares, y conviene que siga asi.</p>
+<hr>
+<h2>13. Lo que falta</h2>
+<div class="tw"><table><tr><th>Que</th><th>Donde empezar</th></tr><tr><td><code>espacio_id</code> en <code>retiros</code></td><td>Columna nueva, dropdown en <code>admin/retiros.php</code>, filtro en <code>espacios.php</code></td></tr><tr><td>Politica de privacidad</td><td>Pagina nueva, link en <code>footer.php</code>. Se guardan IPs</td></tr><tr><td>Paleta del logo en todo el sitio</td><td>Seccion 12.2. Decision pendiente</td></tr></table></div>
+<hr>
+<h2>14. Recuperar el acceso al panel</h2>
+<p>Tres caminos, del mas simple al ultimo recurso.</p>
+<p><strong>1. La persona recuerda su mail.</strong> <code>admin/recuperar.php</code>, escribe la direccion, le llega un link que vence en una hora y elige clave nueva. El link del login dice "Olvidaste la clave".</p>
+<p><strong>2. El mail no llega.</strong> Pasa: <code>mail()</code> no es confiable en este hosting. Otra persona con rol admin entra a Usuarios y le cambia la clave directamente.</p>
+<p><strong>3. Nadie puede entrar al panel.</strong> Unico caso que obliga a tocar la base. phpMyAdmin, tabla <code>usuarios</code>, reemplazar <code>pass_hash</code> por un hash bcrypt generado aparte. Nunca dejar un generador de hashes en el servidor: se sube, se usa, se borra en la misma sesion.</p>
+<h3>Los roles</h3>
+<div class="tw"><table><tr><th>Rol</th><th>Puede</th></tr><tr><td><code>superadmin</code></td><td>Todo, incluido Trafico y seguridad, que muestra IPs</td></tr><tr><td><code>admin</code></td><td>Todo menos Trafico y seguridad</td></tr><tr><td><code>editor</code></td><td>Todo menos Usuarios y Trafico</td></tr></table></div>
+<p><code>rol</code> es un ENUM en la base. <strong>Agregar un rol nuevo exige un ALTER TABLE primero.</strong> Si se hace un UPDATE con un valor que no esta en el enum, MySQL no da error: guarda una cadena vacia y el usuario queda sin rol. Paso una vez en este proyecto.</p>
+<h3>Las dos pantallas de trafico</h3>
+<div class="tw"><table><tr><th>Pantalla</th><th>Quien la ve</th><th>Que muestra</th></tr><tr><td><code>admin/trafico.php</code></td><td>admin y editor</td><td>Totales, por retiro, por origen. Sin datos personales</td></tr><tr><td><code>admin/seguridad.php</code></td><td>solo superadmin</td><td>Lo mismo mas IPs, user agents, log de eventos y bloqueo</td></tr></table></div>
+<p>El sidebar muestra una o la otra, nunca las dos. <code>trafico.php</code> es de solo lectura: no tiene formularios, no bloquea ni purga nada.</p>
+<div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
+</main>
+</div>
+<script>
+function tog(){
+  document.getElementById('sb').classList.toggle('open');
+  document.getElementById('scrim').classList.toggle('on');
+}
+document.querySelectorAll('.nav a').forEach(function(a){
+  a.addEventListener('click', function(){ if (window.innerWidth <= 900) tog(); });
+});
+</script>
+</body>
+</html>

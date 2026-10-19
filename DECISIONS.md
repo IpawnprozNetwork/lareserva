@@ -227,3 +227,19 @@ which looks worse than having no toggle.
 The audience is overwhelmingly Argentine. Revisit if English enquiries actually
 appear; `admin/seguridad.php` already records where visitors come from, so that
 will be evidence rather than a guess.
+
+---
+
+## 18. La paleta del logo no esta aplicada, y es una decision pendiente
+
+El sitio entero usa navy `#0a1628` y teal `#00c9a7`. El logo de La Reserva es
+verde `#105838`, arena `#c0c098`, marron `#402810` sobre crema. Son paletas
+opuestas: una oscura y fria, la otra clara y calida.
+
+`verano2027.php` se hizo primero en la paleta del logo y despues se volvio a
+la del sitio, porque una landing que no se parece al sitio al que lleva
+confunde mas de lo que suma.
+
+Cambiar todo el sitio al logo es un dia de trabajo: `style.css`, `nav.php`,
+`footer.php`, `welcome.html`, el panel entero y cada pagina con `<style>`
+propio. No se hace sin confirmacion explicita. Ver `BIBLE.md` seccion 12.2.

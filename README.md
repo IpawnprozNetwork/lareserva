@@ -150,7 +150,8 @@ No hay pipeline. El repositorio es historial y respaldo, no destino de deploy.
 | Archivo | Que tiene |
 |---|---|
 | `PROJECT-BRAIN.md` | Contexto completo. **Empezar aca** si retomas el proyecto |
-| `GITHUB.md` | Crear el repositorio y subir desde la Mac. **Empezar aca para publicarlo** |
+| `BIBLE.md` | **El manual de operaciones.** Agregar, sacar, cambiar cada pieza, y clonar el sitio para otro proyecto |
+| `GITHUB.md` | Crear el repositorio y subir desde la Mac |
 | `SETUP.md` | De un cPanel vacio a un sitio andando |
 | `ARCHITECTURE.md` | Como encajan las piezas |
 | `DECISIONS.md` | Por que estan asi, con el bug que hay detras de cada una |

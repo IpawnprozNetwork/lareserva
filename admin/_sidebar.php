@@ -1,5 +1,5 @@
 <?php
-/* admin/_sidebar.php - VERSION 2.4
+/* admin/_sidebar.php - VERSION 2.6
    The one sidebar for every admin page.
 
    Replaces the <nav class="sb" id="sb">...</nav>
@@ -127,7 +127,7 @@ function lrNav(string $file, string $label, string $actual, int $badge = 0, bool
       lrNav('consultas.php',      'Consultas',         $lrPag, $lrNuevas);
       lrNav('referidos.php',      'Referidos',         $lrPag);
       lrNav('galeria.php',        'Galeria',           $lrPag, 0, true);
-      if ($lrRol === 'admin') lrNav('usuarios.php', 'Usuarios', $lrPag);
+      if (in_array($lrRol, ['admin','superadmin'], true)) lrNav('usuarios.php', 'Usuarios', $lrPag);
     ?>
   </ul>
 
@@ -136,7 +136,12 @@ function lrNav(string $file, string $label, string $actual, int $badge = 0, bool
     <?php
       lrNav('media.php', 'Imágenes y videos', $lrPag);
       if (is_file(__DIR__.'/videos.php'))    lrNav('videos.php',    'Gestor de videos',    $lrPag);
-      if (is_file(__DIR__.'/seguridad.php')) lrNav('seguridad.php', 'Trafico y seguridad', $lrPag);
+      /* v2.5: Trafico y seguridad solo para superadmin: muestra IPs. */
+      /* v2.6: dos niveles. Admin ve Trafico, que son los mismos numeros sin
+         datos personales. Superadmin ve ademas Trafico y seguridad, con las
+         IPs y el bloqueo. */
+      if ($lrRol === 'superadmin') { if (is_file(__DIR__.'/seguridad.php')) lrNav('seguridad.php', 'Trafico y seguridad', $lrPag); }
+      elseif (is_file(__DIR__.'/trafico.php'))                               lrNav('trafico.php',   'Trafico',             $lrPag);
     ?>
   </ul>
 

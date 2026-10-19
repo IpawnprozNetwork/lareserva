@@ -1,5 +1,5 @@
 <?php
-/* admin/seguridad.php - VERSION 1.2
+/* admin/seguridad.php - VERSION 1.3
    Click counts, conversion per retiro, recent events, and IP blocking.
    Needs tracking_tables.sql and includes/antispam.php.
    1.2: suma los eventos de espacios (abrir_espacio, consulta_esp_ok) a los KPIs.
@@ -9,7 +9,9 @@
 
 @ini_set('session.gc_maxlifetime', 7200);
 require_once __DIR__.'/../includes/auth.php';
-exigirSesion();
+/* v1.3: solo superadmin. Esta pantalla muestra direcciones IP y user
+   agents, que son datos personales. Admin no alcanza. */
+exigirSuperadmin();
 require_once __DIR__.'/../includes/antispam.php';
 @ini_set('display_errors', '1');
 error_reporting(E_ALL);
@@ -96,7 +98,7 @@ function pct($a, $b) { return $b > 0 ? round($a / $b * 100) . '%' : '-'; }
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<!-- admin/seguridad.php VERSION 1.2 -->
+<!-- admin/seguridad.php VERSION 1.3 -->
 <title>Trafico y seguridad · Panel La Reserva</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
 <style>

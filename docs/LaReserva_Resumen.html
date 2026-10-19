@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva &middot; Resumen</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0a0c11;color:#c8d0da;font-family:'IBM Plex Sans',sans-serif;min-height:100vh;scroll-behavior:smooth}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#1e2530;border-radius:3px}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:252px;height:100vh;overflow-y:auto;background:#080a0e;border-right:1px solid #1a1f29;flex-shrink:0}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#11151d;color:#eef3f8;border:1px solid #2a3340;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.nav a{display:block;padding:6px 22px;color:#9aa5b4;text-decoration:none;border-left:2px solid transparent;font-size:12px}
+.nav a:hover{color:#22d3ee;border-left-color:#22d3ee;background:#0e1117}
+.nav-label{padding:11px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d4654;letter-spacing:.16em}
+/* Grupos plegables. El chevron gira y la lista se oculta, asi la barra
+   entera entra en pantalla sin scrollear. */
+.nav-tog{display:flex;align-items:center;justify-content:space-between;width:100%;
+  background:none;border:0;cursor:pointer;text-align:left;padding:11px 20px 7px;
+  font:700 10px 'JetBrains Mono',monospace;color:#3d4654;letter-spacing:.16em}
+.nav-tog:hover{color:#8b95a4}
+.nav-tog i{font-style:normal;font-size:15px;line-height:1;transition:transform .18s;color:#2f3744}
+.nav-tog.abierto i{transform:rotate(90deg);color:#22d3ee}
+.nav-tog.abierto{color:#6b7584}
+.nav-grupo{display:none;padding-bottom:4px}
+.nav-grupo.abierto{display:block}
+pre{margin:0;padding:12px 14px;overflow-x:auto;font:12px/1.55 'JetBrains Mono',monospace;color:#c8d0da;white-space:pre-wrap;word-break:break-word;background:#0c0f15}
+.cb{border:1px solid #232a35;border-radius:8px;overflow:hidden;margin:10px 0}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:5px 12px;background:#11151d;border-bottom:1px solid #232a35}
+.cl{font:700 10px 'JetBrains Mono',monospace;color:#22d3ee;letter-spacing:.06em}
+.cp{cursor:pointer;font:700 9px 'JetBrains Mono',monospace;color:#0a0c11;background:#22d3ee;border:none;padding:3px 10px;border-radius:4px}
+h1{font:800 27px 'Space Grotesk',sans-serif;color:#eef3f8;margin:0 0 6px;line-height:1.2}
+h2{font:700 20px 'Space Grotesk',sans-serif;color:#22d3ee;margin:30px 0 10px;scroll-margin-top:18px}
+h3{font:700 14px 'Space Grotesk',sans-serif;color:#f5a623;margin:18px 0 6px}
+p,li{font-size:13.5px;line-height:1.7;color:#9aa5b4;margin:6px 0}
+ul,ol{padding-left:20px}
+strong{color:#dbe3ec}
+a{color:#22d3ee}
+section[id]{scroll-margin-top:18px}
+.tag{font:700 10px 'JetBrains Mono',monospace;color:#f0398b;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.lede{font-size:15px;line-height:1.75;color:#b3bdca;margin:10px 0 4px}
+.stop{padding:12px 16px;background:#140a0d;border:1px solid #3a1520;border-left:3px solid #f0398b;border-radius:0 8px 8px 0;font-size:13.5px;color:#c09098;margin:12px 0}
+.tip{padding:10px 14px;background:#0d1210;border:1px solid #1a3020;border-left:3px solid #22d3ee;border-radius:0 8px 8px 0;font-size:13px;color:#9ab4a0;margin:12px 0}
+.good{padding:10px 14px;background:#0a1510;border:1px solid #14351f;border-left:3px solid #22c55e;border-radius:0 8px 8px 0;font-size:13px;color:#9dc4a8;margin:12px 0}
+.warn{padding:10px 14px;background:#15110a;border:1px solid #352a14;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;font-size:13px;color:#c4b08a;margin:12px 0}
+.tw{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;margin:0;font-size:12.5px;min-width:480px}
+th{text-align:left;padding:8px 10px;background:#0f1318;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #232a35;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #161c24;color:#9aa5b4;vertical-align:top}
+tr:hover td{background:#0d1117}
+code{font:500 11.5px 'JetBrains Mono',monospace;color:#22d3ee;background:#0f141b;padding:1px 5px;border-radius:4px}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+.pill{display:inline-block;font:700 10px 'JetBrains Mono',monospace;padding:2px 8px;border-radius:10px;letter-spacing:.06em;white-space:nowrap}
+.pill-done{background:#0a1510;color:#22c55e;border:1px solid #14351f}
+.pill-open{background:#140a0d;color:#f0398b;border:1px solid #3a1520}
+.pill-info{background:#0d1420;color:#22d3ee;border:1px solid #16303d}
+.pill-warn{background:#15110a;color:#f5a623;border:1px solid #352a14}
+.paso{border:1px solid #232a35;border-radius:8px;padding:14px 16px 4px;margin:10px 0;background:#0c0f15}
+.paso .n{font:800 10px 'JetBrains Mono',monospace;color:#f5a623;letter-spacing:.14em;text-transform:uppercase}
+.paso h3{margin:4px 0 6px;color:#eef3f8}
+.firma{border-top:1px solid #1a1f29;margin-top:40px;padding-top:16px;font-size:12px;color:#5c6675}
+.doclinks{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.doclinks a{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border:1px solid #232a35;border-radius:16px;text-decoration:none;color:#9aa5b4}
+.doclinks a:hover,.doclinks a.on{border-color:#22d3ee;color:#22d3ee}
+.az-letra{font:800 22px 'Space Grotesk',sans-serif;color:#f0398b;margin:26px 0 4px;border-bottom:1px solid #1a1f29;padding-bottom:4px}
+.az-fila{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid #141922}
+.az-fila b{color:#eef3f8;font:600 13.5px 'IBM Plex Sans',sans-serif}
+.az-fila span{font-size:13px;color:#9aa5b4;line-height:1.65}
+.az-fila a{white-space:nowrap}
+@media(max-width:700px){.az-fila{grid-template-columns:1fr;gap:3px}}
+
+
+/* Selector "Ir a". En celular es el menu nativo del telefono, que es la
+   forma mas comoda de saltar entre 20 secciones con el pulgar. En
+   escritorio queda oculto porque ahi esta la barra lateral. */
+.ir-wrap{display:none;margin-bottom:8px}
+#ir{width:100%;background:#0f1318;border:1px solid #232a35;border-radius:10px;color:#eef3f8;
+  font:inherit;font-size:13.5px;padding:11px 12px;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,#5c6675 50%),linear-gradient(135deg,#5c6675 50%,transparent 50%);
+  background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+#ir:focus{outline:0;border-color:#22d3ee}
+
+/* Tira de letras del A a la Z. Reemplaza la lista lateral, que con 20
+   letras se cortaba. Se envuelve sola y cada letra es un objetivo de
+   44px, que es el minimo comodo para un dedo. */
+.tira{display:flex;flex-wrap:wrap;gap:5px;margin:14px 0 6px;position:sticky;top:0;
+  background:#0a0c11;padding:8px 0;z-index:30;border-bottom:1px solid #141922}
+.tira a{display:flex;align-items:center;justify-content:center;min-width:34px;height:34px;
+  border:1px solid #232a35;border-radius:8px;color:#9aa5b4;text-decoration:none;
+  font:700 13px 'Space Grotesk',sans-serif}
+.tira a:hover{border-color:#22d3ee;color:#22d3ee;background:#0e1117}
+
+.busca{position:sticky;top:0;z-index:40;background:#0a0c11;padding:14px 0 10px;margin-bottom:4px;border-bottom:1px solid #141922}
+.busca-caja{position:relative}
+#q{width:100%;background:#0f1318;border:1px solid #232a35;border-radius:10px;color:#eef3f8;font:inherit;font-size:14px;padding:12px 40px 12px 40px}
+#q:focus{outline:0;border-color:#22d3ee;background:#11151d}
+#q::placeholder{color:#4d5767}
+.busca-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#4d5767;font-size:15px;pointer-events:none}
+.busca-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#5c6675;font-size:19px;cursor:pointer;padding:4px 8px;display:none}
+.busca-x.on{display:block}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.chip{font:600 11px 'IBM Plex Sans',sans-serif;padding:4px 11px;border:1px solid #232a35;border-radius:14px;color:#9aa5b4;background:#0c0f15;cursor:pointer}
+.chip:hover{border-color:#22d3ee;color:#22d3ee}
+.res{margin-top:10px;border:1px solid #232a35;border-radius:10px;background:#0c0f15;display:none;max-height:58vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.res.on{display:block}
+.res-n{padding:7px 14px;font:700 10px 'JetBrains Mono',monospace;color:#5c6675;letter-spacing:.1em;background:#0f1318;border-bottom:1px solid #1a1f29;position:sticky;top:0}
+.res a{display:block;padding:10px 14px;border-bottom:1px solid #141922;text-decoration:none}
+.res a:last-child{border-bottom:0}
+.res a:hover,.res a.sel{background:#11151d}
+.res .rt{color:#eef3f8;font-size:13.5px;font-weight:600;display:block}
+.res .rd{color:#5c6675;font:700 9px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-left:8px}
+.res .rs{color:#7c8696;font-size:12px;display:block;margin-top:3px;line-height:1.5}
+.res mark{background:rgba(34,211,238,.22);color:#9ee9f7;border-radius:2px;padding:0 2px}
+.res .vacio{padding:16px 14px;color:#7c8696;font-size:13px;line-height:1.6}
+.hl{animation:dest 2.2s ease}
+@keyframes dest{0%,55%{background:rgba(34,211,238,.13)}100%{background:transparent}}
+
+@media (max-width:1024px){
+  .ir-wrap{display:block}
+}
+@media (max-width:820px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:82vw;max-width:320px;transform:translateX(-100%);transition:transform .22s;box-shadow:2px 0 20px rgba(0,0,0,.5);z-index:50;padding-bottom:40px}
+  .sidebar.open{transform:translateX(0)}
+  .scrim.show{display:block}
+  .main{padding:8px 16px 80px!important}
+  .busca{padding-top:56px}
+  h1{font-size:23px}
+  h2{font-size:18px;margin-top:24px}
+  p,li{font-size:14px}
+  .res{max-height:52vh}
+  .doclinks{gap:6px}
+  .doclinks a{padding:6px 11px;font-size:9.5px}
+  .chips{gap:5px}
+  .chip{padding:6px 11px;font-size:11.5px}
+  #q{font-size:16px;padding:13px 40px}   /* 16px evita que iOS haga zoom al tocar */
+  .az-fila{grid-template-columns:1fr;gap:2px;padding:11px 0}
+  .tw{margin:10px -16px;padding:0 16px}  /* las tablas respiran hasta el borde */
+  table{font-size:12px}
+  pre{font-size:11.5px}
+  .cb,.tip,.stop,.good,.warn,.paso{margin-left:0;margin-right:0}
+}
+@media (max-width:420px){
+  .main{padding:8px 13px 80px!important}
+  .tira a{min-width:30px;height:30px;font-size:12px}
+  h1{font-size:21px}
+}
+/* Pantallas bajas en horizontal: el buscador pegajoso se come todo. */
+@media (max-height:520px){
+  .busca{position:static}
+  .tira{position:static}
+}
+</style></head><body>
+<button class="menu-btn" id="menuBtn">&#9776;</button>
+<div class="scrim" id="scrim"></div>
+<div style="display:flex;min-height:100vh">
+<aside class="sidebar" id="sidebar">
+  <div style="padding:16px 20px 12px;border-bottom:1px solid #1a1f29;position:sticky;top:0;background:#080a0e;z-index:2">
+    <div style="font:800 14px 'Space Grotesk',sans-serif;color:#eef3f8">LA RESERVA <span style="color:#22d3ee">RESUMEN</span></div>
+    <div style="font:500 9px 'JetBrains Mono',monospace;color:#5c6675;letter-spacing:.14em;margin-top:3px">PARA JOHNNY &middot; 17 OCT 2026</div>
+  </div>
+  <nav class="nav" style="padding:8px 0"><button class="nav-label nav-tog abierto" type="button" aria-expanded="true"><span>EMPEZAR</span><i>&rsaquo;</i></button><div class="nav-grupo abierto"><a href="#intro">Para que es esto</a><a href="#estado">Estado actual</a></div><button class="nav-label nav-tog" type="button" aria-expanded="false"><span>LO QUE SE ARREGLO</span><i>&rsaquo;</i></button><div class="nav-grupo"><a href="#formularios">Los formularios no guardaban</a><a href="#subidas">Las subidas fallaban</a><a href="#mobile">Video en celular</a><a href="#fotos">Fotos equivocadas</a></div><button class="nav-label nav-tog" type="button" aria-expanded="false"><span>LO QUE SE SUMO</span><i>&rsaquo;</i></button><div class="nav-grupo"><a href="#panel">Panel nuevo</a><a href="#landing">Verano 2027</a><a href="#tracking">De donde viene la gente</a><a href="#inbox">Inbox clickeable</a><a href="#roles">Permisos por rol</a><a href="#papelera">Papelera en el Inbox</a><a href="#clave">Recuperar la clave</a></div><button class="nav-label nav-tog" type="button" aria-expanded="false"><span>NUMEROS</span><i>&rsaquo;</i></button><div class="nav-grupo"><a href="#cifras">El sitio en numeros</a></div><button class="nav-label nav-tog" type="button" aria-expanded="false"><span>PENDIENTE</span><i>&rsaquo;</i></button><div class="nav-grupo"><a href="#abierto">Lo que falta</a><a href="#vos">Lo que depende de vos</a></div></nav>
+</aside>
+<main class="main" style="flex:1;min-width:0;padding:8px 40px 90px;max-width:980px">
+
+<div class="busca">
+  <div class="ir-wrap">
+    <select id="ir" aria-label="Ir a una seccion"><option value="">Ir a una seccion...</option><optgroup label="EMPEZAR"><option value="intro">Para que es esto</option><option value="estado">Estado actual</option></optgroup><optgroup label="LO QUE SE ARREGLO"><option value="formularios">Los formularios no guardaban</option><option value="subidas">Las subidas fallaban</option><option value="mobile">Video en celular</option><option value="fotos">Fotos equivocadas</option></optgroup><optgroup label="LO QUE SE SUMO"><option value="panel">Panel nuevo</option><option value="landing">Verano 2027</option><option value="tracking">De donde viene la gente</option><option value="inbox">Inbox clickeable</option><option value="roles">Permisos por rol</option><option value="papelera">Papelera en el Inbox</option><option value="clave">Recuperar la clave</option></optgroup><optgroup label="NUMEROS"><option value="cifras">El sitio en numeros</option></optgroup><optgroup label="PENDIENTE"><option value="abierto">Lo que falta</option><option value="vos">Lo que depende de vos</option></optgroup></select>
+  </div>
+  <div class="busca-caja">
+    <span class="busca-ico">&#9906;</span>
+    <input id="q" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Buscar en todas las guias. Proba: papelera, subir fotos, manda msg, olvide la clave">
+    <button class="busca-x" id="qx" aria-label="Limpiar">&times;</button>
+  </div>
+  <div class="chips"><button class="chip" data-q="consulta">Responder una consulta</button><button class="chip" data-q="publicar retiro">Publicar un retiro</button><button class="chip" data-q="subir fotos">Subir fotos</button><button class="chip" data-q="clave">Recuperar la clave</button><button class="chip" data-q="papelera">Papelera del inbox</button></div>
+  <div class="res" id="res"></div>
+</div>
+
+<div class="doclinks"><a href="LaReserva_Resumen.html" class="on">Resumen</a><a href="LaReserva_Manual.html" class="">Manual</a><a href="LaReserva_Equipo.html" class="">Equipo</a><a href="LaReserva_AZ.html" class="">A a la Z</a></div>
+
+<div class="tag">Resumen</div>
+<h1>Que se hizo en el sitio</h1>
+<p class="lede">Johnny: esto es el resumen de todo lo que se construyo y se
+arreglo en lareserva.net.ar. Esta en castellano y sin terminos tecnicos. Si
+queres saber <strong>como usar</strong> algo, esta en el Manual. Si vas a pedirle a alguien del equipo que cargue contenido, esta en Equipo.</p>
+
+<section id="intro">
+<h2>Para que es esto</h2>
+<p>El sitio tiene dos mitades. La publica, que ve cualquiera que entra a
+lareserva.net.ar. Y el panel, en <code>/admin/</code>, que se abre con tu
+usuario y contrasena y es desde donde cargas todo.</p>
+<p>Todo lo que cargas en el panel aparece en el sitio al instante. No hay boton
+de publicar ni cola de aprobacion. Si algo queda mal, se corrige y se guarda.</p>
+</section>
+
+<section id="estado">
+<h2>Estado actual</h2>
+<div class="tw"><table>
+<tr><th>Item</th><th>Valor</th></tr>
+<tr><td>Sitio</td><td><code>lareserva.net.ar</code></td></tr>
+<tr><td>Panel</td><td><code>lareserva.net.ar/admin/</code></td></tr>
+<tr><td>Paginas publicas</td><td>10, mas la landing de Verano 2027</td></tr>
+<tr><td>Pantallas del panel</td><td>11</td></tr>
+<tr><td>Espacios cargados</td><td>8</td></tr>
+<tr><td>Retiros en agenda</td><td>4</td></tr>
+<tr><td>Fotos en galeria</td><td>31</td></tr>
+<tr><td>Casilla del inbox</td><td><code>johnny@lareserva.net.ar</code></td></tr>
+</table></div>
+</section>
+
+<section id="formularios">
+<h2>Los formularios no guardaban nada <span class="pill pill-done">ARREGLADO</span></h2>
+<p>El problema mas grave que tenia el sitio. Todos los formularios respondian
+<em>"La sesion expiro"</em> y no guardaban. La tabla de consultas tenia
+<strong>cero filas</strong>: desde que el sitio estaba online, ni un solo
+mensaje se habia guardado nunca.</p>
+<p>La causa era tecnica y ya esta resuelta. Lo importante:
+esta arreglado y verificado. Hoy entran consultas de verdad y las estas
+leyendo en el panel.</p>
+<div class="stop">Lo que sigue igual: <strong>el aviso por mail no es
+confiable</strong> en este hosting. Puede llegar tarde, ir a spam o no llegar.
+Las consultas se revisan siempre en el panel, en Consultas. Nunca esperando un
+mail.</div>
+</section>
+
+<section id="subidas">
+<h2>Las subidas de video fallaban <span class="pill pill-done">ARREGLADO</span></h2>
+<p>Subir un video de mas de 5 MB daba error. Eran dos cosas distintas: el
+limite del servidor estaba en 2 MB, y el mensaje de error mentia, decia
+"sesion expirada" cuando el problema era el tamano.</p>
+<p>El limite ahora es 180 MB y el mensaje dice la verdad. Despues el servidor
+perdio una pieza por su cuenta y todas las subidas volvieron a romperse; eso
+tambien esta resuelto, con un sistema que prueba tres caminos distintos antes
+de rendirse.</p>
+<div class="tip">Igual conviene comprimir: un video de fondo arriba de 30 MB
+tarda demasiado en cargar para el visitante. HandBrake, preset Fast 720p.</div>
+</section>
+
+<section id="mobile">
+<h2>En el celular se veia una foto quieta <span class="pill pill-done">ARREGLADO</span></h2>
+<p>En la computadora las tarjetas reproducen un video al pasar el mouse. En el
+celular no pasaba nada, porque en una pantalla tactil no existe el "pasar el
+mouse" y el video nunca arrancaba.</p>
+<p>Ahora el video arranca solo cuando la tarjeta entra en pantalla al
+scrollear, y se pausa cuando sale.</p>
+<div class="warn">El video siempre arranca en silencio. No es una decision
+nuestra: todos los navegadores bloquean el audio automatico. El boton de
+Sonido es la unica forma de activarlo.</div>
+</section>
+
+<section id="fotos">
+<h2>Fotos en el espacio equivocado <span class="pill pill-done">ARREGLADO</span></h2>
+<p>El Salon Pagoda mostraba una foto de la casa con caballos, y una foto del
+Pagoda estaba cargada como si fuera una cabana. Las dos cosas estan
+corregidas, y ademas cada espacio que solo tenia video ahora tiene una foto
+propia sacada de su propio video.</p>
+</section>
+
+<section id="panel">
+<h2>Lo que se sumo al panel <span class="pill pill-info">NUEVO</span></h2>
+<div class="tw"><table>
+<tr><th>Pantalla</th><th>Para que</th></tr>
+<tr><td>Portada</td><td>Editar los textos de la pagina de inicio sin tocar codigo</td></tr>
+<tr><td>Inbox</td><td>Leer el correo de la casilla dentro del panel</td></tr>
+<tr><td>Referidos</td><td>Ver de donde viene la gente y que botones usan</td></tr>
+<tr><td>Trafico y seguridad</td><td>Numeros de visitas y bloqueo de spam</td></tr>
+</table></div>
+<p>Ademas, en Espacios podes <strong>reordenar las fotos y videos</strong> con
+las flechas. El primero de la lista es la portada de la tarjeta y lo que abre
+el visor.</p>
+</section>
+
+<section id="landing">
+<h2>Landing de Verano 2027 <span class="pill pill-info">NUEVO</span></h2>
+<p>Una pagina sola para la temporada, en <code>lareserva.net.ar/verano2027.php</code>.
+Pensada para compartir por Instagram o WhatsApp: el que entra ve una sola cosa
+y tiene una sola salida, el formulario o el WhatsApp.</p>
+<p>Tiene diez bloques de foto, nueve con video al pasar el mouse, y al hacer
+clic se abre un visor con la descripcion. Las fechas del verano aparecen solas
+si hay retiros publicados entre diciembre y marzo, y desaparecen si no hay.</p>
+<p>Esta en el menu de todas las paginas, en color, con el nombre Verano 2027.
+Cuando termine la temporada se saca y listo.</p>
+</section>
+
+<section id="tracking">
+<h2>De donde viene la gente <span class="pill pill-info">NUEVO</span></h2>
+<p>El sitio mide dos cosas distintas, y conviene no mezclarlas:</p>
+<div class="tw"><table>
+<tr><th>Que</th><th>Significa</th></tr>
+<tr><td><code>ref</code></td><td><strong>De donde vino.</strong> Si compartis un link con <code>?ref=instagram</code>, todo lo que haga esa persona queda marcado como instagram</td></tr>
+<tr><td><code>boton</code></td><td><strong>Que toco adentro.</strong> Cada boton del sitio ya trae su etiqueta. No hace falta compartir nada</td></tr>
+</table></div>
+<p>Una misma persona puede venir de Instagram y terminar escribiendo por
+WhatsApp. Son dos datos y se guardan por separado, por eso en Referidos hay
+dos tablas.</p>
+<div class="stop">Hay una tarea manual de la que depende todo el informe:
+<strong>mover el estado de las consultas</strong>. Las columnas "Concretadas"
+cuentan solo las que pasaste a <em>coordinada</em> o <em>cerrada</em>. Si todo
+queda en <em>nueva</em>, la conversion va a ser cero para siempre y no es un
+error del sistema.</div>
+</section>
+
+<section id="inbox">
+<h2>Inbox con telefonos clickeables <span class="pill pill-done">NUEVO</span></h2>
+<p>El correo que llega a la casilla se lee dentro del panel. Los telefonos que
+aparecen en el cuerpo del mensaje ahora son links de WhatsApp, y los mails son
+links para responder, igual que en Consultas.</p>
+<div class="tip">Los archivos adjuntos no se guardan en el panel, a proposito,
+por seguridad. Si un mensaje traia adjuntos lo dice, y se ven abriendo la
+casilla en webmail. Todos los mails siguen llegando igual a webmail.</div>
+</section>
+
+<section id="roles">
+<h2>Permisos por rol <span class="pill pill-info">NUEVO</span></h2>
+<p>Ahora hay tres niveles. Antes habia dos y todos los admin veian todo.</p>
+<div class="tw"><table>
+<tr><th>Rol</th><th>Que ve</th></tr>
+<tr><td><code>superadmin</code></td><td>Todo, incluido <strong>Trafico y seguridad</strong>, que muestra direcciones IP y permite bloquear</td></tr>
+<tr><td><code>admin</code></td><td>Todo menos eso. Ve <strong>Trafico</strong>, con los mismos numeros pero sin datos personales</td></tr>
+<tr><td><code>editor</code></td><td>Todo menos Usuarios y Trafico</td></tr>
+</table></div>
+<p>Johnny es admin. Ve de donde viene la gente, que retiro llama la atencion y
+que canal convierte. No ve IPs, porque no le hacen falta para su trabajo y la
+Ley 25.326 espera que el acceso a datos personales este limitado a quien los
+necesita.</p>
+</section>
+
+<section id="papelera">
+<h2>Papelera en el Inbox <span class="pill pill-done">NUEVO</span></h2>
+<p>Antes, eliminar un mensaje lo borraba para siempre. Un clic equivocado y
+no habia vuelta atras.</p>
+<p>Ahora Eliminar lo manda a la <strong>Papelera</strong>, que es una pestana
+mas arriba de la lista con su propio contador. Desde ahi se restaura con un
+clic. A los 30 dias se borra solo.</p>
+<div class="tip">Tambien hay "Eliminar para siempre" para un mensaje suelto y
+"Vaciar papelera" para todos. Los dos piden confirmacion.</div>
+</section>
+
+<section id="clave">
+<h2>Recuperar la clave <span class="pill pill-done">NUEVO</span></h2>
+<p>En el login hay un link que dice <strong>Olvidaste la clave</strong>. Pedis
+el link con tu mail, te llega, y elegis una nueva. El link vence en una hora
+y sirve una sola vez.</p>
+<div class="warn">Como el correo automatico de este servidor no siempre
+entrega, hay un plan B: otra persona con rol admin te cambia la clave desde
+Usuarios.</div>
+</section>
+
+<section id="cifras">
+<h2>El sitio en numeros</h2>
+<div class="tw"><table>
+<tr><th>Que</th><th>Cuanto</th></tr>
+<tr><td>Fotos nuevas procesadas</td><td>29, de 127 MB a 8 MB sin perder calidad visible</td></tr>
+<tr><td>Clips de video cortados</td><td>11, apaisados, de un master de 86 segundos</td></tr>
+<tr><td>Scripts de base de datos</td><td>8, numerados y guardados</td></tr>
+<tr><td>Paginas con video de fondo</td><td>6</td></tr>
+<tr><td>Capas de proteccion contra spam</td><td>5</td></tr>
+</table></div>
+<div class="good">Las fotos pesaban 127 MB. En un celular con datos eso son
+varios minutos de espera, o sea que la persona se va antes de ver nada. Ahora
+son 8 MB y se ven igual.</div>
+</section>
+
+<section id="abierto">
+<h2>Lo que falta</h2>
+<div class="tw"><table>
+<tr><th>Que</th><th>Por que importa</th><th>Estado</th></tr>
+<tr><td>Decir en que espacio se hace cada retiro</td><td>Hoy cada espacio lista todos los retiros, y el calendario marca ocupacion de todo el predio en vez de ese espacio</td><td><span class="pill pill-open">Abierto</span></td></tr>
+<tr><td>Politica de privacidad</td><td>El sitio guarda direcciones IP. Aplica la Ley 25.326</td><td><span class="pill pill-open">Abierto</span></td></tr>
+<tr><td>Un espacio se llama "Salon Comedor" y hay otro llamado "Comedor"</td><td>En la pagina publica se leen como duplicados</td><td><span class="pill pill-warn">Revisar</span></td></tr>
+<tr><td>Video de la pileta</td><td>No hay ninguno. La pileta es la mejor imagen de verano que tienen</td><td><span class="pill pill-warn">Falta material</span></td></tr>
+</table></div>
+</section>
+
+<section id="vos">
+<h2>Lo que depende de vos, no del sistema</h2>
+<ol>
+<li><strong>Mover el estado de cada consulta.</strong> Es la unica tarea manual
+de la que dependen todos los informes</li>
+<li><strong>Poner titulo a las fotos.</strong> Google lee ese texto. Varias
+fotos llamadas igual no le sirven a nadie</li>
+<li><strong>Grabar diez segundos de la pileta</strong>, apaisado. Es lo unico
+que falta para completar el material de verano</li>
+<li><strong>Revisar el nombre "Salon Comedor"</strong> y decidir si va asi</li>
+</ol>
+</section>
+
+<div class="firma">
+  La Reserva Naturaleza Arte &middot; lareserva.net.ar<br>
+  Escrito por Carlos Verbelen para Johnny. 17 de octubre de 2026.
+</div>
+</main>
+</div>
+<script>
+const IDX = [{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"intro","t":"Para que es esto","x":"Para que es esto El sitio tiene dos mitades. La publica, que ve cualquiera que entra a lareserva.net.ar. Y el panel, en /admin/ , que se abre con tu usuario y contrasena y es desde donde cargas todo. Todo lo que cargas en el panel aparece en el sitio al instante. No hay boton de publicar ni cola de aprobacion. Si algo queda mal, se corrige y se guarda."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"estado","t":"Estado actual","x":"Estado actual Item Valor Sitio lareserva.net.ar Panel lareserva.net.ar/admin/ Paginas publicas 10, mas la landing de Verano 2027 Pantallas del panel 11 Espacios cargados 8 Retiros en agenda 4 Fotos en galeria 31 Casilla del inbox johnny@lareserva.net.ar"},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"formularios","t":"Los formularios no guardaban nada ARREGLADO","x":"Los formularios no guardaban nada ARREGLADO El problema mas grave que tenia el sitio. Todos los formularios respondian \"La sesion expiro\" y no guardaban. La tabla de consultas tenia cero filas : desde que el sitio estaba online, ni un solo mensaje se habia guardado nunca. La causa era tecnica y ya esta resuelta. Lo importante: esta arreglado y verificado. Hoy entran consultas de verdad y las estas leyendo en el panel. Lo que sigue igual: el aviso por mail no es confiable en este hosting. Puede llegar tarde, ir a spam o no llegar. Las consultas se revisan siempre en el panel, en Consultas. Nunca esperando un mail."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"subidas","t":"Las subidas de video fallaban ARREGLADO","x":"Las subidas de video fallaban ARREGLADO Subir un video de mas de 5 MB daba error. Eran dos cosas distintas: el limite del servidor estaba en 2 MB, y el mensaje de error mentia, decia \"sesion expirada\" cuando el problema era el tamano. El limite ahora es 180 MB y el mensaje dice la verdad. Despues el servidor perdio una pieza por su cuenta y todas las subidas volvieron a romperse; eso tambien esta resuelto, con un sistema que prueba tres caminos distintos antes de rendirse. Igual conviene comprimir: un video de fondo arriba de 30 MB tarda demasiado en cargar para el visitante. HandBrake, preset Fast 720p."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"mobile","t":"En el celular se veia una foto quieta ARREGLADO","x":"En el celular se veia una foto quieta ARREGLADO En la computadora las tarjetas reproducen un video al pasar el mouse. En el celular no pasaba nada, porque en una pantalla tactil no existe el \"pasar el mouse\" y el video nunca arrancaba. Ahora el video arranca solo cuando la tarjeta entra en pantalla al scrollear, y se pausa cuando sale. El video siempre arranca en silencio. No es una decision nuestra: todos los navegadores bloquean el audio automatico. El boton de Sonido es la unica forma de activarlo."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"fotos","t":"Fotos en el espacio equivocado ARREGLADO","x":"Fotos en el espacio equivocado ARREGLADO El Salon Pagoda mostraba una foto de la casa con caballos, y una foto del Pagoda estaba cargada como si fuera una cabana. Las dos cosas estan corregidas, y ademas cada espacio que solo tenia video ahora tiene una foto propia sacada de su propio video."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"panel","t":"Lo que se sumo al panel NUEVO","x":"Lo que se sumo al panel NUEVO Pantalla Para que Portada Editar los textos de la pagina de inicio sin tocar codigo Inbox Leer el correo de la casilla dentro del panel Referidos Ver de donde viene la gente y que botones usan Trafico y seguridad Numeros de visitas y bloqueo de spam Ademas, en Espacios podes reordenar las fotos y videos con las flechas. El primero de la lista es la portada de la tarjeta y lo que abre el visor."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"landing","t":"Landing de Verano 2027 NUEVO","x":"Landing de Verano 2027 NUEVO Una pagina sola para la temporada, en lareserva.net.ar/verano2027.php . Pensada para compartir por Instagram o WhatsApp: el que entra ve una sola cosa y tiene una sola salida, el formulario o el WhatsApp. Tiene diez bloques de foto, nueve con video al pasar el mouse, y al hacer clic se abre un visor con la descripcion. Las fechas del verano aparecen solas si hay retiros publicados entre diciembre y marzo, y desaparecen si no hay. Esta en el menu de todas las paginas, en color, con el nombre Verano 2027. Cuando termine la temporada se saca y listo."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"tracking","t":"De donde viene la gente NUEVO","x":"De donde viene la gente NUEVO El sitio mide dos cosas distintas, y conviene no mezclarlas: Que Significa ref De donde vino. Si compartis un link con ?ref=instagram , todo lo que haga esa persona queda marcado como instagram boton Que toco adentro. Cada boton del sitio ya trae su etiqueta. No hace falta compartir nada Una misma persona puede venir de Instagram y terminar escribiendo por WhatsApp. Son dos datos y se guardan por separado, por eso en Referidos hay dos tablas. Hay una tarea manual de la que depende todo el informe: mover el estado de las consultas . Las columnas \"Concretadas\" cuentan solo las que pasaste a coordinada o cerrada . Si todo queda en nueva , la conversion va a ser cero para siempre y no es un error del sistema."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"inbox","t":"Inbox con telefonos clickeables NUEVO","x":"Inbox con telefonos clickeables NUEVO El correo que llega a la casilla se lee dentro del panel. Los telefonos que aparecen en el cuerpo del mensaje ahora son links de WhatsApp, y los mails son links para responder, igual que en Consultas. Los archivos adjuntos no se guardan en el panel, a proposito, por seguridad. Si un mensaje traia adjuntos lo dice, y se ven abriendo la casilla en webmail. Todos los mails siguen llegando igual a webmail."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"roles","t":"Permisos por rol NUEVO","x":"Permisos por rol NUEVO Ahora hay tres niveles. Antes habia dos y todos los admin veian todo. Rol Que ve superadmin Todo, incluido Trafico y seguridad , que muestra direcciones IP y permite bloquear admin Todo menos eso. Ve Trafico , con los mismos numeros pero sin datos personales editor Todo menos Usuarios y Trafico Johnny es admin. Ve de donde viene la gente, que retiro llama la atencion y que canal convierte. No ve IPs, porque no le hacen falta para su trabajo y la Ley 25.326 espera que el acceso a datos personales este limitado a quien los necesita."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"papelera","t":"Papelera en el Inbox NUEVO","x":"Papelera en el Inbox NUEVO Antes, eliminar un mensaje lo borraba para siempre. Un clic equivocado y no habia vuelta atras. Ahora Eliminar lo manda a la Papelera , que es una pestana mas arriba de la lista con su propio contador. Desde ahi se restaura con un clic. A los 30 dias se borra solo. Tambien hay \"Eliminar para siempre\" para un mensaje suelto y \"Vaciar papelera\" para todos. Los dos piden confirmacion."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"clave","t":"Recuperar la clave NUEVO","x":"Recuperar la clave NUEVO En el login hay un link que dice Olvidaste la clave . Pedis el link con tu mail, te llega, y elegis una nueva. El link vence en una hora y sirve una sola vez. Como el correo automatico de este servidor no siempre entrega, hay un plan B: otra persona con rol admin te cambia la clave desde Usuarios."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"cifras","t":"El sitio en numeros","x":"El sitio en numeros Que Cuanto Fotos nuevas procesadas 29, de 127 MB a 8 MB sin perder calidad visible Clips de video cortados 11, apaisados, de un master de 86 segundos Scripts de base de datos 8, numerados y guardados Paginas con video de fondo 6 Capas de proteccion contra spam 5 Las fotos pesaban 127 MB. En un celular con datos eso son varios minutos de espera, o sea que la persona se va antes de ver nada. Ahora son 8 MB y se ven igual."},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"abierto","t":"Lo que falta","x":"Lo que falta Que Por que importa Estado Decir en que espacio se hace cada retiro Hoy cada espacio lista todos los retiros, y el calendario marca ocupacion de todo el predio en vez de ese espacio Abierto Politica de privacidad El sitio guarda direcciones IP. Aplica la Ley 25.326 Abierto Un espacio se llama \"Salon Comedor\" y hay otro llamado \"Comedor\" En la pagina publica se leen como duplicados Revisar Video de la pileta No hay ninguno. La pileta es la mejor imagen de verano que tienen Falta material"},{"d":"LaReserva_Resumen.html","dn":"Resumen","a":"vos","t":"Lo que depende de vos, no del sistema","x":"Lo que depende de vos, no del sistema Mover el estado de cada consulta. Es la unica tarea manual de la que dependen todos los informes Poner titulo a las fotos. Google lee ese texto. Varias fotos llamadas igual no le sirven a nadie Grabar diez segundos de la pileta , apaisado. Es lo unico que falta para completar el material de verano Revisar el nombre \"Salon Comedor\" y decidir si va asi"},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-intro","t":"Para quien es","x":"Para quien es Para vos y para cualquiera del equipo que entre al panel. Todo lo que esta aca se hace desde el navegador, con tu usuario y contrasena. Todo lo que cargas aparece en el sitio al instante. No hay nada que publicar ni confirmar. Si algo queda mal, se corrige y se guarda: se arregla igual de rapido."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-entrar","t":"Entrar al panel","x":"Entrar al panel DIRECCION Copiar lareserva.net.ar/admin/ Arriba a la izquierda vas a ver tu inicial, tu nombre y tu rol. Rol Que puede hacer admin Todo, incluido crear y borrar usuarios del panel editor Todo menos Usuarios La sesion dura dos horas sin actividad. Si al guardar sale \"Sesion expirada\" , recarga, volve a entrar y guarda de nuevo. Lo que ya estaba guardado no se pierde; lo que estabas escribiendo en ese momento, si."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-menu","t":"El menu del panel","x":"El menu del panel Seccion Item Para que Principal Dashboard Resumen del dia Inbox El correo de la casilla Contenido Portada Los textos de la pagina de inicio Retiros Crear y editar encuentros Espacios Editar los espacios y su material Consultas Lo que mandan los formularios Referidos Codigos de difusion y clicks Usuarios Quien entra al panel. Solo admin Herramientas Imagenes y videos Galeria y videos de fondo Gestor de videos El video de cada pagina Trafico y seguridad Numeros y bloqueo de spam"},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-consulta","t":"Responder una consulta","x":"Responder una consulta Es la tarea mas importante del dia y la unica de la que dependen todos los informes. Paso 1 Abrir las nuevas Consultas, filtro nueva . Si el Dashboard muestra un numero rojo al lado de Consultas, ese es el trabajo pendiente. Paso 2 Leer de donde vino Arriba de cada consulta dice el origen: espacio:comedor , retiro:nombre , contacto o verano2027 . Eso te dice que estaba mirando cuando escribio. Paso 3 Responder Por mail o WhatsApp, fuera del panel. El mail y el telefono son clickeables. Paso 4 Marcar el estado Volver y poner contactada , con una nota interna de lo que quedo hablado. Cuando hay fecha acordada, pasarla a coordinada . La nota interna no la ve nadie de afuera. Usala sin miedo: dentro de un mes no te vas a acordar de que quedo hablado."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-retiro","t":"Publicar un retiro","x":"Publicar un retiro Paso 1 Crearlo en borrador Retiros, + Nuevo retiro . Titulo y fecha de inicio es lo minimo. Dejalo en borrador mientras lo armas. Paso 2 Guardar y cargar fotos La pestana de Fotos y videos aparece recien despues de guardar. Subi primero la que queres como principal. Paso 3 Completar el detalle Bajada, descripcion, que incluye con un item por linea, precio, cupos y el WhatsApp de quien coordina. Si la inscripcion va por otro lado, cargá la URL. Paso 4 Publicar y verificar Estado a publicado , guardar, y abrir la agenda publica para confirmar que aparece. Un retiro sin fecha de inicio no aparece en la agenda aunque este publicado. Es el olvido mas comun. Los cuatro estados de un retiro Estado Se ve en el sitio borrador No. Solo vos lo ves publicado Si, en la agenda agotado Si, con el cartel SIN CUPOS finalizado Solo en \"Ya sucedieron\" Las resenas que deja la gente no se "},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-espacio","t":"Editar un espacio","x":"Editar un espacio Espacios, elegir uno. Nombre, tipo, resumen, descripcion, capacidad, orden y si esta visible. El campo Orden decide la posicion en la pagina: numero mas chico, mas arriba. Las fotos grandes de la pagina de inicio todavia salen de la base, pero la seccion \"Que incluye\" de la landing de Verano es texto fijo. Si hay que cambiarla, se pide."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-fotos","t":"Subir y ordenar fotos","x":"Subir y ordenar fotos Cada espacio y cada retiro tiene su pestana de Fotos y videos. Elegis el tipo arriba y el recuadro cambia solo. Con las flechas ← y → cambias el orden. El primero de la lista es la portada de la tarjeta y lo que abre el visor. Cada archivo muestra su numero de posicion. Regla Por que Fotos apaisadas Las verticales de celular se ven angostas, con franjas negras al costado Nombres sin espacios ni acentos Salon amor (2).jpeg rompe en una direccion web. salon-amor-2.jpg no Video por debajo de 30 MB Arriba de eso el visitante espera demasiado y se va Ponerle titulo a cada foto Google lee ese texto Si tenes muchas fotos de una vez, conviene subirlas todas juntas por cPanel y pedir que se registren con un script. De a una por el panel toma mucho mas tiempo."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-portada","t":"Cambiar los textos de la portada","x":"Cambiar los textos de la portada Panel, Portada . Se editan el rotulo de arriba, el titulo grande, el parrafo, los dos botones, el bloque de ubicacion y las cuatro cifras. Si borras un campo y lo dejas vacio, vuelve al texto original. No hay forma de dejar la portada en blanco. Las fotos, los videos y los nombres de los espacios no se editan ahi: salen de la base y se cambian en Espacios. Tener el mismo dato en dos pantallas es la forma mas rapida de terminar con dos versiones distintas."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-codigo","t":"Armar un codigo de difusion","x":"Armar un codigo de difusion Paso 1 Crearlo Referidos, panel de la derecha, Nuevo codigo . Persona o canal: instagram , whatsapp , flyer-octubre . Paso 2 Copiar el link Al abrirlo aparecen cuatro links listos para copiar, uno por pagina. EJEMPLO Copiar https://lareserva.net.ar/verano2027.php?ref=instagram Siempre minusculas y sin espacios. Flyer Octubre y flyer-octubre serian dos codigos distintos y los numeros quedarian partidos al medio."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-inbox","t":"Usar el inbox","x":"Usar el inbox El correo que llega a johnny@lareserva.net.ar , dentro del panel. El numerito rojo son los no leidos. Los telefonos del mensaje son links de WhatsApp y los mails son links para responder. Responder abre tu programa de mail habitual. Los adjuntos no se guardan aca, por seguridad. Si un mensaje traia adjuntos lo dice, y se ven abriendo la casilla en webmail."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-papelera","t":"Recuperar un mensaje borrado","x":"Recuperar un mensaje borrado Paso 1 Abrir la papelera Inbox, pestana Papelera . Al lado dice cuantos hay. Paso 2 Restaurar Boton Restaurar en el mensaje. Vuelve a la bandeja como estaba. Los mensajes de la papelera se borran solos a los 30 dias. Despues de eso no hay forma de recuperarlos. Si queres sacarlo antes, Eliminar para siempre en el mensaje, o Vaciar papelera para todos. Los dos avisan antes."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-clave","t":"Si olvidas la clave","x":"Si olvidas la clave Opcion 1 Pedir el link En el login, Olvidaste la clave . Escribis tu mail y te llega un link. Vence en una hora y sirve una sola vez. La clave nueva tiene que tener al menos 10 caracteres. Opcion 2 Si el mail no llega Pasa: el correo automatico de este servidor no siempre entrega. Pedile a otra persona con rol admin que te la cambie desde Usuarios . Opcion 3 Si nadie puede entrar Ahi hace falta tocar la base de datos. Avisame y lo resuelvo."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-trafico2","t":"Que pantalla de Trafico ves","x":"Que pantalla de Trafico ves Hay dos y el panel te muestra la que corresponde a tu rol. No tenes que elegir nada. Rol Pantalla Contenido admin Trafico Totales, por retiro, por origen superadmin Trafico y seguridad Lo mismo mas IPs y bloqueo La pantalla de Trafico es de solo lectura: no hay nada que se pueda romper desde ahi."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-estados","t":"Los cinco estados de una consulta","x":"Los cinco estados de una consulta Estado Cuando ponerlo Cuenta para los informes nueva Recien llego No contactada Ya le escribiste No coordinada Hay fecha acordada Si cerrada Termino bien Si descartada No prospero o era spam No Si todo queda en nueva , las columnas \"Concretadas\" de Referidos y de Trafico van a ser cero para siempre. No es un error del sistema: es la unica tarea manual que el sistema no puede hacer solo."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-referidos","t":"Como leer Referidos","x":"Como leer Referidos Columna Que cuenta Aperturas Veces que alguien con ese codigo abrio un retiro o un espacio Consultas Formularios completados Concretadas De esas, cuantas pusiste en coordinada o cerrada Conv. Concretadas sobre aperturas, en porcentaje Pagado Suma de los pagos que cargaste a mano Aparecen solas dos filas que no creaste: Trafico directo , que es la gente que escribio la direccion o llego por Google, y codigos vistos sin registrar , que casi siempre es un error de tipeo en un link compartido. El sistema no calcula plata . No sabe cuanto cobraste: una consulta es una consulta, no un pago recibido. La comision es una nota de texto y los pagos los cargas vos cuando ya pagaste."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-trafico","t":"Como leer Trafico y seguridad","x":"Como leer Trafico y seguridad Los numeros del sitio en 7, 30, 90 o 365 dias. Debajo, el detalle por retiro, por origen, y las IP mas activas con un boton para bloquear. Bloquear una IP sirve contra un bot insistente y poco mas. Las conexiones de casa cambian de IP y una VPN la cambia en un clic. Lo que de verdad frena el spam es el filtro de mails temporales, que funciona solo. Un click de WhatsApp significa que la persona abrio wa.me. No hay forma de saber si despues mando el mensaje : WhatsApp no devuelve ninguna senal al sitio."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-errores","t":"Errores comunes","x":"Errores comunes Sintoma Que pasa en realidad El retiro no aparece en la agenda Le falta la fecha de inicio, o quedo en borrador La resena no se ve Falta aprobarla en la pestana Resenas El video no sube Pesa demasiado. Comprimilo con HandBrake \"Sesion expirada\" al guardar Pasaron mas de dos horas. Recarga y volve a entrar Todas las conversiones en cero Las consultas siguen en estado nueva No llega el mail de una consulta Normal. Se revisa en Consultas, siempre El codigo de referido no cuenta nada Fijate que el link termine en ?ref=codigo Cambie una foto y no se ve el cambio Recarga con Ctrl+Shift+R. El navegador la tenia guardada"},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-nunca","t":"Lo que nunca hay que hacer","x":"Lo que nunca hay que hacer Nunca abras Sitejet Builder en cPanel. Sobreescribe los archivos del sitio. Si aparece esa opcion, cerrala sin tocar nada. No borres un retiro para \"limpiar\". Pasalo a finalizado. Borrarlo se lleva puestas sus resenas y las consultas asociadas. No borres el ultimo usuario admin. Te quedas afuera del panel y hay que arreglarlo desde la base de datos. No esperes el mail de una consulta. Se revisa en Consultas."},{"d":"LaReserva_Manual.html","dn":"Manual","a":"m-roto","t":"Si algo se rompe","x":"Si algo se rompe Los datos estan a salvo. Todo vive en la base de datos. Si una pagina deja de verse, se vuelve a subir el archivo anterior y el sitio vuelve. Nada se pierde. Lo unico irreversible seria borrar datos de la base sin respaldo, y eso no se hace desde el panel: no hay ningun boton que pueda hacerlo. Si alguna vez hace falta, lo hago yo y con copia previa. Si una pagina queda en blanco, avisame con la direccion exacta y a que hora paso. Queda registrado en el log del servidor y se encuentra rapido."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-intro","t":"Para que es esta guia","x":"Para que es esta guia El panel aguanta varias personas trabajando a la vez. Cada una entra con su propio usuario y su propia clave. No se comparte una cuenta entre varios: si algo sale mal, con cuentas separadas se sabe quien lo hizo y se le saca el acceso a esa persona sola. Dar de alta a alguien toma dos minutos y se puede revertir en diez segundos. No hay motivo para prestar tu usuario."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-roles","t":"Que puede hacer cada uno","x":"Que puede hacer cada uno Rol Puede Para quien editor Cargar y editar retiros, espacios, fotos, videos y responder consultas Alguien del equipo que carga contenido admin Todo lo anterior, mas dar de alta usuarios y ver los numeros de trafico Vos, y alguien de mucha confianza superadmin Todo, mas las direcciones IP y el bloqueo de spam Solo Carlos Arranca siempre con editor. Un editor puede hacer todo el trabajo diario. Si despues hace falta mas, se sube el rol en diez segundos. Al reves es mas incomodo."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-alta","t":"Dar de alta a alguien","x":"Dar de alta a alguien Paso 1 Crear el usuario Panel, Usuarios , boton de nuevo usuario. Nombre, e-mail y una clave de al menos diez caracteres. Rol: editor . Paso 2 Pasarle los datos Mandale el e-mail y la clave por WhatsApp, y decile que la cambie apenas entre, desde Usuarios, su propio usuario. Paso 3 Mandarle el instructivo Mas abajo hay tres instructivos listos. Copia el que corresponda a lo que le vas a pedir y pegalo en el chat. No uses una cuenta compartida tipo \"equipo@\". Si tres personas entran con el mismo usuario y una borra algo, no hay forma de saber cual fue."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-baja","t":"Sacarle el acceso","x":"Sacarle el acceso Usuarios, buscar la persona, y desactivar . Deja de poder entrar al instante pero no se pierde nada de lo que cargo. Desactivar es mejor que eliminar. Si la persona vuelve en temporada, se reactiva y listo. Cuando alguien deja de trabajar en el predio, desactivalo el mismo dia. No hay razon para que un usuario siga abierto meses despues."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-clave","t":"Si pierde la clave","x":"Si pierde la clave Que use Olvidaste la clave en la pantalla de login. Le llega un link por mail, vence en una hora Si el mail no llega, entras vos a Usuarios y se la cambias a mano El correo automatico de este servidor no siempre entrega. La opcion 2 es la que funciona seguro."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-fotos","t":"Cargar fotos y videos DELEGABLE","x":"Cargar fotos y videos DELEGABLE Es la tarea que mas conviene pasar. Toma tiempo, no tiene riesgo, y cualquiera con rol editor puede hacerla. La persona entra al espacio o al retiro, pestana de fotos y videos, sube los archivos y los ordena con las flechas. El primero de la lista es la portada. Pedile siempre fotos apaisadas. Las verticales de celular funcionan, pero se ven angostas y con franjas negras al costado."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-retiros","t":"Cargar un retiro DELEGABLE","x":"Cargar un retiro DELEGABLE Tambien se puede delegar, con una condicion: que lo deje en borrador y lo revises vos antes de publicar. Un retiro en borrador no se ve en el sitio. La persona lo arma entero y vos solo cambias el estado a publicado cuando esta bien."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-consultas","t":"Responder consultas CON CRITERIO","x":"Responder consultas CON CRITERIO Se puede delegar, pero quien responda esta hablando en nombre de La Reserva. Conviene que sea alguien que conozca los precios y la disponibilidad. Lo que si o si tiene que hacer quien responda: mover el estado de la consulta. Es la unica tarea manual de la que dependen todos los informes. Si queda en \"nueva\", para el sistema esa consulta nunca fue atendida."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-no","t":"Lo que no conviene delegar","x":"Lo que no conviene delegar Tarea Por que Publicar un retiro Una fecha o un precio mal puestos ya estan en el sitio Aprobar resenas Una vez aprobada, la ve todo el mundo Crear usuarios Que el acceso lo de siempre la misma persona Borrar un retiro Se lleva puestas sus resenas y sus consultas Los textos de la portada Es la voz de la marca"},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-brief-fotos","t":"Instructivo para pasar: fotos","x":"Instructivo para pasar: fotos Copia esto y mandaselo a quien va a cargar fotos. PARA COPIAR Copiar Hola. Te paso como cargar fotos al sitio de La Reserva. 1. Entra a lareserva.net.ar/admin/ con el mail y la clave que te di. Cambiala apenas entres: Usuarios, tu nombre, clave nueva. 2. En el menu de la izquierda, elegi Espacios o Retiros segun donde vayan las fotos. Hace clic en el que corresponda. 3. Pestana \"Fotos y videos\". Arriba elegis si subis imagen o video, le pones un titulo corto y elegis el archivo. 4. Con las flechas que estan abajo de cada foto cambias el orden. La PRIMERA de la lista es la que se ve en la tarjeta del sitio. Tres cosas importantes: - Fotos apaisadas, no verticales. Las verticales se ven angostas. - Ponele titulo a cada una. Describi lo que se ve en pocas palabras. - Videos por debajo de 30 MB. Si pesa mas, avisame antes de subirlo. Todo lo que subas se ve en e"},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-brief-retiro","t":"Instructivo para pasar: retiros","x":"Instructivo para pasar: retiros PARA COPIAR Copiar Hola. Te paso como cargar un retiro nuevo. 1. Entra a lareserva.net.ar/admin/ y anda a Retiros. 2. Boton \"Nuevo retiro\". 3. Completa: titulo, fecha de inicio y fecha de fin, quien coordina, su Instagram y su WhatsApp, precio desde, cantidad de cupos. 4. Descripcion: dos o tres parrafos. \"Que incluye\": un item por linea, sin guiones ni numeros. 5. Deja el estado en BORRADOR y guarda. 6. Recien ahi aparece la pestana de fotos. Subi entre 4 y 6, apaisadas. La primera es la portada. 7. Avisame cuando este listo. Yo lo reviso y lo publico. IMPORTANTE: no lo pongas en \"publicado\" vos. En borrador no se ve en el sitio, asi que podes trabajar tranquilo y corregir lo que haga falta. Si le falta la fecha de inicio no va a aparecer en la agenda, aunque este publicado. Es el error mas comun."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-brief-consultas","t":"Instructivo para pasar: consultas","x":"Instructivo para pasar: consultas PARA COPIAR Copiar Hola. Te paso como responder las consultas del sitio. 1. Entra a lareserva.net.ar/admin/ y anda a Consultas. El numero rojo al lado son las que faltan responder. 2. Filtro \"nueva\". Leela entera: arriba dice de donde vino, que espacio o que retiro estaba mirando cuando escribio. 3. Responde por mail o por WhatsApp. El mail y el telefono son clickeables, hace clic y se abre solo. 4. Volve a la consulta y cambia el estado: - contactada = ya le escribiste - coordinada = hay fecha acordada - cerrada = termino bien - descartada = no prospero o era spam 5. Escribi en \"Notas internas\" que quedo hablado. Eso no lo ve nadie de afuera y sirve para cuando la persona vuelva a escribir. ESTO ES LO MAS IMPORTANTE: cambiar el estado no es opcional. Los informes del sitio cuentan solo las consultas que pasaron a coordinada o cerrada. Si las dejas en \"n"},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-revisar","t":"Que revisar cada semana","x":"Que revisar cada semana Donde Que mirar Dashboard Que \"consultas sin responder\" no se acumule Consultas Que no haya nada viejo todavia en \"nueva\" Retiros Que no quede algo en borrador que ya deberia estar publicado Retiros Resenas sin aprobar Inbox Mensajes sin leer Usuarios Que no quede activo alguien que ya no trabaja Cinco minutos los lunes alcanzan. Lo unico que se acumula de verdad son las consultas sin responder."},{"d":"LaReserva_Equipo.html","dn":"Equipo","a":"e-errores","t":"Errores tipicos del personal","x":"Errores tipicos del personal Que pasa Por que Como evitarlo Cargan un retiro y no aparece Le falta la fecha de inicio, o quedo en borrador Esta en el instructivo Suben fotos verticales Sacan la foto con el celular parado Pedir apaisadas desde el principio Las conversiones dan cero No mueven el estado de las consultas Esta en el instructivo, en mayusculas Un video no sube Pesa mas de lo que aguanta Pedir que avisen antes si pesa mucho Fotos sin titulo Se saltean el campo Revisar una vez por semana Publican sin avisar No saben que tienen que dejarlo en borrador Esta en el instructivo Ninguno de estos rompe nada. Todos se corrigen en el panel en menos de un minuto. Lo unico irreversible es borrar un retiro, y por eso esa tarea no se delega."},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-A","t":"A","x":"A Adjuntos No se guardan en el panel, por seguridad. Se ven abriendo la casilla en webmail. Ver → Admin Rol que ve todo menos las IPs. Es el rol de Johnny. Ver → Agenda La pagina publica con los retiros que tienen fecha. Sale de Retiros. Ver → Agotado Estado de un retiro sin cupos. Se sigue viendo, con el cartel SIN CUPOS. Ver → Aperturas Veces que alguien abrio un retiro o un espacio. Columna de Referidos. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-B","t":"B","x":"B Borrador Estado de un retiro que todavia no se ve en el sitio. Ver → Boton La etiqueta que lleva cada boton del sitio para saber que toco la gente. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-C","t":"C","x":"C Cabanas Espacio de alojamiento. Sus fotos son las del anochecer con luz calida. Ver → Cerrada Estado final de una consulta que termino bien. Cuenta como conversion. Ver → Clave Se recupera desde el login, con \"Olvidaste la clave\". Minimo 10 caracteres. Ver → Comision Nota de texto en un codigo de referido. El sistema no calcula plata. Ver → Concretadas Consultas que pasaste a coordinada o cerrada. Si no moves el estado, queda en cero. Ver → Consultas Todo lo que mandan los formularios del sitio. La pantalla mas importante. Ver → Contactada Estado de una consulta a la que ya le escribiste. Ver → Coordinada Estado de una consulta con fecha acordada. Cuenta como conversion. Ver → Cupos Lugares de un retiro. Cuando se llenan, el calendario los marca con una cruz. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-D","t":"D","x":"D Dashboard La primera pantalla del panel. Si hay un numero rojo, ese es el trabajo del dia. Ver → Descartada Estado de una consulta que no prospero o era spam. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-E","t":"E","x":"E Editor Rol que puede todo menos Usuarios y Trafico. Ver → Eliminar un mensaje Va a la papelera, no se borra. Se puede restaurar 30 dias. Ver → Errores comunes La tabla de sintomas y su causa real. Ver → Espacios Los ocho lugares del predio. Se editan con sus fotos y videos. Ver → Estados Los cinco de una consulta: nueva, contactada, coordinada, cerrada, descartada. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-F","t":"F","x":"F Fechas Un retiro sin fecha de inicio no aparece en la agenda. Es el olvido mas comun. Ver → Finalizado Estado de un retiro que ya paso. Se ve solo en \"Ya sucedieron\". Ver → Fotos Se suben por espacio o por retiro. El orden se cambia con las flechas. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-G","t":"G","x":"G Galeria La pagina publica con las fotos del predio. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-H","t":"H","x":"H Hamburguesa El boton de tres rayas del menu en celular. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-I","t":"I","x":"I Inbox El correo de la casilla, dentro del panel. Telefonos y mails clickeables. Ver → IP Se guarda de cada visita, para poder bloquear spam. Solo la ve superadmin. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-L","t":"L","x":"L Ley 25.326 La ley argentina de datos personales. Aplica porque el sitio guarda IPs. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-M","t":"M","x":"M Mail El aviso automatico no es confiable. Las consultas se revisan en el panel. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-N","t":"N","x":"N Nota interna Comentario en una consulta que no ve nadie de afuera. Ver → Nueva Estado inicial de una consulta. Si queda asi, los informes dan cero. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-O","t":"O","x":"O Orden El campo que decide la posicion. Numero mas chico, mas arriba. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-P","t":"P","x":"P Pagoda El salon octogonal. Su foto es el edificio de madera sobre el deck. Ver → Papelera Donde van los mensajes eliminados. Se vacia sola a los 30 dias. Ver → Pileta Espacio al aire libre. La foto aerea es la mejor imagen de verano. Ver → Portada La pantalla del panel donde se editan los textos de la pagina de inicio. Ver → Privacidad Falta la pagina publica que explique que datos se guardan. Ver → Publicado Estado de un retiro que se ve en la agenda. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-R","t":"R","x":"R Recuperar clave Link en el login. Vence en una hora, sirve una vez. Ver → ref De donde vino la persona. Se fija al llegar con un link con ?ref=. Ver → Referidos Codigos de difusion y conteo de botones. Ver → Resenas Comentarios del publico. No se publican hasta que las aprobas. Ver → Restaurar Devolver un mensaje de la papelera a la bandeja. Ver → Retiros Los encuentros con fecha. Se crean, se publican y se agotan. Ver → Rol superadmin, admin o editor. Define que pantallas ves. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-S","t":"S","x":"S Seguridad La pantalla con IPs y bloqueo. Solo superadmin. Ver → Sesion expirada Pasaron dos horas sin actividad. Recarga y volve a entrar. Ver → Sitejet Nunca abrirlo en cPanel. Sobreescribe los archivos del sitio. Ver → Spam El sitio lo frena solo. Lo que mas sirve es el filtro de mails temporales. Ver → Superadmin El rol mas alto. Unico que ve las IPs y puede bloquear. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-T","t":"T","x":"T Titulo de foto Google lee ese texto. Varias fotos llamadas igual no sirven. Ver → Trafico Los numeros del sitio. Hay dos versiones segun el rol. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-U","t":"U","x":"U Usuarios Quien entra al panel. Crear, cambiar clave, desactivar. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-V","t":"V","x":"V Verano 2027 La landing de temporada, en verano2027.php. Ver → Video Comprimir antes de subir. Por debajo de 30 MB. Ver →"},{"d":"LaReserva_AZ.html","dn":"A a la Z","a":"az-W","t":"W","x":"W WhatsApp Un click significa que abrio wa.me. No se sabe si mando el mensaje. Ver →"}];
+const SIN = {"manda msg":"inbox correo mensaje responder","mandar msg":"inbox correo mensaje responder","msg":"mensaje correo inbox","mensaje":"inbox correo consulta responder","mail":"correo inbox mensaje email","email":"correo inbox mensaje mail","correo":"inbox mensaje mail email responder","wsp":"whatsapp","wpp":"whatsapp","whats":"whatsapp","clave":"contrasena password recuperar acceso login","contrasena":"clave password recuperar acceso login","password":"clave contrasena recuperar acceso login","pass":"clave contrasena recuperar","olvide":"recuperar clave contrasena acceso","entrar":"login acceso panel ingresar clave","login":"entrar acceso panel ingresar clave","foto":"imagen fotos imagenes subir media galeria","fotos":"imagen imagenes subir media galeria orden","imagen":"foto fotos subir media galeria","video":"videos subir media comprimir","videos":"video subir media comprimir","subir":"foto video imagen media cargar","cargar":"subir foto video media","borrar":"eliminar papelera recuperar restaurar","eliminar":"borrar papelera recuperar restaurar","papelera":"borrar eliminar restaurar recuperar basura","basura":"papelera borrar eliminar","restaurar":"papelera recuperar borrar deshacer","deshacer":"papelera restaurar recuperar","retiro":"retiros agenda evento encuentro publicar","retiros":"retiro agenda evento encuentro publicar","evento":"retiro agenda encuentro","agenda":"retiros retiro fechas","espacio":"espacios salon pileta lago cabanas comedor","espacios":"espacio salon pileta lago cabanas comedor","salon":"espacio espacios pagoda amor principal","pileta":"espacio espacios piscina","piscina":"pileta espacio","consulta":"consultas estado responder nueva coordinada","consultas":"consulta estado responder nueva coordinada bandeja","estado":"consultas nueva contactada coordinada cerrada descartada","cliente":"consulta consultas responder contacto","reserva":"consulta coordinada estado cupos","cupo":"cupos lugares reserva agotado","cupos":"cupo lugares reserva agotado","precio":"retiro cupos desde","codigo":"referidos ref difusion link","ref":"referidos codigo origen difusion","referido":"referidos codigo ref comision pago","referidos":"referido codigo ref comision pago boton","link":"codigo referidos ref compartir url","compartir":"link codigo referidos instagram whatsapp","instagram":"redes compartir link galeria","usuario":"usuarios rol admin editor superadmin clave","usuarios":"usuario rol admin editor superadmin clave","rol":"usuarios admin editor superadmin permiso","permiso":"rol usuarios admin superadmin acceso","ip":"trafico seguridad bloquear spam superadmin","spam":"bloquear ip seguridad antispam trafico","bloquear":"ip spam seguridad superadmin","visitas":"trafico numeros estadisticas aperturas","trafico":"visitas numeros estadisticas aperturas conversion","numeros":"trafico visitas estadisticas conversion referidos","portada":"inicio home textos hero editar","inicio":"portada home textos hero","texto":"portada editar titulo hero","titulo":"portada texto editar hero foto","error":"problema falla errores comunes roto","problema":"error falla errores comunes roto","roto":"error problema falla se rompe","no anda":"error problema falla errores comunes","no funciona":"error problema falla errores comunes","ayuda":"errores problema manual","resena":"resenas aprobar comentario opinion","resenas":"resena aprobar comentario opinion","verano":"verano2027 landing temporada catalogo","landing":"verano2027 verano temporada pagina","celular":"mobile movil telefono hamburguesa","mobile":"celular movil telefono","privacidad":"datos personales ley ip politica","copia":"respaldo backup exportar","respaldo":"copia backup exportar base","personal":"equipo staff usuario empleado delegar","equipo":"personal staff usuario empleado delegar","staff":"equipo personal usuario empleado","empleado":"personal equipo usuario staff","delegar":"equipo personal staff encargar pedir","sumar":"agregar crear nuevo alta usuario","agregar":"sumar crear nuevo alta"};
+const AQUI = "LaReserva_Resumen.html";
+
+const mb=document.getElementById('menuBtn'),sb=document.getElementById('sidebar'),sc=document.getElementById('scrim');
+function tog(){sb.classList.toggle('open');sc.classList.toggle('show')}
+mb.addEventListener('click',tog);sc.addEventListener('click',tog);
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=820)tog()}));
+document.querySelectorAll('.cp').forEach(btn=>btn.addEventListener('click',()=>{
+  const pre=btn.closest('.cb').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(()=>{const t=btn.textContent;btn.textContent='Copiado';setTimeout(()=>btn.textContent=t,1200)});
+}));
+
+/* Buscador. Sin acentos de los dos lados, asi "practica" encuentra
+   "practica". Cada palabra se expande con sus sinonimos antes de buscar,
+   por eso "manda msg" llega al Inbox aunque esas letras no esten escritas
+   en ninguna parte del texto. */
+const sinAcento = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+
+function expandir(termino){
+  const base = sinAcento(termino).trim();
+  if(!base) return [];
+  let extra = [];
+  if (SIN[base]) extra = SIN[base].split(' ');
+  const palabras = base.split(/\s+/).filter(p => p.length > 1);
+  palabras.forEach(p => { if (SIN[p]) extra = extra.concat(SIN[p].split(' ')); });
+  return Array.from(new Set(palabras.concat(extra)));
+}
+
+function puntuar(e, termino, palabras){
+  const t = sinAcento(e.t), x = sinAcento(e.x), frase = sinAcento(termino).trim();
+  let p = 0;
+  if (t.indexOf(frase) >= 0) p += 100;
+  if (x.indexOf(frase) >= 0) p += 40;
+  palabras.forEach(w => { if (t.indexOf(w) >= 0) p += 25; if (x.indexOf(w) >= 0) p += 6; });
+  if (e.d === AQUI) p += 3;
+  return p;
+}
+
+function recorte(e, palabras){
+  const x = e.x, xs = sinAcento(x);
+  let i = -1;
+  for (let k = 0; k < palabras.length; k++){ const j = xs.indexOf(palabras[k]); if (j >= 0){ i = j; break; } }
+  if (i < 0) return x.slice(0,120) + (x.length > 120 ? '...' : '');
+  const ini = Math.max(0, i - 50);
+  let s = (ini > 0 ? '...' : '') + x.slice(ini, ini + 160) + '...';
+  palabras.forEach(w => {
+    if (w.length < 3) return;
+    s = s.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi'), '<mark>$1</mark>');
+  });
+  return s;
+}
+
+const q = document.getElementById('q'), res = document.getElementById('res'), qx = document.getElementById('qx');
+let sel = -1;
+
+function buscar(){
+  const termino = q.value.trim();
+  qx.classList.toggle('on', termino.length > 0);
+  if (termino.length < 2){ res.classList.remove('on'); res.innerHTML=''; sel=-1; return; }
+  const palabras = expandir(termino);
+  const hits = IDX.map(function(e){ return {e:e, p:puntuar(e,termino,palabras)}; })
+                  .filter(function(o){ return o.p > 0; })
+                  .sort(function(a,b){ return b.p - a.p; })
+                  .slice(0,8);
+  sel = -1;
+  if (!hits.length){
+    res.innerHTML = '<div class="vacio">Nada con <strong>' + termino.replace(/</g,'&lt;') +
+      '</strong>. Proba con una palabra sola: foto, clave, consulta, retiro, papelera, trafico.</div>';
+    res.classList.add('on'); return;
+  }
+  res.innerHTML = '<div class="res-n">' + hits.length + ' resultado' + (hits.length>1?'s':'') + '</div>' +
+    hits.map(function(o){
+      return '<a href="' + o.e.d + '#' + o.e.a + '" data-a="' + o.e.a + '" data-d="' + o.e.d + '">' +
+        '<span class="rt">' + o.e.t + '<span class="rd">' + o.e.dn + '</span></span>' +
+        '<span class="rs">' + recorte(o.e, palabras) + '</span></a>'; }).join('');
+  res.classList.add('on');
+  res.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(ev){
+      if (a.dataset.d !== AQUI) return;
+      ev.preventDefault(); irA(a.dataset.a);
+    });
+  });
+}
+
+function irA(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  abrirGrupoDe(id);
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  el.classList.remove('hl'); void el.offsetWidth; el.classList.add('hl');
+  res.classList.remove('on');
+  history.replaceState(null, '', '#' + id);
+}
+
+q.addEventListener('input', buscar);
+q.addEventListener('keydown', function(ev){
+  const items = res.querySelectorAll('a');
+  if (ev.key === 'Escape'){ q.value=''; buscar(); q.blur(); return; }
+  if (!items.length) return;
+  if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+    ev.preventDefault();
+    sel += (ev.key === 'ArrowDown' ? 1 : -1);
+    if (sel < 0) sel = items.length - 1;
+    if (sel >= items.length) sel = 0;
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    items[sel].classList.add('sel');
+    items[sel].scrollIntoView({block:'nearest'});
+  }
+  if (ev.key === 'Enter'){ ev.preventDefault(); (items[sel] || items[0]).click(); }
+});
+qx.addEventListener('click', function(){ q.value=''; buscar(); q.focus(); });
+document.querySelectorAll('.chip').forEach(function(c){
+  c.addEventListener('click', function(){ q.value = c.dataset.q; buscar(); q.focus(); });
+});
+document.addEventListener('click', function(ev){
+  if (!ev.target.closest('.busca')) res.classList.remove('on');
+});
+document.addEventListener('keydown', function(ev){
+  if (ev.key === '/' && document.activeElement !== q){ ev.preventDefault(); q.focus(); }
+});
+/* Plegado de la barra. Al cargar queda abierto solo el grupo que contiene
+   la seccion que estas mirando; el resto cerrado. */
+document.querySelectorAll('.nav-tog').forEach(function(b){
+  b.addEventListener('click', function(){
+    const g = b.nextElementSibling;
+    const on = b.classList.toggle('abierto');
+    g.classList.toggle('abierto', on);
+    b.setAttribute('aria-expanded', on ? 'true' : 'false');
+  });
+});
+function abrirGrupoDe(id){
+  const link = document.querySelector('.nav-grupo a[href="#' + id + '"]');
+  if (!link) return;
+  const g = link.closest('.nav-grupo'), b = g.previousElementSibling;
+  document.querySelectorAll('.nav-tog').forEach(function(x){
+    x.classList.remove('abierto'); x.nextElementSibling.classList.remove('abierto');
+    x.setAttribute('aria-expanded','false');
+  });
+  g.classList.add('abierto'); b.classList.add('abierto'); b.setAttribute('aria-expanded','true');
+}
+if (location.hash) abrirGrupoDe(location.hash.slice(1));
+
+const ir = document.getElementById('ir');
+if (ir) ir.addEventListener('change', function(){
+  if (!ir.value) return;
+  irA(ir.value);
+  ir.selectedIndex = 0;
+});
+if (location.hash){
+  const el = document.getElementById(location.hash.slice(1));
+  if (el) setTimeout(function(){ el.classList.add('hl'); }, 300);
+}
+</script>
+</body></html>

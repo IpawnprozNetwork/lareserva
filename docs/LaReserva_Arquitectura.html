@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es-AR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>La Reserva &middot; Arquitectura</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{background:#0a0c11;color:#c8d0da;font-family:'IBM Plex Sans',sans-serif;min-height:100vh;scroll-behavior:smooth}
+::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:#1e2530;border-radius:3px}
+.sidebar{position:sticky;top:0;align-self:flex-start;width:252px;height:100vh;overflow-y:auto;background:#080a0e;border-right:1px solid #1a1f29;flex-shrink:0}
+.menu-btn{display:none;position:fixed;top:10px;left:10px;z-index:120;background:#11151d;color:#eef3f8;border:1px solid #2a3340;border-radius:8px;width:42px;height:42px;font-size:20px;cursor:pointer;align-items:center;justify-content:center}
+.nav a{display:block;padding:6px 22px;color:#9aa5b4;text-decoration:none;border-left:2px solid transparent;font-size:12px}
+.nav a:hover{color:#22d3ee;border-left-color:#22d3ee;background:#0e1117}
+.nav-label{padding:11px 22px 4px;font:700 10px 'JetBrains Mono',monospace;color:#3d4654;letter-spacing:.16em}
+pre{margin:0;padding:12px 14px;overflow-x:auto;font:12px/1.55 'JetBrains Mono',monospace;color:#c8d0da;white-space:pre-wrap;word-break:break-word;background:#0c0f15}
+.cb{border:1px solid #232a35;border-radius:8px;overflow:hidden;margin:10px 0}
+.ch{display:flex;justify-content:space-between;align-items:center;padding:5px 12px;background:#11151d;border-bottom:1px solid #232a35}
+.cl{font:700 10px 'JetBrains Mono',monospace;color:#22d3ee;letter-spacing:.06em}
+.cp{cursor:pointer;font:700 9px 'JetBrains Mono',monospace;color:#0a0c11;background:#22d3ee;border:none;padding:3px 10px;border-radius:4px}
+h1{font:800 27px 'Space Grotesk',sans-serif;color:#eef3f8;margin:0 0 6px;line-height:1.2}
+h2{font:700 20px 'Space Grotesk',sans-serif;color:#22d3ee;margin:30px 0 10px;scroll-margin-top:18px}
+h3{font:700 14px 'Space Grotesk',sans-serif;color:#f5a623;margin:18px 0 6px}
+p,li{font-size:13.5px;line-height:1.7;color:#9aa5b4;margin:6px 0}
+ul,ol{padding-left:20px}
+strong{color:#dbe3ec}
+a{color:#22d3ee}
+section[id]{scroll-margin-top:18px}
+.tag{font:700 10px 'JetBrains Mono',monospace;color:#f0398b;letter-spacing:.18em;text-transform:uppercase;margin-bottom:8px}
+.lede{font-size:15px;line-height:1.75;color:#b3bdca;margin:10px 0 4px}
+.stop{padding:12px 16px;background:#140a0d;border:1px solid #3a1520;border-left:3px solid #f0398b;border-radius:0 8px 8px 0;font-size:13.5px;color:#c09098;margin:12px 0}
+.tip{padding:10px 14px;background:#0d1210;border:1px solid #1a3020;border-left:3px solid #22d3ee;border-radius:0 8px 8px 0;font-size:13px;color:#9ab4a0;margin:12px 0}
+.good{padding:10px 14px;background:#0a1510;border:1px solid #14351f;border-left:3px solid #22c55e;border-radius:0 8px 8px 0;font-size:13px;color:#9dc4a8;margin:12px 0}
+.warn{padding:10px 14px;background:#15110a;border:1px solid #352a14;border-left:3px solid #f5a623;border-radius:0 8px 8px 0;font-size:13px;color:#c4b08a;margin:12px 0}
+.tw{overflow-x:auto;margin:10px 0}
+table{width:100%;border-collapse:collapse;margin:0;font-size:12.5px;min-width:480px}
+th{text-align:left;padding:8px 10px;background:#0f1318;color:#f5a623;font:700 11px 'JetBrains Mono',monospace;border-bottom:1px solid #232a35;white-space:nowrap}
+td{padding:8px 10px;border-bottom:1px solid #161c24;color:#9aa5b4;vertical-align:top}
+tr:hover td{background:#0d1117}
+code{font:500 11.5px 'JetBrains Mono',monospace;color:#22d3ee;background:#0f141b;padding:1px 5px;border-radius:4px}
+.scrim{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:49}
+.pill{display:inline-block;font:700 10px 'JetBrains Mono',monospace;padding:2px 8px;border-radius:10px;letter-spacing:.06em;white-space:nowrap}
+.pill-done{background:#0a1510;color:#22c55e;border:1px solid #14351f}
+.pill-open{background:#140a0d;color:#f0398b;border:1px solid #3a1520}
+.pill-info{background:#0d1420;color:#22d3ee;border:1px solid #16303d}
+.pill-warn{background:#15110a;color:#f5a623;border:1px solid #352a14}
+.paso{border:1px solid #232a35;border-radius:8px;padding:14px 16px 4px;margin:10px 0;background:#0c0f15}
+.paso .n{font:800 10px 'JetBrains Mono',monospace;color:#f5a623;letter-spacing:.14em;text-transform:uppercase}
+.paso h3{margin:4px 0 6px;color:#eef3f8}
+.firma{border-top:1px solid #1a1f29;margin-top:40px;padding-top:16px;font-size:12px;color:#5c6675}
+.doclinks{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.doclinks a{font:700 10px 'JetBrains Mono',monospace;letter-spacing:.08em;text-transform:uppercase;padding:5px 12px;border:1px solid #232a35;border-radius:16px;text-decoration:none;color:#9aa5b4}
+.doclinks a:hover,.doclinks a.on{border-color:#22d3ee;color:#22d3ee}
+.az-letra{font:800 22px 'Space Grotesk',sans-serif;color:#f0398b;margin:26px 0 4px;border-bottom:1px solid #1a1f29;padding-bottom:4px}
+.az-fila{display:grid;grid-template-columns:200px 1fr;gap:14px;padding:9px 0;border-bottom:1px solid #141922}
+.az-fila b{color:#eef3f8;font:600 13.5px 'IBM Plex Sans',sans-serif}
+.az-fila span{font-size:13px;color:#9aa5b4;line-height:1.65}
+.az-fila a{white-space:nowrap}
+@media(max-width:700px){.az-fila{grid-template-columns:1fr;gap:3px}}
+
+
+/* Selector "Ir a". En celular es el menu nativo del telefono, que es la
+   forma mas comoda de saltar entre 20 secciones con el pulgar. En
+   escritorio queda oculto porque ahi esta la barra lateral. */
+.ir-wrap{display:none;margin-bottom:8px}
+#ir{width:100%;background:#0f1318;border:1px solid #232a35;border-radius:10px;color:#eef3f8;
+  font:inherit;font-size:13.5px;padding:11px 12px;appearance:none;
+  background-image:linear-gradient(45deg,transparent 50%,#5c6675 50%),linear-gradient(135deg,#5c6675 50%,transparent 50%);
+  background-position:calc(100% - 18px) 50%,calc(100% - 13px) 50%;
+  background-size:5px 5px,5px 5px;background-repeat:no-repeat}
+#ir:focus{outline:0;border-color:#22d3ee}
+
+/* Tira de letras del A a la Z. Reemplaza la lista lateral, que con 20
+   letras se cortaba. Se envuelve sola y cada letra es un objetivo de
+   44px, que es el minimo comodo para un dedo. */
+.tira{display:flex;flex-wrap:wrap;gap:5px;margin:14px 0 6px;position:sticky;top:0;
+  background:#0a0c11;padding:8px 0;z-index:30;border-bottom:1px solid #141922}
+.tira a{display:flex;align-items:center;justify-content:center;min-width:34px;height:34px;
+  border:1px solid #232a35;border-radius:8px;color:#9aa5b4;text-decoration:none;
+  font:700 13px 'Space Grotesk',sans-serif}
+.tira a:hover{border-color:#22d3ee;color:#22d3ee;background:#0e1117}
+
+.busca{position:sticky;top:0;z-index:40;background:#0a0c11;padding:14px 0 10px;margin-bottom:4px;border-bottom:1px solid #141922}
+.busca-caja{position:relative}
+#q{width:100%;background:#0f1318;border:1px solid #232a35;border-radius:10px;color:#eef3f8;font:inherit;font-size:14px;padding:12px 40px 12px 40px}
+#q:focus{outline:0;border-color:#22d3ee;background:#11151d}
+#q::placeholder{color:#4d5767}
+.busca-ico{position:absolute;left:13px;top:50%;transform:translateY(-50%);color:#4d5767;font-size:15px;pointer-events:none}
+.busca-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:0;color:#5c6675;font-size:19px;cursor:pointer;padding:4px 8px;display:none}
+.busca-x.on{display:block}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:9px}
+.chip{font:600 11px 'IBM Plex Sans',sans-serif;padding:4px 11px;border:1px solid #232a35;border-radius:14px;color:#9aa5b4;background:#0c0f15;cursor:pointer}
+.chip:hover{border-color:#22d3ee;color:#22d3ee}
+.res{margin-top:10px;border:1px solid #232a35;border-radius:10px;background:#0c0f15;display:none;max-height:58vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.res.on{display:block}
+.res-n{padding:7px 14px;font:700 10px 'JetBrains Mono',monospace;color:#5c6675;letter-spacing:.1em;background:#0f1318;border-bottom:1px solid #1a1f29;position:sticky;top:0}
+.res a{display:block;padding:10px 14px;border-bottom:1px solid #141922;text-decoration:none}
+.res a:last-child{border-bottom:0}
+.res a:hover,.res a.sel{background:#11151d}
+.res .rt{color:#eef3f8;font-size:13.5px;font-weight:600;display:block}
+.res .rd{color:#5c6675;font:700 9px 'JetBrains Mono',monospace;letter-spacing:.1em;text-transform:uppercase;margin-left:8px}
+.res .rs{color:#7c8696;font-size:12px;display:block;margin-top:3px;line-height:1.5}
+.res mark{background:rgba(34,211,238,.22);color:#9ee9f7;border-radius:2px;padding:0 2px}
+.res .vacio{padding:16px 14px;color:#7c8696;font-size:13px;line-height:1.6}
+.hl{animation:dest 2.2s ease}
+@keyframes dest{0%,55%{background:rgba(34,211,238,.13)}100%{background:transparent}}
+
+@media (max-width:1024px){
+  .ir-wrap{display:block}
+}
+@media (max-width:820px){
+  .menu-btn{display:flex}
+  .sidebar{position:fixed;top:0;left:0;height:100vh;width:82vw;max-width:320px;transform:translateX(-100%);transition:transform .22s;box-shadow:2px 0 20px rgba(0,0,0,.5);z-index:50;padding-bottom:40px}
+  .sidebar.open{transform:translateX(0)}
+  .scrim.show{display:block}
+  .main{padding:8px 16px 80px!important}
+  .busca{padding-top:56px}
+  h1{font-size:23px}
+  h2{font-size:18px;margin-top:24px}
+  p,li{font-size:14px}
+  .res{max-height:52vh}
+  .doclinks{gap:6px}
+  .doclinks a{padding:6px 11px;font-size:9.5px}
+  .chips{gap:5px}
+  .chip{padding:6px 11px;font-size:11.5px}
+  #q{font-size:16px;padding:13px 40px}   /* 16px evita que iOS haga zoom al tocar */
+  .az-fila{grid-template-columns:1fr;gap:2px;padding:11px 0}
+  .tw{margin:10px -16px;padding:0 16px}  /* las tablas respiran hasta el borde */
+  table{font-size:12px}
+  pre{font-size:11.5px}
+  .cb,.tip,.stop,.good,.warn,.paso{margin-left:0;margin-right:0}
+}
+@media (max-width:420px){
+  .main{padding:8px 13px 80px!important}
+  .tira a{min-width:30px;height:30px;font-size:12px}
+  h1{font-size:21px}
+}
+/* Pantallas bajas en horizontal: el buscador pegajoso se come todo. */
+@media (max-height:520px){
+  .busca{position:static}
+  .tira{position:static}
+}
+</style></head><body>
+<button class="menu-btn" id="menuBtn">&#9776;</button>
+<div class="scrim" id="scrim"></div>
+<div style="display:flex;min-height:100vh">
+<aside class="sidebar" id="sidebar">
+  <div style="padding:16px 20px 12px;border-bottom:1px solid #1a1f29;position:sticky;top:0;background:#080a0e;z-index:2">
+    <div style="font:800 14px 'Space Grotesk',sans-serif;color:#eef3f8">LA RESERVA <span style="color:#22d3ee">ARQUITECTURA</span></div>
+    <div style="font:500 9px 'JetBrains Mono',monospace;color:#5c6675;letter-spacing:.14em;margin-top:3px">PARA JOHNNY &middot; 17 OCT 2026</div>
+  </div>
+  <nav class="nav" style="padding:8px 0"><div class="nav-label">COMO ESTA ARMADO</div><a href="#a-stack">Con que esta hecho</a><a href="#a-limites">Los limites del hosting</a><a href="#a-paginas">Las paginas</a><a href="#a-flujo">Que pasa cuando alguien entra</a><div class="nav-label">LAS PIEZAS</div><a href="#a-base">La base de datos</a><a href="#a-form">Como funciona un formulario</a><a href="#a-visor">El visor</a><a href="#a-correo">El correo al panel</a><a href="#a-atrib">ref y boton</a><div class="nav-label">MANTENIMIENTO</div><a href="#a-deploy">Como se sube un cambio</a><a href="#a-trampas">Las trampas conocidas</a><div class="nav-label">REPLICAR</div><a href="#a-clon">Clonar el sitio</a><a href="#a-sql">Los scripts de base</a></nav>
+</aside>
+<main class="main" style="flex:1;min-width:0;padding:8px 40px 90px;max-width:980px">
+
+<div class="busca">
+  <div class="ir-wrap">
+    <select id="ir" aria-label="Ir a una seccion"><option value="">Ir a una seccion...</option><optgroup label="COMO ESTA ARMADO"><option value="a-stack">Con que esta hecho</option><option value="a-limites">Los limites del hosting</option><option value="a-paginas">Las paginas</option><option value="a-flujo">Que pasa cuando alguien entra</option></optgroup><optgroup label="LAS PIEZAS"><option value="a-base">La base de datos</option><option value="a-form">Como funciona un formulario</option><option value="a-visor">El visor</option><option value="a-correo">El correo al panel</option><option value="a-atrib">ref y boton</option></optgroup><optgroup label="MANTENIMIENTO"><option value="a-deploy">Como se sube un cambio</option><option value="a-trampas">Las trampas conocidas</option></optgroup><optgroup label="REPLICAR"><option value="a-clon">Clonar el sitio</option><option value="a-sql">Los scripts de base</option></optgroup></select>
+  </div>
+  <div class="busca-caja">
+    <span class="busca-ico">&#9906;</span>
+    <input id="q" type="search" autocomplete="off" spellcheck="false"
+           placeholder="Buscar en todas las guias. Proba: papelera, subir fotos, manda msg, olvide la clave">
+    <button class="busca-x" id="qx" aria-label="Limpiar">&times;</button>
+  </div>
+  <div class="chips"><button class="chip" data-q="consulta">Responder una consulta</button><button class="chip" data-q="publicar retiro">Publicar un retiro</button><button class="chip" data-q="subir fotos">Subir fotos</button><button class="chip" data-q="clave">Recuperar la clave</button><button class="chip" data-q="papelera">Papelera del inbox</button></div>
+  <div class="res" id="res"></div>
+</div>
+
+<div class="doclinks"><a href="LaReserva_Arquitectura.html" class="on">Arquitectura</a></div>
+
+<div class="tag">Arquitectura</div>
+<h1>Como esta armado por dentro</h1>
+<p class="lede">Johnny: esto es la parte tecnica. No te hace falta para operar
+el sitio, el Manual alcanza. Esta aca para que exista, para que si algun dia
+trabaja otra persona en el sitio no tenga que reconstruir todo desde cero, y
+para poder repetir el mismo sitio en otro proyecto.</p>
+
+<section id="a-stack">
+<h2>Con que esta hecho</h2>
+<div class="tw"><table>
+<tr><th>Capa</th><th>Que</th><th>Detalle</th></tr>
+<tr><td>Lenguaje</td><td>PHP 8.1</td><td>Sin frameworks ni librerias externas</td></tr>
+<tr><td>Base de datos</td><td>MySQL</td><td><code>lareserv_admin</code>, 14 tablas</td></tr>
+<tr><td>Front end</td><td>JavaScript y CSS a mano</td><td>Sin npm, sin compilacion</td></tr>
+<tr><td>Hosting</td><td>HoboHost, cPanel compartido</td><td><strong>Sin acceso de consola</strong></td></tr>
+<tr><td>Correo</td><td>Casilla cPanel + filtro</td><td>El envio automatico no es confiable</td></tr>
+</table></div>
+<p>La decision de no usar frameworks no fue estetica: en este hosting no se
+puede instalar nada. Lo que hay es PHP, MySQL y un administrador de archivos.</p>
+</section>
+
+<section id="a-limites">
+<h2>Los limites del hosting, y que significan</h2>
+<div class="tw"><table>
+<tr><th>Limite</th><th>Consecuencia</th></tr>
+<tr><td>Sin consola</td><td>Cada cambio es un archivo subido a mano. No hay automatizacion posible</td></tr>
+<tr><td>Sin instalador de paquetes</td><td>Cero dependencias externas. Todo escrito a mano</td></tr>
+<tr><td>Sin tareas programadas</td><td>Nada corre solo de noche. Todo pasa cuando alguien entra</td></tr>
+<tr><td>El envio de mail falla</td><td>Las consultas se leen en el panel, no por correo</td></tr>
+</table></div>
+<div class="stop">Por no tener consola, cada archivo lleva un numero de version
+escrito adentro. Es la unica forma de confirmar que hay realmente en el
+servidor. Se mira con Ctrl+U en el navegador.</div>
+</section>
+
+<section id="a-paginas">
+<h2>Las paginas</h2>
+<div class="tw"><table>
+<tr><th>Archivo</th><th>Que muestra</th><th>Guarda en la base</th></tr>
+<tr><td><code>welcome.html</code></td><td>Pantalla de entrada</td><td>No</td></tr>
+<tr><td><code>index.php</code></td><td>Portada</td><td>Via contacto</td></tr>
+<tr><td><code>espacios.php</code></td><td>Los 8 espacios, con visor y calendario</td><td>Si</td></tr>
+<tr><td><code>retiros.php</code></td><td>La agenda, con visor y reserva</td><td>Si</td></tr>
+<tr><td><code>retiro.php</code></td><td>Un retiro completo, con resenas</td><td>Si</td></tr>
+<tr><td><code>galeria.php</code></td><td>Fotos e Instagram</td><td>No</td></tr>
+<tr><td><code>historia.php</code></td><td>El relato del lugar</td><td>No</td></tr>
+<tr><td><code>contacto.php</code></td><td>Formulario principal</td><td>Si</td></tr>
+<tr><td><code>verano2027.php</code></td><td>Landing de temporada</td><td>Si</td></tr>
+<tr><td><code>track.php</code></td><td>Registra clicks, no se ve nunca</td><td>Si</td></tr>
+</table></div>
+<p>En <code>/admin/</code> hay once pantallas mas, todas protegidas por sesion.</p>
+</section>
+
+<section id="a-flujo">
+<h2>Que pasa cuando alguien entra</h2>
+<div class="cb"><div class="ch"><span class="cl">RECORRIDO</span></div><pre>pedido del navegador
+  |
+  .htaccess          redirige a https, fija los limites de subida
+  |
+  pagina.php
+    |
+    config.php       arranca la sesion, abre la base, captura ?ref=
+    antispam.php     solo donde hay formularios
+    |
+    consulta a MySQL
+    |
+    nav + contenido + pie</pre></div>
+<p><code>config.php</code> corre primero en cada pagina y hace cuatro cosas
+antes de que salga un solo caracter: arranca la sesion, captura de donde vino
+el visitante, abre la conexion y define las constantes del sitio. El orden
+importa, y esa es la razon del bug mas grave que tuvo el sitio.</p>
+</section>
+
+<section id="a-base">
+<h2>La base de datos</h2>
+<div class="tw"><table>
+<tr><th>Tabla</th><th>Contiene</th></tr>
+<tr><td><code>espacios</code> / <code>espacio_media</code></td><td>Los 8 espacios y su material</td></tr>
+<tr><td><code>retiros</code> / <code>retiro_media</code></td><td>Los encuentros y su material</td></tr>
+<tr><td><code>galeria</code></td><td>Las fotos publicas</td></tr>
+<tr><td><code>consultas</code></td><td>Todo lo que mandan los formularios</td></tr>
+<tr><td><code>resenas</code></td><td>Resenas, ocultas hasta aprobar</td></tr>
+<tr><td><code>mensajes</code></td><td>El correo entrante</td></tr>
+<tr><td><code>eventos</code></td><td>Cada click registrado</td></tr>
+<tr><td><code>referidos</code> / <code>referido_pagos</code></td><td>Codigos y pagos</td></tr>
+<tr><td><code>ajustes</code></td><td>Los textos editables de la portada</td></tr>
+<tr><td><code>usuarios</code></td><td>Los logins del panel</td></tr>
+<tr><td><code>ip_bloqueadas</code></td><td>IPs bloqueadas</td></tr>
+</table></div>
+<div class="warn">Las tablas no comparten la misma configuracion de texto: las
+viejas usan una y las nuevas otra. Comparar texto entre una y otra da error.
+Es la razon de un script que fallo y hubo que reescribir.</div>
+</section>
+
+<section id="a-form">
+<h2>Como funciona un formulario</h2>
+<p>Todos escriben en la misma tabla, <code>consultas</code>, y pasan por el
+mismo filtro en este orden:</p>
+<div class="cb"><div class="ch"><span class="cl">FILTRO</span></div><pre>cuerpo descartado por tamano  -> avisa que es el tamano, no la sesion
+campo trampa lleno            -> finge exito, no guarda nada
+token de seguridad invalido   -> "la sesion expiro"
+IP bloqueada                  -> falla sin dar detalles
+mas de 5 envios por hora      -> pide esperar
+mail temporal o inexistente   -> rechaza
+  -> guarda la consulta y registra el evento</pre></div>
+<div class="tip">Cada control <strong>falla abierto</strong>: si la tabla de
+registro no existe, el control se saltea y la consulta se guarda igual. Un
+registro roto nunca puede bloquear una reserva de verdad.</div>
+<p>El campo trampa es un campo invisible que un humano nunca completa. Si viene
+lleno, es un bot: el sitio responde que todo salio bien y no guarda nada, para
+que el bot no aprenda a esquivarlo.</p>
+</section>
+
+<section id="a-visor">
+<h2>El visor</h2>
+<p>Espacios, agenda y la landing usan el mismo patron:</p>
+<ol>
+<li>PHP mete todos los datos en la pagina de una vez</li>
+<li>Las tarjetas son links reales</li>
+<li>El JavaScript intercepta el clic y arma el visor con esos datos</li>
+<li>Si el JavaScript falla, el link funciona igual</li>
+</ol>
+<p>No hay llamadas al servidor al abrir una tarjeta: todo ya esta en la pagina,
+por eso abre instantaneo. Lo unico que viaja al servidor es el formulario y el
+registro del click.</p>
+</section>
+
+<section id="a-correo">
+<h2>El correo al panel</h2>
+<p>Una pagina web no puede recibir correo. Solo puede leer correo que ya fue
+entregado en algun lado.</p>
+<div class="cb"><div class="ch"><span class="cl">RECORRIDO</span></div><pre>mail entrante
+  -> servidor de correo
+  -> filtro de cPanel
+       accion 1: dejar copia en la casilla   (para webmail)
+       accion 2: pasar a pipe_correo.php
+  -> el script lee el mensaje y lo guarda en la base
+  -> el panel lo muestra en Inbox</pre></div>
+<div class="stop">El script <strong>siempre</strong> termina diciendo que todo
+salio bien, incluso si fallo. Si dijera que fallo, el servidor devolveria el
+mail al remitente con un error, y un cliente veria un rebote. Los errores se
+anotan en un archivo aparte.</div>
+<p>Los adjuntos se cuentan pero no se guardan. Escribir archivos que manda
+cualquier desconocido es lo mas peligroso que podria hacer este sistema, y a
+proposito no lo hace.</p>
+</section>
+
+<section id="a-atrib">
+<h2>ref y boton: dos cosas distintas</h2>
+<p>Es lo unico del proyecto que conviene entender antes de tocar nada.</p>
+<div class="cb"><div class="ch"><span class="cl">EJEMPLO</span></div><pre>Entra por el link de Instagram
+  ?ref=instagram          -> queda marcado: instagram
+
+Abre el Salon Principal
+  evento: abrir_espacio     ref=instagram   boton=(ninguno)
+
+Completa el formulario
+  evento: consulta_ok       ref=instagram   boton=lr
+  consulta guardada         ref=instagram   boton=lr
+
+Se lee asi: lo trajo Instagram, lo convirtio el formulario.</pre></div>
+<div class="stop">Si los dos campos se pisaran, todas las reservas quedarian
+acreditadas al boton y los canales reales mostrarian clicks con cero
+conversiones para siempre. El unico numero que vale la pena se volveria
+ilegible. Por eso son dos columnas separadas y no una.</div>
+</section>
+
+<section id="a-deploy">
+<h2>Como se sube un cambio</h2>
+<div class="cb"><div class="ch"><span class="cl">RUTINA</span></div><pre>1. Editar el archivo
+2. Revisar que la sintaxis sea valida
+3. Subir por cPanel File Manager
+4. Ctrl+U en la pagina y confirmar el numero de version
+5. Correr el chequeo automatico
+6. Guardar el cambio en el repositorio</pre></div>
+<p>El repositorio en GitHub es historial y respaldo, <strong>no</strong> un
+destino de publicacion. Subir ahi no cambia nada en el sitio.</p>
+<p>Hay un script que revisa el sitio en vivo: que todas las paginas respondan,
+que las versiones publicadas sean las correctas, que el panel no se vea sin
+sesion y que no haya quedado ningun archivo de prueba expuesto.</p>
+</section>
+
+<section id="a-trampas">
+<h2>Las trampas conocidas</h2>
+<p>Todas estas costaron horas. Estan anotadas para no volver a perderlas.</p>
+<div class="tw"><table>
+<tr><th>Sintoma</th><th>Causa real</th></tr>
+<tr><td>Todos los formularios decian "la sesion expiro"</td><td>La sesion arrancaba despues de que la pagina ya habia empezado a salir, asi que la cookie nunca se enviaba</td></tr>
+<tr><td>Pagina en blanco con error 500</td><td>Error de escritura en el codigo. Pasa antes de que se puedan mostrar errores</td></tr>
+<tr><td>"Sesion expirada" al subir un video</td><td>El archivo supero el limite y el servidor descarto todo el envio, incluido el token</td></tr>
+<tr><td>Un panel no se podia scrollear</td><td>Un detalle de como funcionan las grillas en CSS</td></tr>
+<tr><td>Texto pegado a la izquierda</td><td>Un bloque que ocupa todo el ancho no se puede centrar</td></tr>
+<tr><td>El correo no llegaba al panel</td><td>La ruta del script estaba escrita de forma relativa y el servidor no la resolvia</td></tr>
+<tr><td>Las subidas dejaron de funcionar solas</td><td>El hosting saco una pieza de PHP sin avisar</td></tr>
+</table></div>
+<div class="stop"><strong>La trampa mas cara de todas:</strong> armar un
+archivo nuevo sobre una copia vieja. Paso tres veces en este proyecto y las
+tres borro funcionalidad en silencio, sin que nada diera error.</div>
+</section>
+
+<section id="a-clon">
+<h2>Clonar el sitio para otro proyecto</h2>
+<p>Todo lo que es especificamente de La Reserva esta en cuatro lugares.
+Cambiando esos cuatro, el resto sirve para cualquier predio, estudio o centro
+que publique una agenda y reciba consultas.</p>
+<div class="tw"><table>
+<tr><th>#</th><th>Que</th><th>Donde</th></tr>
+<tr><td>1</td><td>Identidad: nombre, dominio, mail, WhatsApp, Instagram, coordenadas</td><td><code>includes/config.php</code></td></tr>
+<tr><td>2</td><td>Colores y tipografia</td><td>Las variables al principio de <code>css/style.css</code></td></tr>
+<tr><td>3</td><td>Contenido: espacios, retiros, fotos, textos</td><td>Todo en la base de datos</td></tr>
+<tr><td>4</td><td>Vocabulario: "retiros" y "espacios"</td><td>Buscar y reemplazar en el texto visible</td></tr>
+</table></div>
+<h3>Lo que no hay que tocar al clonar</h3>
+<ul>
+<li>El sistema anti spam: funciona igual para cualquier sitio</li>
+<li>El sistema de usuarios y sesiones</li>
+<li>El modelo de <code>ref</code> y <code>boton</code></li>
+<li>La estructura de las tablas de consultas, eventos y referidos</li>
+</ul>
+<div class="good">Un clon completo, con contenido cargado, es un dia de
+trabajo. Lo que lo hace posible es que nada de La Reserva esta escrito a mano
+fuera de esos cuatro lugares, y conviene que siga asi.</div>
+</section>
+
+<section id="a-sql">
+<h2>Los scripts de base de datos</h2>
+<p>Estan numerados y guardados en el repositorio, en la carpeta <code>db/</code>.
+Se corren en orden si hubiera que levantar todo de cero.</p>
+<div class="tw"><table>
+<tr><th>Archivo</th><th>Que hace</th></tr>
+<tr><td><code>01-consultas.sql</code></td><td>La tabla de consultas</td></tr>
+<tr><td><code>02-tracking.sql</code></td><td>Eventos, IPs bloqueadas y las columnas de origen</td></tr>
+<tr><td><code>03-mensajes.sql</code></td><td>La bandeja de correo del panel</td></tr>
+<tr><td><code>04-referidos.sql</code></td><td>Codigos de difusion y pagos</td></tr>
+<tr><td><code>05-boton.sql</code></td><td>La columna de etiqueta de boton</td></tr>
+<tr><td><code>06-fecha-fin.sql</code></td><td>Rango de fechas en las consultas</td></tr>
+<tr><td><code>07-media-verano2027.sql</code></td><td>El material nuevo repartido en los espacios</td></tr>
+<tr><td><code>08-fix-pagoda-cabanas.sql</code></td><td>Corrige la foto del Pagoda que estaba como cabana</td></tr>
+<tr><td><code>99-borrar-pruebas.sql</code></td><td><span class="pill pill-open">BORRA DATOS</span> Herramienta de limpieza</td></tr>
+</table></div>
+<div class="stop">Antes de correr cualquier script que borre o modifique en
+masa: phpMyAdmin, Exportar, Rapido. Son treinta segundos y es el unico seguro
+que hay.</div>
+</section>
+
+<div class="firma">
+  La Reserva Naturaleza Arte &middot; lareserva.net.ar<br>
+  Escrito por Carlos Verbelen para Johnny. 17 de octubre de 2026.
+</div>
+</main>
+</div>
+<script>
+const IDX = [{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-stack","t":"Con que esta hecho","x":"Con que esta hecho Capa Que Detalle Lenguaje PHP 8.1 Sin frameworks ni librerias externas Base de datos MySQL lareserv_admin , 14 tablas Front end JavaScript y CSS a mano Sin npm, sin compilacion Hosting HoboHost, cPanel compartido Sin acceso de consola Correo Casilla cPanel + filtro El envio automatico no es confiable La decision de no usar frameworks no fue estetica: en este hosting no se puede instalar nada. Lo que hay es PHP, MySQL y un administrador de archivos."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-limites","t":"Los limites del hosting, y que significan","x":"Los limites del hosting, y que significan Limite Consecuencia Sin consola Cada cambio es un archivo subido a mano. No hay automatizacion posible Sin instalador de paquetes Cero dependencias externas. Todo escrito a mano Sin tareas programadas Nada corre solo de noche. Todo pasa cuando alguien entra El envio de mail falla Las consultas se leen en el panel, no por correo Por no tener consola, cada archivo lleva un numero de version escrito adentro. Es la unica forma de confirmar que hay realmente en el servidor. Se mira con Ctrl+U en el navegador."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-paginas","t":"Las paginas","x":"Las paginas Archivo Que muestra Guarda en la base welcome.html Pantalla de entrada No index.php Portada Via contacto espacios.php Los 8 espacios, con visor y calendario Si retiros.php La agenda, con visor y reserva Si retiro.php Un retiro completo, con resenas Si galeria.php Fotos e Instagram No historia.php El relato del lugar No contacto.php Formulario principal Si verano2027.php Landing de temporada Si track.php Registra clicks, no se ve nunca Si En /admin/ hay once pantallas mas, todas protegidas por sesion."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-flujo","t":"Que pasa cuando alguien entra","x":"Que pasa cuando alguien entra RECORRIDO pedido del navegador | .htaccess redirige a https, fija los limites de subida | pagina.php | config.php arranca la sesion, abre la base, captura ?ref= antispam.php solo donde hay formularios | consulta a MySQL | nav + contenido + pie config.php corre primero en cada pagina y hace cuatro cosas antes de que salga un solo caracter: arranca la sesion, captura de donde vino el visitante, abre la conexion y define las constantes del sitio. El orden importa, y esa es la razon del bug mas grave que tuvo el sitio."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-base","t":"La base de datos","x":"La base de datos Tabla Contiene espacios / espacio_media Los 8 espacios y su material retiros / retiro_media Los encuentros y su material galeria Las fotos publicas consultas Todo lo que mandan los formularios resenas Resenas, ocultas hasta aprobar mensajes El correo entrante eventos Cada click registrado referidos / referido_pagos Codigos y pagos ajustes Los textos editables de la portada usuarios Los logins del panel ip_bloqueadas IPs bloqueadas Las tablas no comparten la misma configuracion de texto: las viejas usan una y las nuevas otra. Comparar texto entre una y otra da error. Es la razon de un script que fallo y hubo que reescribir."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-form","t":"Como funciona un formulario","x":"Como funciona un formulario Todos escriben en la misma tabla, consultas , y pasan por el mismo filtro en este orden: FILTRO cuerpo descartado por tamano -> avisa que es el tamano, no la sesion campo trampa lleno -> finge exito, no guarda nada token de seguridad invalido -> \"la sesion expiro\" IP bloqueada -> falla sin dar detalles mas de 5 envios por hora -> pide esperar mail temporal o inexistente -> rechaza -> guarda la consulta y registra el evento Cada control falla abierto : si la tabla de registro no existe, el control se saltea y la consulta se guarda igual. Un registro roto nunca puede bloquear una reserva de verdad. El campo trampa es un campo invisible que un humano nunca completa. Si viene lleno, es un bot: el sitio responde que todo salio bien y no guarda nada, para que el bot no aprenda a esquivarlo."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-visor","t":"El visor","x":"El visor Espacios, agenda y la landing usan el mismo patron: PHP mete todos los datos en la pagina de una vez Las tarjetas son links reales El JavaScript intercepta el clic y arma el visor con esos datos Si el JavaScript falla, el link funciona igual No hay llamadas al servidor al abrir una tarjeta: todo ya esta en la pagina, por eso abre instantaneo. Lo unico que viaja al servidor es el formulario y el registro del click."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-correo","t":"El correo al panel","x":"El correo al panel Una pagina web no puede recibir correo. Solo puede leer correo que ya fue entregado en algun lado. RECORRIDO mail entrante -> servidor de correo -> filtro de cPanel accion 1: dejar copia en la casilla (para webmail) accion 2: pasar a pipe_correo.php -> el script lee el mensaje y lo guarda en la base -> el panel lo muestra en Inbox El script siempre termina diciendo que todo salio bien, incluso si fallo. Si dijera que fallo, el servidor devolveria el mail al remitente con un error, y un cliente veria un rebote. Los errores se anotan en un archivo aparte. Los adjuntos se cuentan pero no se guardan. Escribir archivos que manda cualquier desconocido es lo mas peligroso que podria hacer este sistema, y a proposito no lo hace."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-atrib","t":"ref y boton: dos cosas distintas","x":"ref y boton: dos cosas distintas Es lo unico del proyecto que conviene entender antes de tocar nada. EJEMPLO Entra por el link de Instagram ?ref=instagram -> queda marcado: instagram Abre el Salon Principal evento: abrir_espacio ref=instagram boton=(ninguno) Completa el formulario evento: consulta_ok ref=instagram boton=lr consulta guardada ref=instagram boton=lr Se lee asi: lo trajo Instagram, lo convirtio el formulario. Si los dos campos se pisaran, todas las reservas quedarian acreditadas al boton y los canales reales mostrarian clicks con cero conversiones para siempre. El unico numero que vale la pena se volveria ilegible. Por eso son dos columnas separadas y no una."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-deploy","t":"Como se sube un cambio","x":"Como se sube un cambio RUTINA 1. Editar el archivo 2. Revisar que la sintaxis sea valida 3. Subir por cPanel File Manager 4. Ctrl+U en la pagina y confirmar el numero de version 5. Correr el chequeo automatico 6. Guardar el cambio en el repositorio El repositorio en GitHub es historial y respaldo, no un destino de publicacion. Subir ahi no cambia nada en el sitio. Hay un script que revisa el sitio en vivo: que todas las paginas respondan, que las versiones publicadas sean las correctas, que el panel no se vea sin sesion y que no haya quedado ningun archivo de prueba expuesto."},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-trampas","t":"Las trampas conocidas","x":"Las trampas conocidas Todas estas costaron horas. Estan anotadas para no volver a perderlas. Sintoma Causa real Todos los formularios decian \"la sesion expiro\" La sesion arrancaba despues de que la pagina ya habia empezado a salir, asi que la cookie nunca se enviaba Pagina en blanco con error 500 Error de escritura en el codigo. Pasa antes de que se puedan mostrar errores \"Sesion expirada\" al subir un video El archivo supero el limite y el servidor descarto todo el envio, incluido el token Un panel no se podia scrollear Un detalle de como funcionan las grillas en CSS Texto pegado a la izquierda Un bloque que ocupa todo el ancho no se puede centrar El correo no llegaba al panel La ruta del script estaba escrita de forma relativa y el servidor no la resolvia Las subidas dejaron de funcionar solas El hosting saco una pieza de PHP sin avisar La trampa mas cara de todas: armar un archivo nuev"},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-clon","t":"Clonar el sitio para otro proyecto","x":"Clonar el sitio para otro proyecto Todo lo que es especificamente de La Reserva esta en cuatro lugares. Cambiando esos cuatro, el resto sirve para cualquier predio, estudio o centro que publique una agenda y reciba consultas. # Que Donde 1 Identidad: nombre, dominio, mail, WhatsApp, Instagram, coordenadas includes/config.php 2 Colores y tipografia Las variables al principio de css/style.css 3 Contenido: espacios, retiros, fotos, textos Todo en la base de datos 4 Vocabulario: \"retiros\" y \"espacios\" Buscar y reemplazar en el texto visible Lo que no hay que tocar al clonar El sistema anti spam: funciona igual para cualquier sitio El sistema de usuarios y sesiones El modelo de ref y boton La estructura de las tablas de consultas, eventos y referidos Un clon completo, con contenido cargado, es un dia de trabajo. Lo que lo hace posible es que nada de La Reserva esta escrito a mano fuera de eso"},{"d":"LaReserva_Arquitectura.html","dn":"Arquitectura","a":"a-sql","t":"Los scripts de base de datos","x":"Los scripts de base de datos Estan numerados y guardados en el repositorio, en la carpeta db/ . Se corren en orden si hubiera que levantar todo de cero. Archivo Que hace 01-consultas.sql La tabla de consultas 02-tracking.sql Eventos, IPs bloqueadas y las columnas de origen 03-mensajes.sql La bandeja de correo del panel 04-referidos.sql Codigos de difusion y pagos 05-boton.sql La columna de etiqueta de boton 06-fecha-fin.sql Rango de fechas en las consultas 07-media-verano2027.sql El material nuevo repartido en los espacios 08-fix-pagoda-cabanas.sql Corrige la foto del Pagoda que estaba como cabana 99-borrar-pruebas.sql BORRA DATOS Herramienta de limpieza Antes de correr cualquier script que borre o modifique en masa: phpMyAdmin, Exportar, Rapido. Son treinta segundos y es el unico seguro que hay."}];
+const SIN = {"manda msg":"inbox correo mensaje responder","mandar msg":"inbox correo mensaje responder","msg":"mensaje correo inbox","mensaje":"inbox correo consulta responder","mail":"correo inbox mensaje email","email":"correo inbox mensaje mail","correo":"inbox mensaje mail email responder","wsp":"whatsapp","wpp":"whatsapp","whats":"whatsapp","clave":"contrasena password recuperar acceso login","contrasena":"clave password recuperar acceso login","password":"clave contrasena recuperar acceso login","pass":"clave contrasena recuperar","olvide":"recuperar clave contrasena acceso","entrar":"login acceso panel ingresar clave","login":"entrar acceso panel ingresar clave","foto":"imagen fotos imagenes subir media galeria","fotos":"imagen imagenes subir media galeria orden","imagen":"foto fotos subir media galeria","video":"videos subir media comprimir","videos":"video subir media comprimir","subir":"foto video imagen media cargar","cargar":"subir foto video media","borrar":"eliminar papelera recuperar restaurar","eliminar":"borrar papelera recuperar restaurar","papelera":"borrar eliminar restaurar recuperar basura","basura":"papelera borrar eliminar","restaurar":"papelera recuperar borrar deshacer","deshacer":"papelera restaurar recuperar","retiro":"retiros agenda evento encuentro publicar","retiros":"retiro agenda evento encuentro publicar","evento":"retiro agenda encuentro","agenda":"retiros retiro fechas","espacio":"espacios salon pileta lago cabanas comedor","espacios":"espacio salon pileta lago cabanas comedor","salon":"espacio espacios pagoda amor principal","pileta":"espacio espacios piscina","piscina":"pileta espacio","consulta":"consultas estado responder nueva coordinada","consultas":"consulta estado responder nueva coordinada bandeja","estado":"consultas nueva contactada coordinada cerrada descartada","cliente":"consulta consultas responder contacto","reserva":"consulta coordinada estado cupos","cupo":"cupos lugares reserva agotado","cupos":"cupo lugares reserva agotado","precio":"retiro cupos desde","codigo":"referidos ref difusion link","ref":"referidos codigo origen difusion","referido":"referidos codigo ref comision pago","referidos":"referido codigo ref comision pago boton","link":"codigo referidos ref compartir url","compartir":"link codigo referidos instagram whatsapp","instagram":"redes compartir link galeria","usuario":"usuarios rol admin editor superadmin clave","usuarios":"usuario rol admin editor superadmin clave","rol":"usuarios admin editor superadmin permiso","permiso":"rol usuarios admin superadmin acceso","ip":"trafico seguridad bloquear spam superadmin","spam":"bloquear ip seguridad antispam trafico","bloquear":"ip spam seguridad superadmin","visitas":"trafico numeros estadisticas aperturas","trafico":"visitas numeros estadisticas aperturas conversion","numeros":"trafico visitas estadisticas conversion referidos","portada":"inicio home textos hero editar","inicio":"portada home textos hero","texto":"portada editar titulo hero","titulo":"portada texto editar hero foto","error":"problema falla errores comunes roto","problema":"error falla errores comunes roto","roto":"error problema falla se rompe","no anda":"error problema falla errores comunes","no funciona":"error problema falla errores comunes","ayuda":"errores problema manual","resena":"resenas aprobar comentario opinion","resenas":"resena aprobar comentario opinion","verano":"verano2027 landing temporada catalogo","landing":"verano2027 verano temporada pagina","celular":"mobile movil telefono hamburguesa","mobile":"celular movil telefono","privacidad":"datos personales ley ip politica","copia":"respaldo backup exportar","respaldo":"copia backup exportar base","personal":"equipo staff usuario empleado delegar","equipo":"personal staff usuario empleado delegar","staff":"equipo personal usuario empleado","empleado":"personal equipo usuario staff","delegar":"equipo personal staff encargar pedir","sumar":"agregar crear nuevo alta usuario","agregar":"sumar crear nuevo alta"};
+const AQUI = "LaReserva_Arquitectura.html";
+
+const mb=document.getElementById('menuBtn'),sb=document.getElementById('sidebar'),sc=document.getElementById('scrim');
+function tog(){sb.classList.toggle('open');sc.classList.toggle('show')}
+mb.addEventListener('click',tog);sc.addEventListener('click',tog);
+document.querySelectorAll('.nav a').forEach(a=>a.addEventListener('click',()=>{if(window.innerWidth<=820)tog()}));
+document.querySelectorAll('.cp').forEach(btn=>btn.addEventListener('click',()=>{
+  const pre=btn.closest('.cb').querySelector('pre');
+  navigator.clipboard.writeText(pre.textContent).then(()=>{const t=btn.textContent;btn.textContent='Copiado';setTimeout(()=>btn.textContent=t,1200)});
+}));
+
+/* Buscador. Sin acentos de los dos lados, asi "practica" encuentra
+   "practica". Cada palabra se expande con sus sinonimos antes de buscar,
+   por eso "manda msg" llega al Inbox aunque esas letras no esten escritas
+   en ninguna parte del texto. */
+const sinAcento = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').toLowerCase();
+
+function expandir(termino){
+  const base = sinAcento(termino).trim();
+  if(!base) return [];
+  let extra = [];
+  if (SIN[base]) extra = SIN[base].split(' ');
+  const palabras = base.split(/\s+/).filter(p => p.length > 1);
+  palabras.forEach(p => { if (SIN[p]) extra = extra.concat(SIN[p].split(' ')); });
+  return Array.from(new Set(palabras.concat(extra)));
+}
+
+function puntuar(e, termino, palabras){
+  const t = sinAcento(e.t), x = sinAcento(e.x), frase = sinAcento(termino).trim();
+  let p = 0;
+  if (t.indexOf(frase) >= 0) p += 100;
+  if (x.indexOf(frase) >= 0) p += 40;
+  palabras.forEach(w => { if (t.indexOf(w) >= 0) p += 25; if (x.indexOf(w) >= 0) p += 6; });
+  if (e.d === AQUI) p += 3;
+  return p;
+}
+
+function recorte(e, palabras){
+  const x = e.x, xs = sinAcento(x);
+  let i = -1;
+  for (let k = 0; k < palabras.length; k++){ const j = xs.indexOf(palabras[k]); if (j >= 0){ i = j; break; } }
+  if (i < 0) return x.slice(0,120) + (x.length > 120 ? '...' : '');
+  const ini = Math.max(0, i - 50);
+  let s = (ini > 0 ? '...' : '') + x.slice(ini, ini + 160) + '...';
+  palabras.forEach(w => {
+    if (w.length < 3) return;
+    s = s.replace(new RegExp('(' + w.replace(/[.*+?^${}()|[\]\\]/g,'\\$&') + ')','gi'), '<mark>$1</mark>');
+  });
+  return s;
+}
+
+const q = document.getElementById('q'), res = document.getElementById('res'), qx = document.getElementById('qx');
+let sel = -1;
+
+function buscar(){
+  const termino = q.value.trim();
+  qx.classList.toggle('on', termino.length > 0);
+  if (termino.length < 2){ res.classList.remove('on'); res.innerHTML=''; sel=-1; return; }
+  const palabras = expandir(termino);
+  const hits = IDX.map(function(e){ return {e:e, p:puntuar(e,termino,palabras)}; })
+                  .filter(function(o){ return o.p > 0; })
+                  .sort(function(a,b){ return b.p - a.p; })
+                  .slice(0,8);
+  sel = -1;
+  if (!hits.length){
+    res.innerHTML = '<div class="vacio">Nada con <strong>' + termino.replace(/</g,'&lt;') +
+      '</strong>. Proba con una palabra sola: foto, clave, consulta, retiro, papelera, trafico.</div>';
+    res.classList.add('on'); return;
+  }
+  res.innerHTML = '<div class="res-n">' + hits.length + ' resultado' + (hits.length>1?'s':'') + '</div>' +
+    hits.map(function(o){
+      return '<a href="' + o.e.d + '#' + o.e.a + '" data-a="' + o.e.a + '" data-d="' + o.e.d + '">' +
+        '<span class="rt">' + o.e.t + '<span class="rd">' + o.e.dn + '</span></span>' +
+        '<span class="rs">' + recorte(o.e, palabras) + '</span></a>'; }).join('');
+  res.classList.add('on');
+  res.querySelectorAll('a').forEach(function(a){
+    a.addEventListener('click', function(ev){
+      if (a.dataset.d !== AQUI) return;
+      ev.preventDefault(); irA(a.dataset.a);
+    });
+  });
+}
+
+function irA(id){
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.scrollIntoView({behavior:'smooth', block:'start'});
+  el.classList.remove('hl'); void el.offsetWidth; el.classList.add('hl');
+  res.classList.remove('on');
+  history.replaceState(null, '', '#' + id);
+}
+
+q.addEventListener('input', buscar);
+q.addEventListener('keydown', function(ev){
+  const items = res.querySelectorAll('a');
+  if (ev.key === 'Escape'){ q.value=''; buscar(); q.blur(); return; }
+  if (!items.length) return;
+  if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp'){
+    ev.preventDefault();
+    sel += (ev.key === 'ArrowDown' ? 1 : -1);
+    if (sel < 0) sel = items.length - 1;
+    if (sel >= items.length) sel = 0;
+    items.forEach(function(i){ i.classList.remove('sel'); });
+    items[sel].classList.add('sel');
+    items[sel].scrollIntoView({block:'nearest'});
+  }
+  if (ev.key === 'Enter'){ ev.preventDefault(); (items[sel] || items[0]).click(); }
+});
+qx.addEventListener('click', function(){ q.value=''; buscar(); q.focus(); });
+document.querySelectorAll('.chip').forEach(function(c){
+  c.addEventListener('click', function(){ q.value = c.dataset.q; buscar(); q.focus(); });
+});
+document.addEventListener('click', function(ev){
+  if (!ev.target.closest('.busca')) res.classList.remove('on');
+});
+document.addEventListener('keydown', function(ev){
+  if (ev.key === '/' && document.activeElement !== q){ ev.preventDefault(); q.focus(); }
+});
+const ir = document.getElementById('ir');
+if (ir) ir.addEventListener('change', function(){
+  if (!ir.value) return;
+  irA(ir.value);
+  ir.selectedIndex = 0;
+});
+if (location.hash){
+  const el = document.getElementById(location.hash.slice(1));
+  if (el) setTimeout(function(){ el.classList.add('hl'); }, 300);
+}
+</script>
+</body></html>

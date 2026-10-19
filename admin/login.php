@@ -1,4 +1,5 @@
 <?php
+/* admin/login.php - VERSION 1.1 */
 require_once __DIR__.'/../includes/auth.php';
 if (sesionIniciada()) redirigir('index.php');
 
@@ -85,6 +86,9 @@ h1{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:300;color:#e8f0f7;m
 /* Back link */
 .btn-back{display:block;text-align:center;font-size:.84rem;color:#4a6a85;text-decoration:none;padding:12px;border:1px solid rgba(0,180,150,.18);border-radius:4px;transition:.18s}
 .btn-back:hover{border-color:rgba(0,201,167,.4);color:#00c9a7}
+.btn-olvide{display:block;text-align:center;margin-bottom:10px;font-size:.86rem;
+  color:#7a9ab8;text-decoration:none}
+.btn-olvide:hover{color:#00c9a7}
 </style>
 </head>
 <body>
@@ -123,6 +127,8 @@ h1{font-family:'Fraunces',serif;font-size:1.8rem;font-weight:300;color:#e8f0f7;m
     </form>
 
     <div class="divider">o</div>
+    <!-- v1.1: link a recuperar clave. -->
+    <a href="recuperar.php" class="btn-olvide">Olvidaste la clave</a>
     <a href="../index.php" class="btn-back">← Volver al sitio público</a>
   </div>
 </div>

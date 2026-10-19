@@ -44,6 +44,7 @@ VERSIONS = {
     "/retiros.php":  "2.8",
     "/galeria.php":  "1.3",
     "/retiro.php?r=retiro-verano-enero-2027": "1.3",
+    "/verano2027.php": "2.1",
 }
 
 # Strings that must appear in a page. If one goes missing, a deploy overwrote
@@ -54,11 +55,12 @@ FEATURES = {
     "/retiros.php":  ["lrPlayer", "rt-cal-nota", "width:fit-content", "rt-libres"],
     "/galeria.php":  ["grid-template-columns:repeat(3", "lrBoton"],
     "/contacto.php": ["lrBoton", "csrf"],
+    "/verano2027.php": ["lrTrack", "id=\"vl\"", "data-vid", "csrf"],
     "/retiro.php?r=retiro-verano-enero-2027": ["retiro-side", "width:fit-content"],
 }
 
 PAGES = [
-    "/", "/index.php", "/espacios.php", "/retiros.php", "/galeria.php",
+    "/", "/index.php", "/verano2027.php", "/espacios.php", "/retiros.php", "/galeria.php",
     "/historia.php", "/contacto.php", "/acceso.php", "/404.php",
     "/retiro.php?r=retiro-verano-enero-2027",
 ]

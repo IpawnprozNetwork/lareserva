@@ -111,18 +111,20 @@ Bump these here and in `healthcheck.py` when you deploy.
 
 ```
 index.php                1.8    espacios.php             3.1
+verano2027.php           2.1    welcome.html             2.0
 retiros.php              2.8    retiro.php               1.3
-galeria.php              1.3    welcome.html             1.3
+galeria.php              1.3
 track.php                1.3
 
-includes/config.php      2.8    includes/nav.php         2.1
+includes/config.php      2.8    includes/nav.php         2.2
 includes/footer.php      1.1    includes/ajustes.php     1.0
-includes/antispam.php    1.3
+includes/antispam.php    1.3    includes/auth.php        1.1
 
-admin/_sidebar.php       2.4    admin/portada.php        1.0
+admin/_sidebar.php       2.5    admin/portada.php        1.0
 admin/espacios.php       3.7    admin/retiros.php        3.6
-admin/referidos.php      1.4    admin/seguridad.php      1.2
-admin/inbox.php          1.1
+admin/referidos.php      1.4    admin/seguridad.php      1.3
+admin/inbox.php          1.3    admin/recuperar.php      1.0
+admin/login.php          1.1
 ```
 
 ---
@@ -183,6 +185,7 @@ means clean.
 | File | For |
 |---|---|
 | `README.md` | Overview, Spanish |
+| `BIBLE.md` | How to add, remove, change and clone every piece. The SOP |
 | `SETUP.md` | Empty server to running site |
 | `ARCHITECTURE.md` | How the pieces fit |
 | `DECISIONS.md` | Why, with the bug behind each one |

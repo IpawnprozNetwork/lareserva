@@ -4,7 +4,7 @@ $raiz   = $raiz ?? '';
 $portada_transparente = $portada_transparente ?? false;
 ?>
 <style>
-/* includes/nav.php - VERSION 2.1 */
+/* includes/nav.php - VERSION 2.2 */
 html,body{overflow-x:hidden}
 /* NAV v5 - unique classes, no conflicts possible */
 /* v2.0: grid de tres columnas en vez de flex con space-between.
@@ -35,6 +35,9 @@ html,body{overflow-x:hidden}
 #lr-nav-list .lr-cta a:hover{background:rgba(0,201,167,.2)}
 #lr-nav-list .lr-signin a{border:1px solid rgba(232,240,247,.2);border-radius:20px;padding:6px 12px;color:rgba(232,240,247,.7);font-size:.8rem}
 #lr-nav-list .lr-signin a:hover{border-color:rgba(0,201,167,.4);color:#00c9a7}
+#lr-nav-list .lr-temporada a{color:#00c9a7;font-weight:600}
+#lr-nav-list .lr-temporada a::before{content:"\2726\00A0";font-size:.75em;opacity:.8}
+#lr-nav-list .lr-temporada a:hover{color:#00e0ba}
 #lr-acciones .lr-cta-btn{border:1px solid rgba(0,201,167,.35);border-radius:20px;padding:6px 16px;color:#00c9a7;background:rgba(0,201,167,.1);font-size:.83rem;text-decoration:none}
 #lr-acciones .lr-cta-btn:hover{background:rgba(0,201,167,.2)}
 #lr-acciones .lr-signin-btn{border:1px solid rgba(232,240,247,.2);border-radius:20px;padding:6px 12px;color:rgba(232,240,247,.7);font-size:.8rem;text-decoration:none}
@@ -45,8 +48,8 @@ html,body{overflow-x:hidden}
    una pantalla de 1400 con zoom al 125% ya no entraba: la marca se cortaba. */
 @media(min-width:1041px) and (max-width:1280px){
   #lr-header{padding:12px 18px;gap:10px}
-  #lr-nav-list{gap:14px}
-  #lr-nav-list li a{font-size:.79rem}
+  #lr-nav-list{gap:12px}
+  #lr-nav-list li a{font-size:.77rem}
   #lr-acciones{gap:8px}
   #lr-brand{font-size:.95rem}
 }
@@ -88,6 +91,11 @@ html,body{overflow-x:hidden}
     <li><a href="<?= $raiz ?>galeria.php"<?= $pagina==='galeria'?' class="activo"':'' ?>>Galeria</a></li>
     <li><a href="<?= $raiz ?>historia.php"<?= $pagina==='historia'?' class="activo"':'' ?>>Historia</a></li>
     <li><a href="<?= $raiz ?>index.php#organizar">Organiza tu retiro</a></li>
+    <!-- v2.2: la landing de temporada. Destacada en teal para que se lea como
+         "lo nuevo" y no como un item mas. Cuando termine el verano se saca esta
+         linea y nada mas. -->
+    <li class="lr-temporada"><a href="<?= $raiz ?>verano2027.php"
+        onclick="if(window.lrBoton)lrBoton('click_url','verano2027','Nav Verano 2027')">Verano 2027</a></li>
     <!-- Estos dos viven en el <ul> solo para el menu mobile, donde la lista
          es la unica columna. En escritorio los oculta la regla de abajo y se
          muestran en #lr-acciones. -->

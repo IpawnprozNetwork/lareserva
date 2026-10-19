@@ -11,6 +11,10 @@ de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.
 | `04-referidos.sql` | codigos de difusion y pagos |
 | `05-boton.sql` | columna boton en consultas y eventos |
 | `06-fecha-fin.sql` | rango de fechas en consultas |
+| `07-media-verano2027.sql` | registra las fotos y clips del verano 2027 en espacios y galeria |
+| `08-fix-pagoda-cabanas.sql` | mueve la foto del Pagoda que estaba cargada como cabana y corrige las dos portadas |
+| `09-superadmin-papelera.sql` | agrega el rol superadmin y la papelera del inbox |
+| `10-arreglar-rol-y-clave.sql` | agrega superadmin al enum de rol, restaura el rol y crea la tabla de recuperaciones |
 | `99-borrar-pruebas.sql` | **BORRA DATOS.** Limpieza de datos de prueba. Leer antes de correr |
 
 Si phpMyAdmin responde `#1060 Duplicate column name`, esa columna ya existia.

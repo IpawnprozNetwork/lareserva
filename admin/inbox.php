@@ -1,11 +1,47 @@
 <?php
-/* admin/inbox.php - VERSION 1.1
+/* admin/inbox.php - VERSION 1.3
    Reads the mensajes table filled by /home/lareserv/pipe_correo.php.
    Read only. Replying opens your own mail client, because mail() on this
    host is unreliable and a reply that silently vanishes is worse than none. */
 
 @ini_set('session.gc_maxlifetime', 7200);
 require_once __DIR__.'/../includes/auth.php';
+
+/* v1.2: telefonos y mails del cuerpo, clickeables.
+   Un mail no trae el telefono en un campo aparte como el formulario: viene
+   suelto en el texto. Esto busca secuencias que parezcan un numero argentino
+   (con o sin +54, con o sin 9, con espacios, puntos o guiones) y las
+   convierte en links a wa.me. Los mails del cuerpo pasan a mailto.
+   Se escapa primero y se enlaza despues, asi nada del mail entra como HTML. */
+function lrEnlazar(string $texto): string {
+    $h = htmlspecialchars($texto, ENT_QUOTES, 'UTF-8');
+
+    /* mails */
+    $h = preg_replace(
+        '~([A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,})~i',
+        '<a class="lnk" href="mailto:$1">$1</a>', $h);
+
+    /* telefonos: 8 a 15 digitos con separadores, opcionalmente +54 */
+    $h = preg_replace_callback(
+        '~(?<![\w@.])(\+?54\s?)?(?:9\s?)?(\(?0?\d{2,4}\)?[\s.-]?)?\d{3,4}[\s.-]?\d{4}(?![\w@])~',
+        function ($m) {
+            $crudo = $m[0];
+            $d = preg_replace('/\D+/', '', $crudo);
+            if (strlen($d) < 8 || strlen($d) > 15) return $crudo;
+            /* normalizar a 549 + area + numero */
+            $d = ltrim($d, '0');
+            if (str_starts_with($d, '54')) {
+                $d = substr($d, 2);
+                if (str_starts_with($d, '9')) $d = substr($d, 1);
+            }
+            if (strlen($d) < 8) return $crudo;
+            $wa = '549' . $d;
+            return '<a class="lnk lnk-wa" href="https://wa.me/' . $wa . '" target="_blank" rel="noopener" title="Abrir en WhatsApp">' . $crudo . '</a>';
+        }, $h);
+
+    return $h;
+}
+
 exigirSesion();
 @ini_set('display_errors', '1');
 error_reporting(E_ALL);
@@ -24,8 +60,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db) {
             if ($accion === 'leido') {
                 $db->prepare("UPDATE mensajes SET leido = 1 - leido WHERE id=:i")->execute([':i'=>$id]);
             } elseif ($accion === 'borrar') {
-                $db->prepare("DELETE FROM mensajes WHERE id=:i")->execute([':i'=>$id]);
-                $aviso = ['ok', 'Mensaje eliminado.'];
+                /* v1.3: borrado blando. No se borra la fila: se le pone fecha en
+                   `borrado` y deja de aparecer en la bandeja. Queda 30 dias en la
+                   papelera y despues se va sola. Antes un clic equivocado perdia
+                   el mensaje para siempre. */
+                $db->prepare("UPDATE mensajes SET borrado = NOW() WHERE id=:i AND borrado IS NULL")->execute([':i'=>$id]);
+                $aviso = ['ok', 'Mensaje movido a la papelera. Se puede recuperar durante 30 dias.'];
+            } elseif ($accion === 'restaurar') {
+                $db->prepare("UPDATE mensajes SET borrado = NULL WHERE id=:i")->execute([':i'=>$id]);
+                $aviso = ['ok', 'Mensaje restaurado a la bandeja.'];
+            } elseif ($accion === 'borrar_definitivo') {
+                $db->prepare("DELETE FROM mensajes WHERE id=:i AND borrado IS NOT NULL")->execute([':i'=>$id]);
+                $aviso = ['ok', 'Mensaje eliminado definitivamente.'];
+            } elseif ($accion === 'vaciar_papelera') {
+                $n = $db->exec("DELETE FROM mensajes WHERE borrado IS NOT NULL");
+                $aviso = ['ok', "Papelera vaciada. $n mensajes eliminados."];
             } elseif ($accion === 'todos_leidos') {
                 $db->exec("UPDATE mensajes SET leido = 1 WHERE leido = 0");
                 $aviso = ['ok', 'Todos marcados como leidos.'];
@@ -34,17 +83,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $db) {
     }
 }
 
+/* Purga: lo que lleva mas de 30 dias en la papelera se borra. Corre al abrir
+   el inbox porque este hosting no tiene tareas programadas. Falla en silencio:
+   si la columna no existe todavia, el inbox igual abre. */
+try { if ($db) $db->exec("DELETE FROM mensajes WHERE borrado IS NOT NULL AND borrado < (NOW() - INTERVAL 30 DAY)"); }
+catch (Throwable $e) { error_log('[LR papelera] '.$e->getMessage()); }
+
 $filtro = $_GET['f'] ?? '';
 $abierto = (int)($_GET['id'] ?? 0);
-$lista = []; $sinLeer = 0; $total = 0;
+$lista = []; $sinLeer = 0; $enPapelera = 0; $total = 0;
 
 if ($db) {
     try {
         $sql = "SELECT * FROM mensajes";
-        if ($filtro === 'nuevos') $sql .= " WHERE leido = 0";
+        if ($filtro === 'papelera')   $sql .= " WHERE borrado IS NOT NULL";
+        elseif ($filtro === 'nuevos') $sql .= " WHERE borrado IS NULL AND leido = 0";
+        else                          $sql .= " WHERE borrado IS NULL";
         $sql .= " ORDER BY creado DESC LIMIT 200";
         $lista   = $db->query($sql)->fetchAll();
-        $sinLeer = (int)$db->query("SELECT COUNT(*) FROM mensajes WHERE leido = 0")->fetchColumn();
+        $sinLeer    = (int)$db->query("SELECT COUNT(*) FROM mensajes WHERE leido = 0 AND borrado IS NULL")->fetchColumn();
+        $enPapelera = (int)$db->query("SELECT COUNT(*) FROM mensajes WHERE borrado IS NOT NULL")->fetchColumn();
         $total   = (int)$db->query("SELECT COUNT(*) FROM mensajes")->fetchColumn();
     } catch (Exception $e) {
         $falta = true;
@@ -59,7 +117,7 @@ $log = '/home/lareserv/pipe_correo.log';
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<!-- admin/inbox.php VERSION 1.1 -->
+<!-- admin/inbox.php VERSION 1.3 -->
 <title>Inbox · Panel La Reserva</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -109,6 +167,10 @@ a{text-decoration:none;color:inherit}
 .tag{font-size:.66rem;padding:2px 8px;border-radius:12px;background:var(--td);color:var(--teal)}
 .nota{color:var(--text3);font-size:.78rem;margin-top:10px;line-height:1.6}
 .mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.8rem}
+.lnk{color:#00c9a7;text-decoration:none;border-bottom:1px dotted rgba(0,201,167,.5)}
+.lnk:hover{border-bottom-style:solid}
+.lnk-wa{color:#25d366;border-bottom-color:rgba(37,211,102,.5)}
+.lnk-wa::before{content:"\1F4AC\00A0";font-size:.85em}
 </style>
 </head>
 <body>
@@ -123,6 +185,7 @@ a{text-decoration:none;color:inherit}
       <div class="filtros">
         <a href="inbox.php" class="<?= $filtro===''?'on':'' ?>">Todos</a>
         <a href="inbox.php?f=nuevos" class="<?= $filtro==='nuevos'?'on':'' ?>">Sin leer</a>
+        <a href="inbox.php?f=papelera" class="<?= $filtro==='papelera'?'on':'' ?>">Papelera<?= $enPapelera ? ' ('.$enPapelera.')' : '' ?></a>
       </div>
       <?php if($sinLeer): ?>
       <form method="post">
@@ -135,7 +198,19 @@ a{text-decoration:none;color:inherit}
   </div>
 
   <div class="content">
-    <?php if ($aviso): ?><div class="aviso <?= $aviso[0] ?>"><?= e($aviso[1]) ?></div><?php endif; ?>
+    <?php if ($filtro === 'papelera'): ?>
+    <div class="av ok" style="display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap">
+      <span>Los mensajes de la papelera se borran solos a los 30 dias. Hasta entonces se pueden restaurar.</span>
+      <?php if ($enPapelera): ?>
+      <form method="post" onsubmit="return confirm('Vaciar la papelera entera? Esto no se puede deshacer.')" style="margin:0">
+        <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
+        <input type="hidden" name="accion" value="vaciar_papelera">
+        <button class="btn btn-d">Vaciar papelera</button>
+      </form>
+      <?php endif; ?>
+    </div>
+  <?php endif; ?>
+  <?php if ($aviso): ?><div class="aviso <?= $aviso[0] ?>"><?= e($aviso[1]) ?></div><?php endif; ?>
 
     <?php if ($falta): ?>
       <div class="aviso error">Falta la tabla <span class="mono">mensajes</span>. Corre mensajes_table.sql en phpMyAdmin.</div>
@@ -158,7 +233,7 @@ a{text-decoration:none;color:inherit}
     <?php foreach ($lista as $m): $ab = ($abierto === (int)$m['id']); ?>
     <div class="msg<?= $m['leido'] ? '' : ' nuevo' ?>">
       <a class="msg-h" href="inbox.php?<?= $filtro?'f='.e($filtro).'&':'' ?>id=<?= $ab ? 0 : (int)$m['id'] ?>#m<?= (int)$m['id'] ?>" id="m<?= (int)$m['id'] ?>">
-        <span class="msg-de"><?= e($m['de_nombre'] ?: $m['de_email']) ?><small><?= e($m['de_email']) ?></small></span>
+        <span class="msg-de"><?= e($m['de_nombre'] ?: $m['de_email']) ?><small><a class="lnk" href="mailto:<?= e($m['de_email']) ?>"><?= e($m['de_email']) ?></a></small></span>
         <span class="msg-as"><?= e($m['asunto'] ?: '(sin asunto)') ?>
           <?php if((int)$m['adjuntos']): ?><span class="tag"><?= (int)$m['adjuntos'] ?> adj</span><?php endif; ?>
         </span>
@@ -166,7 +241,7 @@ a{text-decoration:none;color:inherit}
       </a>
       <?php if ($ab): ?>
       <div class="msg-b">
-        <pre><?= e($m['cuerpo'] ?: '(sin texto)') ?></pre>
+        <pre><?= $m['cuerpo'] ? lrEnlazar($m['cuerpo']) : '(sin texto)' ?></pre>
         <?php if((int)$m['adjuntos']): ?>
           <p class="nota">Este mensaje traia <?= (int)$m['adjuntos'] ?> archivo(s) adjunto(s). No se guardan
           en el servidor. Para verlos abri la casilla en webmail.</p>
@@ -181,12 +256,27 @@ a{text-decoration:none;color:inherit}
             <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
             <button class="btn btn-o"><?= $m['leido'] ? 'Marcar sin leer' : 'Marcar leido' ?></button>
           </form>
-          <form method="post" onsubmit="return confirm('Eliminar este mensaje?')">
-            <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
-            <input type="hidden" name="accion" value="borrar">
-            <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
-            <button class="btn btn-d">Eliminar</button>
-          </form>
+          <?php if ($filtro === 'papelera'): ?>
+            <form method="post">
+              <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
+              <input type="hidden" name="accion" value="restaurar">
+              <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
+              <button class="btn btn-t">Restaurar</button>
+            </form>
+            <form method="post" onsubmit="return confirm('Eliminar definitivamente? Esto no se puede deshacer.')">
+              <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
+              <input type="hidden" name="accion" value="borrar_definitivo">
+              <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
+              <button class="btn btn-d">Eliminar para siempre</button>
+            </form>
+          <?php else: ?>
+            <form method="post" onsubmit="return confirm('Mover a la papelera?')">
+              <input type="hidden" name="csrf" value="<?= e(csrfToken()) ?>">
+              <input type="hidden" name="accion" value="borrar">
+              <input type="hidden" name="id" value="<?= (int)$m['id'] ?>">
+              <button class="btn btn-d">Eliminar</button>
+            </form>
+          <?php endif; ?>
         </div>
       </div>
       <?php endif; ?>

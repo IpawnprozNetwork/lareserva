@@ -59,7 +59,7 @@ if (!$espacios) {
 }
 ?>
 <!DOCTYPE html>
-<!-- index.php VERSION 1.8 -->
+<!-- index.php VERSION 1.9 -->
 <html lang="es-AR">
 <head>
 <meta charset="UTF-8">
@@ -71,14 +71,14 @@ if (!$espacios) {
 <meta property="og:title" content="La Reserva Naturaleza Arte">
 <meta property="og:description" content="Un lugar para que tu retiro suceda. Capilla del Señor, a una hora de Buenos Aires.">
 <meta property="og:url" content="<?= SITE_URL ?>/">
-<meta property="og:image" content="<?= SITE_URL ?>/assets/video/hero-poster.jpg">
+<meta property="og:image" content="<?= SITE_URL ?>/assets/img/verano2027/welcome-poster.jpg">
 <meta property="og:locale" content="es_AR">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- index.php VERSION 1.8 -->
+<!-- index.php VERSION 1.9 -->
 
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"LodgingBusiness",
@@ -126,6 +126,12 @@ if (!$espacios) {
    El padding-top es un piso de seguridad: en una ventana baja el bloque
    nunca puede meterse debajo del header. */
 .portada .texto{padding-top:120px;padding-bottom:3vh}
+/* v1.9: el velo cubre toda la portada en z-index 1 y sin esto se come
+   cualquier toque sobre el video, incluido el boton de play que iOS dibuja
+   cuando bloquea el autoplay. Va aca y no en style.css para no tener que
+   cambiar el ?v= de la hoja en todas las paginas. */
+.portada .velo{pointer-events:none}
+.portada video{background:#0a1628}
 /* v1.4: los modulos de espacios son links, con video al pasar el mouse.
    El <a> hereda color para que los textos de adentro no se pinten de
    celeste de link. */
@@ -167,9 +173,13 @@ if (!$espacios) {
 
 <!-- ═══ PORTADA ═══════════════════════════════════════════════ -->
 <section class="portada">
-  <video autoplay muted loop playsinline preload="metadata"
-         poster="assets/video/hero-poster.jpg" aria-hidden="true">
-    <source src="assets/video/hero.mp4" type="video/mp4">
+  <!-- v1.9: el mismo video que la pantalla de bienvenida, el amanecer en el
+       lago. webkit-playsinline para iOS viejos, y disablePictureInPicture
+       para que no aparezca ese control encima. -->
+  <video id="heroVid" autoplay muted loop playsinline webkit-playsinline
+         preload="metadata" disablePictureInPicture
+         poster="assets/img/verano2027/welcome-poster.jpg" aria-hidden="true">
+    <source src="assets/video/hero-verano.mp4" type="video/mp4">
   </video>
   <div class="velo"></div>
 
@@ -357,12 +367,17 @@ if (!$espacios) {
 
 <!-- ═══ UBICACIÓN ═════════════════════════════════════════════ -->
 <section class="bloque ajustado oscuro" id="ubicacion" style="position:relative;overflow:hidden;background:#0a1628">
-  <video autoplay muted loop playsinline preload="metadata"
-         poster="assets/video/hero-poster.jpg"
+  <!-- v1.9: el poster apuntaba a hero-poster.jpg, que ya no es el poster de
+       nada. Este video es el de retiros y va a opacidad .35 detras del
+       degrade, asi que el poster casi no se ve, pero mejor que apunte a un
+       archivo que existe por si el video no carga. -->
+  <video autoplay muted loop playsinline webkit-playsinline preload="metadata"
+         disablePictureInPicture aria-hidden="true"
+         poster="assets/img/verano2027/welcome-poster.jpg"
          style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;opacity:.35">
     <source src="assets/video/pages/retiros.mp4" type="video/mp4">
   </video>
-  <div style="position:absolute;inset:0;background:linear-gradient(135deg,rgba(10,22,40,.88),rgba(10,22,40,.72));z-index:1"></div>
+  <div style="position:absolute;inset:0;pointer-events:none;background:linear-gradient(135deg,rgba(10,22,40,.88),rgba(10,22,40,.72));z-index:1"></div>
   <div class="envoltura" style="position:relative;z-index:2">
     <p class="rotulo" style="color:#00c9a7">CÓMO LLEGAR</p>
     <h2 class="titulo-bloque" style="color:#fff">Capilla del Señor,<br>Exaltación de la Cruz</h2>
@@ -422,6 +437,30 @@ if (!$espacios) {
 /* El video de cada modulo arranca al entrar el mouse y vuelve al principio
    al salir. preload="none" para que ocho videos no se bajen todos al abrir
    la portada: recien se pide el archivo cuando alguien apunta a la tarjeta. */
+/* v1.9: arranque del video de portada.
+   iOS rechaza el autoplay con el Modo de bajo consumo activado. Si pasa,
+   escondemos el video y queda el poster, en vez de un boton de play muerto.
+   El primer toque en cualquier lado es el gesto que pide el navegador. */
+(function(){
+  var v = document.getElementById('heroVid');
+  if (!v) return;
+  function arrancar(){
+    v.muted = true;
+    var p = v.play();
+    if (p && p.catch) p.catch(function(){ v.style.visibility = 'hidden'; });
+  }
+  arrancar();
+  ['touchstart','click'].forEach(function(ev){
+    document.addEventListener(ev, function r(){
+      if (v.paused){ v.style.visibility = ''; arrancar(); }
+      document.removeEventListener(ev, r);
+    }, {once:true, passive:true});
+  });
+  document.addEventListener('visibilitychange', function(){
+    if (!document.hidden && v.paused) arrancar();
+  });
+})();
+
 var lrTouch = window.matchMedia('(hover: none)').matches;
 
 document.querySelectorAll('.modulo').forEach(function(m){
