@@ -160,6 +160,24 @@ python3 healthcheck.py</code></pre>
 <h2>5. Si algo se rompe</h2>
 <div class="tw"><table><tr><th>Sintoma</th><th>Donde mirar</th></tr><tr><td>500 en blanco</td><td><code>/home/lareserv/logs/php.error.log</code>. Es un error de sintaxis</td></tr><tr><td>Los formularios dicen "sesion expiro"</td><td>Se subio un <code>config.php</code> viejo</td></tr><tr><td>Una subida falla</td><td><code>admin/diag.php</code>, valor <strong>local</strong> de <code>post_max_size</code></td></tr><tr><td>No llega correo al panel</td><td><code>/home/lareserv/pipe_correo.log</code>. Si no existe, el pipe nunca corrio</td></tr><tr><td>Los numeros estan en cero</td><td>Las consultas siguen en estado <code>nueva</code></td></tr></table></div>
 <p><strong>Los datos estan a salvo.</strong> Todo vive en MySQL. Romper un archivo PHP no borra nada: se sube la version anterior y el sitio vuelve. Lo unico irreversible es un <code>DROP</code> o un <code>DELETE</code> sin <code>WHERE</code>, y por eso se exporta antes de correr SQL que borre.</p>
+<hr>
+<h2>Versiones desplegadas</h2>
+<p>Actualizar esta tabla con cada deploy. Es lo que compara <code>healthcheck.py</code>.</p>
+<div class="tw"><table><tr><th>Archivo</th><th>Version</th></tr><tr><td><code>index.php</code></td><td>1.9</td></tr><tr><td><code>espacios.php</code></td><td>3.1</td></tr><tr><td><code>retiros.php</code></td><td>2.8</td></tr><tr><td><code>retiro.php</code></td><td>1.3</td></tr><tr><td><code>galeria.php</code></td><td>1.3</td></tr><tr><td><code>welcome.html</code></td><td>2.1</td></tr><tr><td><code>verano2027.php</code></td><td>3.0</td></tr><tr><td><code>track.php</code></td><td>1.3</td></tr><tr><td><code>includes/config.php</code></td><td>2.8</td></tr><tr><td><code>includes/nav.php</code></td><td>2.2</td></tr><tr><td><code>includes/auth.php</code></td><td>1.1</td></tr><tr><td><code>includes/footer.php</code></td><td>1.1</td></tr><tr><td><code>includes/ajustes.php</code></td><td>1.0</td></tr><tr><td><code>includes/antispam.php</code></td><td>1.3</td></tr><tr><td><code>admin/_sidebar.php</code></td><td>2.6</td></tr><tr><td><code>admin/inbox.php</code></td><td>1.3</td></tr><tr><td><code>admin/login.php</code></td><td>1.1</td></tr><tr><td><code>admin/recuperar.php</code></td><td>1.0</td></tr><tr><td><code>admin/trafico.php</code></td><td>1.0</td></tr><tr><td><code>admin/seguridad.php</code></td><td>1.3</td></tr><tr><td><code>admin/espacios.php</code></td><td>3.7</td></tr><tr><td><code>admin/retiros.php</code></td><td>3.6</td></tr><tr><td><code>admin/portada.php</code></td><td>1.0</td></tr><tr><td><code>admin/referidos.php</code></td><td>1.4</td></tr></table></div>
+<hr>
+<h2>Marcar una version en el repositorio</h2>
+<p>Un commit dice que cambio. Un tag dice que eso es un estado entero del sitio que funcionaba. Sirve para volver a un punto conocido sin leer el historial.</p>
+<pre><code>cd ~/LR
+git tag -a v1.2 -m "Verano 2027 para familias, roles, papelera, recuperacion de clave"
+git push origin v1.2</code></pre>
+<p>Para ver los que hay:</p>
+<pre><code>git tag -l -n1</code></pre>
+<p>Para volver a mirar como estaba el sitio en un tag, sin romper nada:</p>
+<pre><code>git checkout v1.1      # mira
+git checkout main      # vuelve</code></pre>
+<p>Conviene marcar despues de un healthcheck en verde, no antes. Un tag sobre un estado roto es peor que no tener tags.</p>
+<h3>Los que hay</h3>
+<div class="tw"><table><tr><th>Tag</th><th>Que incluye</th></tr><tr><td><code>v1.0</code></td><td>Sitio completo: panel, tracking, referidos, editor de portada</td></tr><tr><td><code>v1.1</code></td><td>Landing Verano 2027, visor, inbox clickeable, BIBLE.md</td></tr><tr><td><code>v1.2</code></td><td>Verano para familias, roles, papelera, recuperacion de clave, guias de Johnny</td></tr></table></div>
 <div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
 </main>
 </div>

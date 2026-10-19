@@ -43,10 +43,19 @@ defines the site constants. The order matters. See DECISION 1.
 | `historia.php` | nothing | nothing |
 | `contacto.php` | nothing | `consultas`, `eventos` |
 | `acceso.php` | `usuarios` | `consultas`, `eventos` |
+| `verano2027.php` | `retiros` | `consultas`, `eventos` |
 | `track.php` | nothing | `eventos` |
 
-Three pages write enquiries. They all land in one `consultas` table,
-distinguished by `origen`: `retiro:slug`, `espacio:slug` or `contacto`.
+Four pages write enquiries. They all land in one `consultas` table,
+distinguished by `origen`: `retiro:slug`, `espacio:slug`, `contacto` or
+`verano2027`.
+
+`verano2027.php` is the odd one. It is a seasonal landing page: it does not
+include `nav.php`'s full menu behaviour the way the others rely on it, it
+carries its own copy of the tracking beacon, and its "what's included" copy
+is written in the file rather than read from the database. That is deliberate
+and documented in DECISION 17. It is meant to be replaced or deleted at the
+end of the season, not maintained.
 
 ---
 
@@ -132,7 +141,52 @@ Every page starts with `exigirSesion()` on line 2, before any output. That is
 also why admin pages never suffered the session bug that broke every public
 form: their session starts early enough to set the cookie.
 
-One sidebar, `admin/_sidebar.php`, included by all nine pages. The active item
+### Roles
+
+Three levels, enforced in `includes/auth.php`:
+
+| Role | Scope |
+|---|---|
+| `superadmin` | Everything. Only role that can open `seguridad.php`, which shows IP addresses, user agents and the raw event log, and can block an IP |
+| `admin` | Everything else. Sees `trafico.php`: the same numbers with no personal data |
+| `editor` | Everything except Usuarios and Trafico |
+
+`esSuperadmin()`, `esAdmin()` and `exigirSuperadmin()` do the checking.
+`exigirSuperadmin()` does not redirect to the login page: the user already has
+a valid session, what they lack is level, and sending them to a login form
+would be a lie. It returns 403 with a plain explanation.
+
+`trafico.php` does not hide the IP data behind a condition. The queries that
+fetch it are not in the file at all, so there is nothing to leak even if
+someone reads the source.
+
+`rol` is an ENUM in the database. **Adding a new value requires an ALTER TABLE
+first.** An UPDATE with a value outside the enum does not error: MySQL stores
+an empty string and the user ends up with no role. That happened once on this
+project and locked the owner out of his own panel. See DECISION 19.
+
+### Soft delete
+
+`mensajes` has a `borrado` column. Deleting sets a timestamp rather than
+removing the row; the inbox filters `borrado IS NULL` and the Papelera tab
+filters `IS NOT NULL`. A 30 day purge runs on inbox load, because this host
+has no scheduled tasks, and it fails silently if the column is missing so a
+half-finished deploy cannot take the screen down.
+
+### Password recovery
+
+`admin/recuperar.php`, two screens in one file. Without `?t=` it asks for the
+address; with `?t=` it accepts a new password. The token is 64 random
+characters, single use, valid 60 minutes, stored in `recuperaciones`.
+Changing the password invalidates every outstanding token for that account.
+The response is identical whether or not the account exists, so the page
+cannot be used to enumerate who has panel access. One request per account
+every two minutes.
+
+It depends on `mail()`, which is not reliable on this host, so the screen
+never claims the mail was sent and names the fallback path.
+
+One sidebar, `admin/_sidebar.php`, included by all eleven pages. The active item
 is derived from `basename($_SERVER['SCRIPT_NAME'])`, so there is nothing to
 pass in and nothing to keep in sync. It carries its own `<style>` with literal
 colours rather than CSS variables, because several pages never defined

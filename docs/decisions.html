@@ -155,6 +155,22 @@ tr:hover td{background:#0a1420}
 <p>El sitio entero usa navy <code>#0a1628</code> y teal <code>#00c9a7</code>. El logo de La Reserva es verde <code>#105838</code>, arena <code>#c0c098</code>, marron <code>#402810</code> sobre crema. Son paletas opuestas: una oscura y fria, la otra clara y calida.</p>
 <p><code>verano2027.php</code> se hizo primero en la paleta del logo y despues se volvio a la del sitio, porque una landing que no se parece al sitio al que lleva confunde mas de lo que suma.</p>
 <p>Cambiar todo el sitio al logo es un dia de trabajo: <code>style.css</code>, <code>nav.php</code>, <code>footer.php</code>, <code>welcome.html</code>, el panel entero y cada pagina con <code>&lt;style&gt;</code> propio. No se hace sin confirmacion explicita. Ver <code>BIBLE.md</code> seccion 12.2.</p>
+<hr>
+<h2>19. Un UPDATE sobre un ENUM invalido no da error, guarda vacio</h2>
+<p><code>rol</code> era <code>enum('admin','editor')</code>. Para crear el nivel superadmin corri <code>UPDATE usuarios SET rol='superadmin'</code> sin ampliar el enum primero.</p>
+<p>MySQL no fallo. Guardo una cadena vacia. El usuario quedo con rol <code>''</code>, que no es ninguno de los tres niveles, y el dueno del sitio perdio acceso a su propio panel sin que nada diera error en ningun lado.</p>
+<p>Se vio recien al mirar la tabla: una celda en blanco donde las otras filas decian <code>admin</code>.</p>
+<p><strong>La regla:</strong> antes de meter un valor nuevo en una columna ENUM, <code>ALTER TABLE</code>. Y despues de cualquier UPDATE sobre un ENUM, un SELECT para confirmar que guardo lo que se esperaba. El <code>UPDATE ... SET rol='admin' WHERE rol=''</code> que quedo en <code>db/10</code> existe para reparar justamente esto.</p>
+<p>Lo mismo aplica a cualquier columna con dominio cerrado: un <code>estado</code>, un <code>tipo</code>. El error no avisa.</p>
+<h2>20. El healthcheck tambien se equivoca, y hay que arreglarlo igual</h2>
+<p>Tres de cuatro fallas de un healthcheck resultaron ser errores del propio script:</p>
+<ul><li>Buscaba <code>lrAjuste</code> en el HTML. Es una funcion PHP: corre en el servidor y</li></ul>
+<p>nunca aparece en la salida. Ese chequeo no podia pasar jamas.</p>
+<ul><li>Leia todos los marcadores <code>VERSION</code> de la pagina, incluidos los de <code>nav.php</code>,</li></ul>
+<p><code>footer.php</code> y <code>ajustes.php</code>, y comparaba contra una lista de cuatro numeros. Ahora busca el marcador propio del archivo, por nombre.</p>
+<ul><li>Trataba el 404 de <code>404.php</code> como falla. Esa pagina devuelve 404 a proposito:</li></ul>
+<p>un 200 ahi seria el problema.</p>
+<p><strong>La regla:</strong> cuando el chequeo falla, verificar el chequeo antes de tocar el sitio. Un script de control que da falsos positivos se empieza a ignorar, y entonces deja de servir para el dia que la falla es de verdad.</p>
 <div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
 </main>
 </div>

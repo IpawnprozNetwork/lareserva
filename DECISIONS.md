@@ -243,3 +243,42 @@ confunde mas de lo que suma.
 Cambiar todo el sitio al logo es un dia de trabajo: `style.css`, `nav.php`,
 `footer.php`, `welcome.html`, el panel entero y cada pagina con `<style>`
 propio. No se hace sin confirmacion explicita. Ver `BIBLE.md` seccion 12.2.
+
+---
+
+## 19. Un UPDATE sobre un ENUM invalido no da error, guarda vacio
+
+`rol` era `enum('admin','editor')`. Para crear el nivel superadmin corri
+`UPDATE usuarios SET rol='superadmin'` sin ampliar el enum primero.
+
+MySQL no fallo. Guardo una cadena vacia. El usuario quedo con rol `''`, que no
+es ninguno de los tres niveles, y el dueno del sitio perdio acceso a su propio
+panel sin que nada diera error en ningun lado.
+
+Se vio recien al mirar la tabla: una celda en blanco donde las otras filas
+decian `admin`.
+
+**La regla:** antes de meter un valor nuevo en una columna ENUM, `ALTER TABLE`.
+Y despues de cualquier UPDATE sobre un ENUM, un SELECT para confirmar que
+guardo lo que se esperaba. El `UPDATE ... SET rol='admin' WHERE rol=''` que
+quedo en `db/10` existe para reparar justamente esto.
+
+Lo mismo aplica a cualquier columna con dominio cerrado: un `estado`, un
+`tipo`. El error no avisa.
+
+## 20. El healthcheck tambien se equivoca, y hay que arreglarlo igual
+
+Tres de cuatro fallas de un healthcheck resultaron ser errores del propio
+script:
+
+- Buscaba `lrAjuste` en el HTML. Es una funcion PHP: corre en el servidor y
+  nunca aparece en la salida. Ese chequeo no podia pasar jamas.
+- Leia todos los marcadores `VERSION` de la pagina, incluidos los de `nav.php`,
+  `footer.php` y `ajustes.php`, y comparaba contra una lista de cuatro numeros.
+  Ahora busca el marcador propio del archivo, por nombre.
+- Trataba el 404 de `404.php` como falla. Esa pagina devuelve 404 a proposito:
+  un 200 ahi seria el problema.
+
+**La regla:** cuando el chequeo falla, verificar el chequeo antes de tocar el
+sitio. Un script de control que da falsos positivos se empieza a ignorar, y
+entonces deja de servir para el dia que la falla es de verdad.

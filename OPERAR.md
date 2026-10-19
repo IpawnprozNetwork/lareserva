@@ -210,3 +210,74 @@ vez y no se olvida de ninguna.
 nada: se sube la version anterior y el sitio vuelve. Lo unico irreversible es un
 `DROP` o un `DELETE` sin `WHERE`, y por eso se exporta antes de correr SQL que
 borre.
+
+
+---
+
+## Versiones desplegadas
+
+Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
+
+| Archivo | Version |
+|---|---|
+| `index.php` | 1.9 |
+| `espacios.php` | 3.1 |
+| `retiros.php` | 2.8 |
+| `retiro.php` | 1.3 |
+| `galeria.php` | 1.3 |
+| `welcome.html` | 2.1 |
+| `verano2027.php` | 3.0 |
+| `track.php` | 1.3 |
+| `includes/config.php` | 2.8 |
+| `includes/nav.php` | 2.2 |
+| `includes/auth.php` | 1.1 |
+| `includes/footer.php` | 1.1 |
+| `includes/ajustes.php` | 1.0 |
+| `includes/antispam.php` | 1.3 |
+| `admin/_sidebar.php` | 2.6 |
+| `admin/inbox.php` | 1.3 |
+| `admin/login.php` | 1.1 |
+| `admin/recuperar.php` | 1.0 |
+| `admin/trafico.php` | 1.0 |
+| `admin/seguridad.php` | 1.3 |
+| `admin/espacios.php` | 3.7 |
+| `admin/retiros.php` | 3.6 |
+| `admin/portada.php` | 1.0 |
+| `admin/referidos.php` | 1.4 |
+
+---
+
+## Marcar una version en el repositorio
+
+Un commit dice que cambio. Un tag dice que eso es un estado entero del sitio
+que funcionaba. Sirve para volver a un punto conocido sin leer el historial.
+
+```bash
+cd ~/LR
+git tag -a v1.2 -m "Verano 2027 para familias, roles, papelera, recuperacion de clave"
+git push origin v1.2
+```
+
+Para ver los que hay:
+
+```bash
+git tag -l -n1
+```
+
+Para volver a mirar como estaba el sitio en un tag, sin romper nada:
+
+```bash
+git checkout v1.1      # mira
+git checkout main      # vuelve
+```
+
+Conviene marcar despues de un healthcheck en verde, no antes. Un tag sobre
+un estado roto es peor que no tener tags.
+
+### Los que hay
+
+| Tag | Que incluye |
+|---|---|
+| `v1.0` | Sitio completo: panel, tracking, referidos, editor de portada |
+| `v1.1` | Landing Verano 2027, visor, inbox clickeable, BIBLE.md |
+| `v1.2` | Verano para familias, roles, papelera, recuperacion de clave, guias de Johnny |

@@ -149,6 +149,14 @@ VALUES ('Tu Nombre', 'vos@ejemplo.com',
 <h2>9. Delete these from the server</h2>
 <ul><li><code>generar-hash.php</code></li><li><code>admin/diag.php</code></li><li><code>admin/pipe_test.php</code></li><li><code>admin/upload_test.php</code></li></ul>
 <p>The last one has no session check. Leaving it there means anyone can reach it and write files to your disk.</p>
+<hr>
+<h2>Scripts de base, en orden</h2>
+<p>Para levantar todo desde cero, correrlos en este orden desde phpMyAdmin con la base seleccionada en el panel izquierdo. Pestana Import, no pegar en SQL: al pegar se aplastan los saltos de linea y un comentario <code>--</code> se come la sentencia siguiente.</p>
+<div class="tw"><table><tr><th>#</th><th>Archivo</th><th>Que hace</th></tr><tr><td>01</td><td><code>01-consultas.sql</code></td><td>La tabla de consultas</td></tr><tr><td>02</td><td><code>02-tracking.sql</code></td><td>Eventos, IPs bloqueadas, columnas de origen</td></tr><tr><td>03</td><td><code>03-mensajes.sql</code></td><td>Bandeja de correo del panel</td></tr><tr><td>04</td><td><code>04-referidos.sql</code></td><td>Codigos de difusion y pagos</td></tr><tr><td>05</td><td><code>05-boton.sql</code></td><td>Columna de etiqueta de boton</td></tr><tr><td>06</td><td><code>06-fecha-fin.sql</code></td><td>Rango de fechas en consultas</td></tr><tr><td>07</td><td><code>07-media-verano2027.sql</code></td><td>Material del verano repartido en espacios</td></tr><tr><td>08</td><td><code>08-fix-pagoda-cabanas.sql</code></td><td>Corrige la foto del Pagoda cargada como cabana</td></tr><tr><td>09</td><td><code>09-superadmin-papelera.sql</code></td><td>Columna <code>borrado</code> en mensajes</td></tr><tr><td>10</td><td><code>10-arreglar-rol-y-clave.sql</code></td><td>Enum de rol con superadmin, tabla <code>recuperaciones</code></td></tr></table></div>
+<p>El 99 no va aca: borra datos y es una herramienta de limpieza, no parte del armado.</p>
+<h3>El orden importa dos veces</h3>
+<p>Subir los archivos ANTES de correr el SQL que los registra. Si se corre al reves, la base apunta a fotos que no existen y las paginas muestran marcos rotos hasta que termina la subida.</p>
+<p>Y el 10 tiene que ir despues del 09: el 09 asume un enum de rol que el 10 amplia.</p>
 <div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
 </main>
 </div>

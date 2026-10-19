@@ -196,3 +196,38 @@ left exposed. Exit code 0 means everything passed.
 
 The last one has no session check. Leaving it there means anyone can reach it
 and write files to your disk.
+
+
+---
+
+## Scripts de base, en orden
+
+Para levantar todo desde cero, correrlos en este orden desde phpMyAdmin con la
+base seleccionada en el panel izquierdo. Pestana Import, no pegar en SQL: al
+pegar se aplastan los saltos de linea y un comentario `--` se come la sentencia
+siguiente.
+
+| # | Archivo | Que hace |
+|---|---|---|
+| 01 | `01-consultas.sql` | La tabla de consultas |
+| 02 | `02-tracking.sql` | Eventos, IPs bloqueadas, columnas de origen |
+| 03 | `03-mensajes.sql` | Bandeja de correo del panel |
+| 04 | `04-referidos.sql` | Codigos de difusion y pagos |
+| 05 | `05-boton.sql` | Columna de etiqueta de boton |
+| 06 | `06-fecha-fin.sql` | Rango de fechas en consultas |
+| 07 | `07-media-verano2027.sql` | Material del verano repartido en espacios |
+| 08 | `08-fix-pagoda-cabanas.sql` | Corrige la foto del Pagoda cargada como cabana |
+| 09 | `09-superadmin-papelera.sql` | Columna `borrado` en mensajes |
+| 10 | `10-arreglar-rol-y-clave.sql` | Enum de rol con superadmin, tabla `recuperaciones` |
+
+El 99 no va aca: borra datos y es una herramienta de limpieza, no parte del
+armado.
+
+### El orden importa dos veces
+
+Subir los archivos ANTES de correr el SQL que los registra. Si se corre al
+reves, la base apunta a fotos que no existen y las paginas muestran marcos
+rotos hasta que termina la subida.
+
+Y el 10 tiene que ir despues del 09: el 09 asume un enum de rol que el 10
+amplia.
