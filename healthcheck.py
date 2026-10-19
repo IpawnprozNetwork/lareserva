@@ -39,18 +39,22 @@ HOST_DEFAULT = "lareserva.net.ar"
 
 # Version each public file should be serving. Bump these when you deploy.
 VERSIONS = {
-    "/index.php":    "1.8",
+    "/index.php":    "1.9",
     "/espacios.php": "3.1",
     "/retiros.php":  "2.8",
     "/galeria.php":  "1.3",
     "/retiro.php?r=retiro-verano-enero-2027": "1.3",
-    "/verano2027.php": "2.1",
+    "/verano2027.php": "3.0",
 }
 
 # Strings that must appear in a page. If one goes missing, a deploy overwrote
 # a newer file with an older one, which has happened twice on this project.
 FEATURES = {
-    "/index.php":    ["lrBoton", "width:fit-content", "IntersectionObserver", "lrAjuste"],
+    # lrAjuste() es una funcion PHP: corre en el servidor y NUNCA aparece en
+    # el HTML. Buscarla aca daba FAIL siempre. Se cambia por marcas que si
+    # salen en la pagina: el video del hero y el id que usa su arranque.
+    "/index.php":    ["lrBoton", "width:fit-content", "IntersectionObserver",
+                      "hero-verano.mp4", "heroVid"],
     "/espacios.php": ["ep-rango", "lrPlayer", "esp-encabezado", "width:fit-content", "epPorSlug"],
     "/retiros.php":  ["lrPlayer", "rt-cal-nota", "width:fit-content", "rt-libres"],
     "/galeria.php":  ["grid-template-columns:repeat(3", "lrBoton"],
@@ -61,7 +65,7 @@ FEATURES = {
 
 PAGES = [
     "/", "/index.php", "/verano2027.php", "/espacios.php", "/retiros.php", "/galeria.php",
-    "/historia.php", "/contacto.php", "/acceso.php", "/404.php",
+    "/historia.php", "/contacto.php", "/acceso.php",
     "/retiro.php?r=retiro-verano-enero-2027",
 ]
 
@@ -160,10 +164,25 @@ def main():
         else:
             r.add("FAIL", f"GET {path}", f"HTTP {code}" if code else body[:60])
 
+    # 404.php responde 404 a proposito: es la pagina de error. Pedirla y
+    # recibir 200 seria el problema, no al reves.
+    code, body, _, _ = fetch(base + "/404.php")
+    if code == 404 and body and "<!DOCTYPE" in body:
+        r.add("OK", "GET /404.php", "HTTP 404 con pagina, correcto")
+    elif code == 404:
+        r.add("WARN", "GET /404.php", "HTTP 404 sin cuerpo")
+    else:
+        r.add("FAIL", "GET /404.php", f"HTTP {code}, deberia ser 404")
+
     # ── 2. deployed versions ───────────────────────────────────
     for path, esperado in VERSIONS.items():
         body = bodies.get(path, "")
-        found = set(re.findall(r"VERSION\s+([0-9][0-9.]*)", body))
+        # Cada pagina incluye nav, footer y ajustes, que traen su propio
+        # marcador. Se busca primero el de la pagina misma, por nombre de
+        # archivo; si no esta, se cae a la lista completa.
+        archivo = path.split("?")[0].lstrip("/")
+        propio = re.findall(rf"{re.escape(archivo)}\s+VERSION\s+([0-9][0-9.]*)", body)
+        found = set(propio) if propio else set(re.findall(r"VERSION\s+([0-9][0-9.]*)", body))
         if not body:
             r.add("FAIL", f"version {path}", "sin respuesta")
         elif esperado in found:
