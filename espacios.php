@@ -1,5 +1,5 @@
 <?php
-/* espacios.php - VERSION 3.1
+/* espacios.php - VERSION 3.2
    1.1: card thumbnails show a photo by default. The espacio video only plays
    while the pointer is over the card, then rewinds.
    1.2: lightbox close button moves to the left on mobile, where the nav
@@ -24,6 +24,7 @@
    real copy lives in the espacios table. */
 require_once __DIR__.'/includes/config.php';
 require_once __DIR__.'/includes/antispam.php';
+require_once __DIR__.'/includes/ajustes.php';
 $pagina='espacios'; $raiz='';
 
 $db  = getDB();
@@ -97,6 +98,19 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && ($_POST['accion'] ?? '')==='consulta_
           'ua'              => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255),
         ]);
         lrEvento($db, 'consulta_esp_ok', ['detalle'=>$nombre_esp, 'boton'=>'lr']);
+        /* v3.2: aviso por mail. Esta pagina arma el array del INSERT en linea,
+           asi que no hay un $datos que pasar: se rearma lo que necesita el
+           aviso. Si falla el mail no pasa nada, la consulta ya esta guardada. */
+        lrAvisarConsulta([
+          'nombre'          => $nombre,
+          'email'           => $email,
+          'telefono'        => limpiar($_POST['telefono'] ?? '') ?: null,
+          'personas'        => !empty($_POST['personas']) ? (int)$_POST['personas'] : null,
+          'fecha_tentativa' => $fecha,
+          'mensaje'         => $mensaje,
+          'origen'          => 'espacio:' . ($slug_esp ?: $eid),
+          'ref'             => $_SESSION['lr_ref'] ?? 'directo',
+        ]);
         $out = ['ok'=>true, 'msg'=>'Listo. Te escribimos para coordinar la fecha.'];
       } catch (Exception $ex) {
         error_log('[LR consulta esp] '.$ex->getMessage());
@@ -158,7 +172,7 @@ $tipo_labels = ['salon'=>'Salón','alojamiento'=>'Alojamiento','gastronomia'=>'G
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- espacios.php VERSION 3.1 -->
+<!-- espacios.php VERSION 3.2 -->
 <style>
 /* ── Espacio cards ── */
 /* v2.8: encabezado de seccion centrado. max-width + margin-inline:auto centra

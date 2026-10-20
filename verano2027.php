@@ -17,6 +17,7 @@
 
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/antispam.php';
+require_once __DIR__ . '/includes/ajustes.php';
 
 $pagina = 'verano2027';  /* nav.php marca activo el item cuyo href coincide */
 $raiz   = '';
@@ -88,6 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     );
                     $st->execute($datos);
                     lrEvento($db, 'verano2027_ok', ['boton' => 'verano2027']);
+                    lrAvisarConsulta($datos);
                     $aviso = ['ok', 'Listo. Te escribimos para coordinar las fechas.'];
                 } catch (Exception $ex) {
                     error_log('[LR verano2027] ' . $ex->getMessage());
@@ -236,6 +238,12 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
 .vl-info .rot-s{margin-bottom:8px}
 .vl-info h3{font:300 2rem 'Fraunces',Georgia,serif;margin-bottom:14px;line-height:1.1}
 .vl-info p{color:var(--t2);line-height:1.75;margin-bottom:18px}
+.vl-datos{list-style:none;padding:0;margin:0 0 22px;border-top:1px solid rgba(122,154,184,.16)}
+.vl-datos li{padding:9px 0 9px 20px;border-bottom:1px solid rgba(122,154,184,.1);
+  color:var(--t2);font-size:.92rem;position:relative}
+.vl-datos li::before{content:"";position:absolute;left:0;top:16px;width:7px;height:7px;
+  border-radius:50%;background:var(--teal);opacity:.55}
+.vl-datos:empty{display:none}
 .vl-x{position:absolute;top:14px;right:14px;z-index:5;width:40px;height:40px;border-radius:50%;background:rgba(10,22,40,.8);border:1px solid rgba(0,201,167,.3);color:var(--t1);font-size:1.3rem;cursor:pointer}
 .vl-x:hover{background:var(--teal);color:#0a1628}
 .vl-nav{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:44px;height:44px;border-radius:50%;background:rgba(10,22,40,.75);border:1px solid rgba(0,201,167,.3);color:var(--t1);font-size:1.2rem;cursor:pointer}
@@ -294,26 +302,26 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
       todos a distancia de caminar. Los chicos pueden andar sueltos.</p>
 
     <div class="mosaico">
-      <figure class="g2" data-img="assets/img/verano2027/pileta-aerea.jpg" data-t="La pileta" data-d="Pileta descubierta con sector de reposeras y una pergola de sombra al lado. Para los ratos libres entre actividades, o para una tarde entera sin hacer nada.">
+      <figure class="g2" data-img="assets/img/verano2027/pileta-aerea.jpg" data-t="La pileta" data-datos="Descubierta|Reposeras y sombra|Abierta todo el dia" data-d="Pileta descubierta con sector de reposeras y una pergola de sombra al lado. Para los ratos libres entre actividades, o para una tarde entera sin hacer nada.">
         <img src="assets/img/verano2027/pileta-aerea.jpg" alt="Pileta al aire libre vista desde arriba" loading="lazy">
         <figcaption>La pileta</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/lago-aereo.jpg" data-vid="assets/video/pages/v27-aereo.mp4" data-t="El lago" data-d="Un lago de agua quieta rodeado de arboleda, con una pasarela de madera que lo cruza. Las esculturas de la orilla son de artistas que pasaron por el predio.">
+      <figure data-img="assets/img/verano2027/lago-aereo.jpg" data-vid="assets/video/pages/v27-aereo.mp4" data-t="El lago" data-datos="Pasarela de madera|Esculturas en la orilla|Sin acceso al agua" data-d="Un lago de agua quieta rodeado de arboleda, con una pasarela de madera que lo cruza. Las esculturas de la orilla son de artistas que pasaron por el predio.">
         <img src="assets/img/verano2027/lago-aereo.jpg" alt="El lago desde el aire" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/lago-aereo.jpg"><source src="assets/video/pages/v27-aereo.mp4" type="video/mp4"></video>
         <figcaption>El lago</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/la-casa.jpg" data-vid="assets/video/pages/v27-casa.mp4" data-t="La casa" data-d="La casa principal, con la galeria que recorre todo el frente. Arriba estan las habitaciones; abajo, el salon y el comedor.">
+      <figure data-img="assets/img/verano2027/la-casa.jpg" data-vid="assets/video/pages/v27-casa.mp4" data-t="La casa" data-datos="Habitaciones arriba|Galeria al frente|Salon y comedor abajo" data-d="La casa principal, con la galeria que recorre todo el frente. Arriba estan las habitaciones; abajo, el salon y el comedor.">
         <img src="assets/img/verano2027/la-casa.jpg" alt="La casa principal" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/la-casa.jpg"><source src="assets/video/pages/v27-casa.mp4" type="video/mp4"></video>
         <figcaption>La casa</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/camino-arboles.jpg" data-vid="assets/video/pages/v27-camino.mp4" data-t="Los senderos" data-d="Circuitos para caminar entre la arboleda, usados para caminatas conscientes y trabajo individual en silencio.">
+      <figure data-img="assets/img/verano2027/camino-arboles.jpg" data-vid="assets/video/pages/v27-camino.mp4" data-t="Los senderos" data-datos="Circuitos entre arboleda|Para caminar o andar en bici|Sin autos" data-d="Circuitos para caminar entre la arboleda, usados para caminatas conscientes y trabajo individual en silencio.">
         <img src="assets/img/verano2027/camino-arboles.jpg" alt="Camino entre arboles" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/camino-arboles.jpg"><source src="assets/video/pages/v27-camino.mp4" type="video/mp4"></video>
         <figcaption>Los senderos</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/ovejas-parque.jpg" data-vid="assets/video/pages/v27-lago-escultura.mp4" data-t="El parque" data-d="Pasto abierto y sectores con sombra para practicar al aire libre. Hay ovejas pastando en el predio.">
+      <figure data-img="assets/img/verano2027/ovejas-parque.jpg" data-vid="assets/video/pages/v27-lago-escultura.mp4" data-t="El parque" data-datos="Pasto abierto y sombra|Ovejas sueltas|Juegos al aire libre" data-d="Pasto abierto y sectores con sombra para practicar al aire libre. Hay ovejas pastando en el predio.">
         <img src="assets/img/verano2027/ovejas-parque.jpg" alt="Ovejas en el parque" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/ovejas-parque.jpg"><source src="assets/video/pages/v27-lago-escultura.mp4" type="video/mp4"></video>
         <figcaption>El parque</figcaption>
@@ -349,27 +357,27 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
       con pasarela y fogon a la noche. Los chicos se cansan solos y los grandes
       descansan de verdad.</p>
     <div class="mosaico">
-      <figure data-img="assets/img/verano2027/grupo-lago.jpg" data-vid="assets/video/pages/v27-lago-atardecer.mp4" data-t="Tardes junto al agua" data-d="Las tardes se pasan en la orilla. El lago al atardecer es el momento que mas se recuerda.">
+      <figure data-img="assets/img/verano2027/grupo-lago.jpg" data-vid="assets/video/pages/v27-lago-atardecer.mp4" data-t="Tardes junto al agua" data-datos="La hora preferida|Atardecer sobre el lago|Fogon despues" data-d="Las tardes se pasan en la orilla. El lago al atardecer es el momento que mas se recuerda.">
         <img src="assets/img/verano2027/grupo-lago.jpg" alt="Grupo junto al lago" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/grupo-lago.jpg"><source src="assets/video/pages/v27-lago-atardecer.mp4" type="video/mp4"></video>
         <figcaption>Tardes junto al agua</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/mesa.jpg" data-vid="assets/video/pages/v27-mesa.mp4" data-t="Mesas compartidas" data-d="Mesas largas, comida casera con opciones vegetarianas, veganas y sin gluten, coordinada con el grupo.">
+      <figure data-img="assets/img/verano2027/mesa.jpg" data-vid="assets/video/pages/v27-mesa.mp4" data-t="Mesas compartidas" data-datos="Mesas largas|Menu aparte para los chicos|Veg, vegano y sin gluten" data-d="Mesas largas, comida casera con opciones vegetarianas, veganas y sin gluten, coordinada con el grupo.">
         <img src="assets/img/verano2027/mesa.jpg" alt="Mesa servida" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/mesa.jpg"><source src="assets/video/pages/v27-mesa.mp4" type="video/mp4"></video>
         <figcaption>Mesas compartidas</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/meditacion.jpg" data-vid="assets/video/pages/v27-meditacion.mp4" data-t="Practica al amanecer" data-d="El predio al amanecer, con niebla sobre el lago. Muchos grupos arrancan el dia ahi.">
+      <figure data-img="assets/img/verano2027/meditacion.jpg" data-vid="assets/video/pages/v27-meditacion.mp4" data-t="Practica al amanecer" data-datos="Niebla sobre el lago|Para los que madrugan|Opcional" data-d="El predio al amanecer, con niebla sobre el lago. Muchos grupos arrancan el dia ahi.">
         <img src="assets/img/verano2027/meditacion.jpg" alt="Practica al amanecer" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/meditacion.jpg"><source src="assets/video/pages/v27-meditacion.mp4" type="video/mp4"></video>
         <figcaption>Practica al amanecer</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/cabanas-noche.jpg" data-vid="assets/video/pages/cabanas-1.mp4" data-t="Las cabanas" data-d="Cabanas de madera dentro del predio, a pasos del salon y del comedor. El grupo duerme, come y practica en el mismo lugar.">
+      <figure data-img="assets/img/verano2027/cabanas-noche.jpg" data-vid="assets/video/pages/cabanas-1.mp4" data-t="Las cabanas" data-datos="Madera, dentro del predio|A pasos del comedor|Se arma segun el grupo" data-d="Cabanas de madera dentro del predio, a pasos del salon y del comedor. El grupo duerme, come y practica en el mismo lugar.">
         <img src="assets/img/verano2027/cabanas-noche.jpg" alt="Las cabanas iluminadas al anochecer" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/cabanas-noche.jpg"><source src="assets/video/pages/cabanas-1.mp4" type="video/mp4"></video>
         <figcaption>Las cabanas</figcaption>
       </figure>
-      <figure data-img="assets/img/verano2027/cabana.jpg" data-vid="assets/video/pages/v27-pagoda.mp4" data-t="Salon Pagoda" data-d="Salon octogonal de madera con deck, para practicas y ceremonias en ronda. Tiene dos banos propios y parlante con microfonos.">
+      <figure data-img="assets/img/verano2027/cabana.jpg" data-vid="assets/video/pages/v27-pagoda.mp4" data-t="Salon Pagoda" data-datos="Octogonal, de madera|Dos banos propios|Parlante con microfonos" data-d="Salon octogonal de madera con deck, para practicas y ceremonias en ronda. Tiene dos banos propios y parlante con microfonos.">
         <img src="assets/img/verano2027/cabana.jpg" alt="El Salon Pagoda, octogonal, desde afuera" loading="lazy">
         <video muted loop playsinline preload="none" poster="assets/img/verano2027/cabana.jpg"><source src="assets/video/pages/v27-pagoda.mp4" type="video/mp4"></video>
         <figcaption>Salon Pagoda</figcaption>
@@ -506,6 +514,9 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
       <p class="rot-s">Verano 2027</p>
       <h3 id="vlT"></h3>
       <p id="vlD"></p>
+      <!-- v3.2: los datos sueltos, como en espacios.php. Salen de data-datos
+           separados por barra, asi agregar una baldosa no exige tocar el JS. -->
+      <ul class="vl-datos" id="vlDatos"></ul>
       <div class="btns" style="justify-content:flex-start">
         <a class="btn btn-p" href="#reservar" id="vlRes">Reservar mi fecha</a>
         <a class="btn btn-s" href="https://wa.me/<?= e(SITE_WA) ?>?text=<?= $waTexto ?>" target="_blank" rel="noopener"
@@ -542,6 +553,11 @@ lrTrack('abrir_espacio','Landing Verano 2027');
     var f = figs[cur];
     img.src = f.dataset.img; img.alt = f.dataset.t;
     t.textContent = f.dataset.t; d.textContent = f.dataset.d;
+    var ul = document.getElementById('vlDatos');
+    ul.innerHTML = '';
+    (f.dataset.datos || '').split('|').filter(Boolean).forEach(function(x){
+      var li = document.createElement('li'); li.textContent = x.trim(); ul.appendChild(li);
+    });
     ctr.textContent = (cur+1) + ' / ' + figs.length;
     vid.pause(); vid.removeAttribute('src'); vid.load();
     media.classList.remove('conv');

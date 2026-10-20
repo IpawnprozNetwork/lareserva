@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__.'/includes/config.php';
 require_once __DIR__.'/includes/antispam.php';
+require_once __DIR__.'/includes/ajustes.php';
 $pagina = 'contacto';
 $raiz   = '';
 
@@ -55,30 +56,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             // Aviso por mail. En cPanel conviene que el remitente sea del propio dominio.
-            $cuerpo = "Nueva consulta desde ".SITE_DOMAIN."
-
-"
-                    . "Nombre: {$datos['nombre']}
-"
-                    . "E-mail: {$datos['email']}
-"
-                    . "Teléfono: ".($datos['telefono'] ?: '-')."
-"
-                    . "Motivo: {$datos['tipo']}
-"
-                    . "Fecha tentativa: ".($datos['fecha_tentativa'] ?: '-')."
-"
-                    . "Personas: ".($datos['personas'] ?: '-')."
-"
-                    . "Origen: {$datos['origen']}
-
-"
-                    . ($datos['mensaje'] ?: '(sin mensaje)')."
-";
-            @mail(SITE_EMAIL, 'Consulta web: '.$datos['nombre'], $cuerpo,
-                  "From: web@".SITE_DOMAIN."
-Reply-To: {$datos['email']}
-Content-Type: text/plain; charset=UTF-8");
+            /* v1.4: el aviso se centralizo en includes/ajustes.php. Los cuatro
+               formularios usan la misma funcion, asi que agregar una casilla de
+               copia se hace en un solo lugar, en config.php. */
+            lrAvisarConsulta($datos);
 
             $aviso = $guardado
                 ? ['ok', 'Recibimos tu consulta. Te respondemos a la brevedad.']

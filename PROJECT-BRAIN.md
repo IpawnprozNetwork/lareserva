@@ -110,14 +110,14 @@ Content is in Argentine Spanish. Eight spaces, four retreats, 22 gallery photos.
 Bump these here and in `healthcheck.py` when you deploy.
 
 ```
-index.php                1.8    espacios.php             3.1
+index.php                1.8    espacios.php             3.2
 verano2027.php           2.1    welcome.html             2.0
-retiros.php              2.8    retiro.php               1.3
-galeria.php              1.3
+retiros.php              2.9    retiro.php               1.3
+galeria.php              1.4
 track.php                1.3
 
 includes/config.php      2.8    includes/nav.php         2.2
-includes/footer.php      1.1    includes/ajustes.php     1.0
+includes/footer.php      1.1    includes/ajustes.php     1.1
 includes/antispam.php    1.3    includes/auth.php        1.1
 
 admin/_sidebar.php       2.5    admin/portada.php        1.0

@@ -40,11 +40,11 @@ HOST_DEFAULT = "lareserva.net.ar"
 # Version each public file should be serving. Bump these when you deploy.
 VERSIONS = {
     "/index.php":    "1.9",
-    "/espacios.php": "3.1",
-    "/retiros.php":  "2.8",
-    "/galeria.php":  "1.3",
+    "/espacios.php": "3.2",
+    "/retiros.php":  "2.9",
+    "/galeria.php":  "1.4",
     "/retiro.php?r=retiro-verano-enero-2027": "1.3",
-    "/verano2027.php": "3.0",
+    "/verano2027.php": "3.2",
 }
 
 # Strings that must appear in a page. If one goes missing, a deploy overwrote

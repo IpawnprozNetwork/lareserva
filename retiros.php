@@ -1,5 +1,5 @@
 <?php
-/* retiros.php - VERSION 2.8
+/* retiros.php - VERSION 2.9
    2.0: clicking an agenda row opens a lightbox with the same shape as the
    espacios popup: media carousel on the left, detail panel on the right.
    The panel carries a month calendar with the retiro dates marked, an RSVP
@@ -17,6 +17,7 @@
    The row is still a real link to retiro.php, so no-JS and crawlers still work. */
 require_once __DIR__.'/includes/config.php';
 require_once __DIR__.'/includes/antispam.php';
+require_once __DIR__.'/includes/ajustes.php';
 $pagina='retiros'; $raiz='';
 
 $db  = getDB();
@@ -87,6 +88,17 @@ if ($_SERVER['REQUEST_METHOD']==='POST' && ($_POST['accion'] ?? '')==='rsvp') {
           'ua'              => substr($_SERVER['HTTP_USER_AGENT'] ?? '', 0, 255),
         ]);
         lrEvento($db, 'rsvp_ok', ['retiro_id'=>$rid, 'detalle'=>$titulo_r, 'boton'=>'lr']);
+        /* v2.9: aviso por mail, rearmado porque el INSERT va en linea. */
+        lrAvisarConsulta([
+          'nombre'          => $nombre,
+          'email'           => $email,
+          'telefono'        => limpiar($_POST['telefono'] ?? '') ?: null,
+          'personas'        => !empty($_POST['personas']) ? (int)$_POST['personas'] : null,
+          'fecha_tentativa' => $fecha,
+          'mensaje'         => $mensaje,
+          'origen'          => 'retiro:' . ($titulo_r ?: $rid),
+          'ref'             => $_SESSION['lr_ref'] ?? 'directo',
+        ]);
         $out = ['ok'=>true, 'msg'=>'Listo. Te escribimos para confirmar tu lugar.'];
       } catch (Exception $ex) {
         error_log('[LR rsvp] '.$ex->getMessage());
@@ -190,7 +202,7 @@ $retData = array_values(array_map(function($r) use ($media_map, $ocupados) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- retiros.php VERSION 2.8 -->
+<!-- retiros.php VERSION 2.9 -->
 <style>
 /* ── Retiro lightbox ─────────────────────────────────────── */
 .rt-lb{position:fixed;inset:0;background:rgba(4,10,20,.9);backdrop-filter:blur(6px);z-index:120;

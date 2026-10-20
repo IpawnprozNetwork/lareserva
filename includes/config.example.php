@@ -19,6 +19,10 @@ define('SITE_DOMAIN',  'lareserva.net.ar');
 define('SITE_URL',     'https://lareserva.net.ar');
 
 define('SITE_EMAIL',   'johnny@lareserva.net.ar');
+/* Copia de cada consulta a una segunda casilla. Dejar '' para no mandar
+   copia. Ojo: mail() no es confiable aca, esto es comodidad y no reemplaza
+   mirar admin/consultas.php. */
+define('SITE_EMAIL_COPIA', '');
 define('SITE_WA',      '5491133629514');
 define('SITE_WA_LABEL','+54 9 11 3362-9514');
 define('SITE_IG',      'lareservanaturalezaarte');

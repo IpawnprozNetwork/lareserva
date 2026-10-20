@@ -1,4 +1,5 @@
 <?php
+/* includes/ajustes.php - VERSION 1.1 */
 /* includes/ajustes.php - VERSION 1.0
    Lectura de textos editables desde la tabla ajustes.
 
@@ -44,4 +45,54 @@ function lrAjusteHtml(string $clave, string $defecto = ''): string {
     return nl2br(htmlspecialchars(lrAjuste($clave, $defecto), ENT_QUOTES, 'UTF-8'));
 }
 
+}
+
+/* ── Aviso de consulta nueva ─────────────────────────────────────────────
+   v1.1: antes solo contacto.php mandaba aviso. Los formularios de espacios,
+   retiros y verano2027 guardaban en la base y no avisaban a nadie, asi que
+   una consulta podia quedar dias sin que nadie la viera.
+
+   Manda a SITE_EMAIL y, si esta definida, tambien a SITE_EMAIL_COPIA.
+
+   IMPORTANTE: mail() no es confiable en este hosting. Esto es una comodidad,
+   no un canal. La fuente de verdad sigue siendo admin/consultas.php. Por eso
+   la funcion no devuelve nada y nunca frena el guardado: si el mail falla, la
+   consulta ya quedo guardada igual. */
+function lrAvisarConsulta(array $d): void {
+    $lineas = [
+        'Nombre:   ' . ($d['nombre']   ?? '-'),
+        'E-mail:   ' . ($d['email']    ?? '-'),
+        'Telefono: ' . ($d['telefono'] ?: '-'),
+        'Personas: ' . ($d['personas'] ?: '-'),
+        'Fecha:    ' . ($d['fecha_tentativa'] ?: '-'),
+        'Origen:   ' . ($d['origen']   ?? '-'),
+        'Vino de:  ' . ($d['ref']      ?? 'directo'),
+        '',
+        $d['mensaje'] ?: '(sin mensaje)',
+        '',
+        'Responder en: https://' . SITE_DOMAIN . '/admin/consultas.php',
+    ];
+    $cuerpo  = implode("\n", $lineas) . "\n";
+    $asunto  = 'Consulta web: ' . ($d['nombre'] ?? 'sin nombre');
+    $cabecera = "From: web@" . SITE_DOMAIN . "\r\n"
+              . "Reply-To: " . ($d['email'] ?? '') . "\r\n"
+              . "Content-Type: text/plain; charset=UTF-8";
+
+    /* La copia sale de la tabla `ajustes`, no de config.php. Asi se cambia la
+       direccion desde la base sin editar codigo, y no hace falta tocar
+       config.php, que es el unico archivo que no esta en el repositorio.
+       La constante sigue funcionando por si alguna vez conviene fijarla. */
+    $destinos = [SITE_EMAIL];
+    $copia = trim((string)lrAjuste('mail_copia', ''));
+    if ($copia === '' && defined('SITE_EMAIL_COPIA')) $copia = trim((string)SITE_EMAIL_COPIA);
+    foreach (preg_split('/[,;\s]+/', $copia, -1, PREG_SPLIT_NO_EMPTY) as $c) {
+        if (filter_var($c, FILTER_VALIDATE_EMAIL)) $destinos[] = $c;
+    }
+    $destinos = array_values(array_unique($destinos));
+
+    foreach ($destinos as $para) {
+        if (!@mail($para, $asunto, $cuerpo, $cabecera)) {
+            error_log('[LR aviso] no se pudo enviar a ' . $para);
+        }
+    }
 }

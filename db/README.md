@@ -15,6 +15,8 @@ de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.
 | `08-fix-pagoda-cabanas.sql` | mueve la foto del Pagoda que estaba cargada como cabana y corrige las dos portadas |
 | `09-superadmin-papelera.sql` | agrega el rol superadmin y la papelera del inbox |
 | `10-arreglar-rol-y-clave.sql` | agrega superadmin al enum de rol, restaura el rol y crea la tabla de recuperaciones |
+| `11-mail-copia.sql` | direccion que recibe copia de cada consulta. Cambiarla es re-correr este script con otro valor |
+| `12-galeria-video.sql` | columna `video` en galeria y los clips que se reproducen al pasar el mouse |
 | `99-borrar-pruebas.sql` | **BORRA DATOS.** Limpieza de datos de prueba. Leer antes de correr |
 
 Si phpMyAdmin responde `#1060 Duplicate column name`, esa columna ya existia.

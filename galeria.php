@@ -1,5 +1,5 @@
 <?php
-/* galeria.php - VERSION 1.3
+/* galeria.php - VERSION 1.4
    1.1: the photo grid is a real CSS grid. It used to be a multi-column layout,
    which reads top to bottom per column and leaves a ragged bottom row.
    1.2: hero padding so the rotulo stops colliding with the fixed nav. */
@@ -40,7 +40,7 @@ $ig_handle = SITE_IG; // lareservanaturalezaarte
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@300;400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- galeria.php VERSION 1.3 -->
+<!-- galeria.php VERSION 1.4 -->
 <style>
 /* ── Gallery page extras ── */
 /* v1.2: padding-top clears the fixed nav. Without it the rotulo collided
@@ -64,6 +64,14 @@ $ig_handle = SITE_IG; // lareservanaturalezaarte
 .gal-item{position:relative;cursor:pointer;overflow:hidden;border-radius:6px;background:var(--card)}
 .gal-item img{width:100%;height:100%;aspect-ratio:3/4;object-fit:cover;display:block;transition:transform .4s ease,filter .4s ease}
 .gal-item:hover img{transform:scale(1.03);filter:brightness(.85)}
+.gal-item video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  opacity:0;transition:opacity .35s;z-index:1}
+.gal-item:hover video{opacity:1}
+.gal-play{position:absolute;top:10px;right:10px;z-index:3;width:26px;height:26px;
+  border-radius:50%;background:rgba(6,14,24,.6);color:#fff;font-size:.6rem;
+  display:flex;align-items:center;justify-content:center;transition:opacity .25s}
+.gal-item:hover .gal-play{opacity:0}
+@media(hover:none){.gal-item video{opacity:1}.gal-play{display:none}}
 .gal-caption{position:absolute;bottom:0;left:0;right:0;padding:24px 16px 14px;background:linear-gradient(transparent,rgba(10,22,40,.85));color:#e8f0f7;font-size:.82rem;opacity:0;transition:opacity .3s;pointer-events:none}
 .gal-item:hover .gal-caption{opacity:1}
 
@@ -165,6 +173,17 @@ $ig_handle = SITE_IG; // lareservanaturalezaarte
         <img src="<?= e($img['archivo']) ?>"
              alt="<?= e($img['alt'] ?? $img['titulo']) ?>"
              loading="<?= $i < 4 ? 'eager' : 'lazy' ?>">
+        <?php /* v1.4: si la foto tiene un clip asociado, se reproduce al pasar
+                 el mouse y al entrar en pantalla en celular. La columna `video`
+                 es opcional: sin ella la tarjeta se comporta como siempre. */ ?>
+        <?php if (!empty($img['video'])): ?>
+        <video muted loop playsinline webkit-playsinline preload="none"
+               disablePictureInPicture aria-hidden="true"
+               poster="<?= e($img['archivo']) ?>">
+          <source src="<?= e($img['video']) ?>" type="video/mp4">
+        </video>
+        <span class="gal-play" aria-hidden="true">&#9654;</span>
+        <?php endif; ?>
         <?php if($img['titulo']): ?>
         <div class="gal-caption"><?= e($img['titulo']) ?></div>
         <?php endif; ?>
@@ -264,6 +283,28 @@ var imgs = <?= json_encode(array_values(array_map(fn($img) => [
 ], $imagenes))) ?>;
 
 var cur = 0;
+
+/* v1.4: los clips de la galeria. Mismo criterio que index y espacios:
+   con mouse, al pasar por encima; sin mouse, cuando la tarjeta entra en
+   pantalla. preload="none" para no bajar diez videos al abrir la pagina. */
+(function(){
+  var touch = window.matchMedia('(hover: none)').matches;
+  document.querySelectorAll('.gal-item').forEach(function(it){
+    var v = it.querySelector('video'); if(!v) return;
+    function play(){ v.muted = true; var p = v.play(); if(p&&p.catch) p.catch(function(){}); }
+    if (touch) {
+      v.preload = 'metadata';
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function(es){
+          es.forEach(function(e){ e.isIntersecting ? play() : v.pause(); });
+        }, {threshold:.5}).observe(it);
+      }
+      return;
+    }
+    it.addEventListener('mouseenter', function(){ v.preload='auto'; play(); });
+    it.addEventListener('mouseleave', function(){ v.pause(); try{ v.currentTime=0; }catch(e){} });
+  });
+})();
 
 function openLb(i) {
   cur = i;
