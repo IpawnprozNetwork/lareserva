@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 4.1
+/* verano2027.php - VERSION 4.2
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -150,7 +150,7 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 4.1 -->
+<!-- verano2027.php VERSION 4.2 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
 <meta name="description" content="Verano 2027 en familia: tres dias y dos noches en el campo a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pension completa o media.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
@@ -316,6 +316,87 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   </div>
 </header>
 
+<?php /* v4.2: la agenda, los precios y los horarios van arriba de todo.
+         Es lo primero que pregunta una familia y estaba al final, despues
+         de tres secciones de fotos. */ ?>
+<?php if ($fechas): ?>
+<!-- ══════════════ FECHAS ══════════════ -->
+<section class="alt">
+  <div class="env">
+    <p class="rot-s">Agenda</p>
+    <h2>Fechas abiertas</h2>
+    <div style="margin-top:28px">
+      <?php foreach ($fechas as $f): ?>
+        <?php /* v4.0: la fila entera es un link al retiro, igual que en la
+                 agenda. Antes se leia como una lista muerta. */ ?>
+        <a class="fecha" href="retiro.php?r=<?= e($f['slug']) ?>"
+           onclick="lrTrack('abrir_retiro','<?= e($f['titulo']) ?>')">
+          <span class="d"><?= e(v27fecha($f['fecha_inicio'], $f['fecha_fin'])) ?></span>
+          <span class="t"><?= e($f['titulo']) ?></span>
+          <span class="e <?= $f['estado'] === 'agotado' ? 'ag' : '' ?>">
+            <?= $f['estado'] === 'agotado' ? 'Sin cupos' : 'Abierto' ?>
+          </span>
+          <span class="fl" aria-hidden="true">&rarr;</span>
+        </a>
+      <?php endforeach; ?>
+    </div>
+    <p class="lede" style="margin-top:22px">Enero, febrero y marzo de 2027. Las fechas
+      se coordinan a medida: decinos cuando podes y cuantos son, y te confirmamos
+      disponibilidad y precio.</p>
+  </div>
+</section>
+<?php endif; ?>
+
+<!-- ══════════════ PRECIOS ══════════════ -->
+<section class="alt" id="precios">
+  <div class="env">
+    <p class="rot-s">Tarifas</p>
+    <h2><?= e(lrAjuste('v27_precios_titulo', 'Cuanto sale')) ?></h2>
+    <p class="lede"><?= e(lrAjuste('v27_precios_bajada',
+       'Precio por persona, con alojamiento y pension. Los menores de 1 a 3 anos casi no pagan.')) ?></p>
+
+    <div class="tarifas">
+      <?php
+      /* v4.0: las dos tarifas salen de `ajustes`, una clave por celda, asi
+         Johnny cambia un numero desde el panel sin tocar el archivo. */
+      $planes = [
+        ['v27_p1_nombre','3 dias y 2 noches','v27_p1_adulto','442.000','v27_p1_menor','221.000','v27_p1_bebe','46.000'],
+        ['v27_p2_nombre','4 dias y 3 noches','v27_p2_adulto','616.000','v27_p2_menor','308.000','v27_p2_bebe','52.000'],
+      ];
+      foreach ($planes as $pl): ?>
+      <div class="tarifa">
+        <b><?= e(lrAjuste($pl[0], $pl[1])) ?></b>
+        <div class="fila"><span>Adulto</span><em>$<?= e(lrAjuste($pl[2], $pl[3])) ?></em></div>
+        <div class="fila"><span>Menores de 4 a 10 anos</span><em>$<?= e(lrAjuste($pl[4], $pl[5])) ?></em></div>
+        <div class="fila"><span>De 1 a 3 anos</span><em>$<?= e(lrAjuste($pl[6], $pl[7])) ?></em></div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+
+    <p class="nota-precio"><?= e(lrAjuste('v27_precios_nota',
+       'Precio por persona. No se aceptan mascotas.')) ?></p>
+  </div>
+</section>
+
+<!-- ══════════════ HORARIOS ══════════════ -->
+<section>
+  <div class="env">
+    <p class="rot-s">Como funciona</p>
+    <h2><?= e(lrAjuste('v27_horarios_titulo', 'Entradas y salidas')) ?></h2>
+
+    <div class="incluye">
+      <div class="inc"><b>Dias de ingreso</b><p><?= e(lrAjuste('v27_h_ingreso',
+        'De lunes a jueves, o de jueves a domingo.')) ?></p></div>
+      <div class="inc"><b>Check in</b><p><?= e(lrAjuste('v27_h_checkin',
+        'Desde las 14 horas.')) ?></p></div>
+      <div class="inc"><b>Check out</b><p><?= e(lrAjuste('v27_h_checkout',
+        'Las habitaciones se dejan a las 10 de la manana.')) ?></p></div>
+      <div class="inc"><b>Ultimo servicio</b><p><?= e(lrAjuste('v27_h_ultimo',
+        'El almuerzo del ultimo dia. Despues del almuerzo se retiran.')) ?></p></div>
+    </div>
+  </div>
+</section>
+
 <!-- ══════════════ EL LUGAR ══════════════ -->
 <section>
   <div class="env">
@@ -470,84 +551,6 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
 </section>
 
     <?php endif; ?>
-
-<?php if ($fechas): ?>
-<!-- ══════════════ FECHAS ══════════════ -->
-<section class="alt">
-  <div class="env">
-    <p class="rot-s">Agenda</p>
-    <h2>Fechas abiertas</h2>
-    <div style="margin-top:28px">
-      <?php foreach ($fechas as $f): ?>
-        <?php /* v4.0: la fila entera es un link al retiro, igual que en la
-                 agenda. Antes se leia como una lista muerta. */ ?>
-        <a class="fecha" href="retiro.php?r=<?= e($f['slug']) ?>"
-           onclick="lrTrack('abrir_retiro','<?= e($f['titulo']) ?>')">
-          <span class="d"><?= e(v27fecha($f['fecha_inicio'], $f['fecha_fin'])) ?></span>
-          <span class="t"><?= e($f['titulo']) ?></span>
-          <span class="e <?= $f['estado'] === 'agotado' ? 'ag' : '' ?>">
-            <?= $f['estado'] === 'agotado' ? 'Sin cupos' : 'Abierto' ?>
-          </span>
-          <span class="fl" aria-hidden="true">&rarr;</span>
-        </a>
-      <?php endforeach; ?>
-    </div>
-    <p class="lede" style="margin-top:22px">Enero, febrero y marzo de 2027. Las fechas
-      se coordinan a medida: decinos cuando podes y cuantos son, y te confirmamos
-      disponibilidad y precio.</p>
-  </div>
-</section>
-<?php endif; ?>
-
-<!-- ══════════════ PRECIOS ══════════════ -->
-<section class="alt" id="precios">
-  <div class="env">
-    <p class="rot-s">Tarifas</p>
-    <h2><?= e(lrAjuste('v27_precios_titulo', 'Cuanto sale')) ?></h2>
-    <p class="lede"><?= e(lrAjuste('v27_precios_bajada',
-       'Precio por persona, con alojamiento y pension. Los menores de 1 a 3 anos casi no pagan.')) ?></p>
-
-    <div class="tarifas">
-      <?php
-      /* v4.0: las dos tarifas salen de `ajustes`, una clave por celda, asi
-         Johnny cambia un numero desde el panel sin tocar el archivo. */
-      $planes = [
-        ['v27_p1_nombre','3 dias y 2 noches','v27_p1_adulto','442.000','v27_p1_menor','221.000','v27_p1_bebe','46.000'],
-        ['v27_p2_nombre','4 dias y 3 noches','v27_p2_adulto','616.000','v27_p2_menor','308.000','v27_p2_bebe','52.000'],
-      ];
-      foreach ($planes as $pl): ?>
-      <div class="tarifa">
-        <b><?= e(lrAjuste($pl[0], $pl[1])) ?></b>
-        <div class="fila"><span>Adulto</span><em>$<?= e(lrAjuste($pl[2], $pl[3])) ?></em></div>
-        <div class="fila"><span>Menores de 4 a 10 anos</span><em>$<?= e(lrAjuste($pl[4], $pl[5])) ?></em></div>
-        <div class="fila"><span>De 1 a 3 anos</span><em>$<?= e(lrAjuste($pl[6], $pl[7])) ?></em></div>
-      </div>
-      <?php endforeach; ?>
-    </div>
-
-    <p class="nota-precio"><?= e(lrAjuste('v27_precios_nota',
-       'Precio por persona. No se aceptan mascotas.')) ?></p>
-  </div>
-</section>
-
-<!-- ══════════════ HORARIOS ══════════════ -->
-<section>
-  <div class="env">
-    <p class="rot-s">Como funciona</p>
-    <h2><?= e(lrAjuste('v27_horarios_titulo', 'Entradas y salidas')) ?></h2>
-
-    <div class="incluye">
-      <div class="inc"><b>Dias de ingreso</b><p><?= e(lrAjuste('v27_h_ingreso',
-        'De lunes a jueves, o de jueves a domingo.')) ?></p></div>
-      <div class="inc"><b>Check in</b><p><?= e(lrAjuste('v27_h_checkin',
-        'Desde las 14 horas.')) ?></p></div>
-      <div class="inc"><b>Check out</b><p><?= e(lrAjuste('v27_h_checkout',
-        'Las habitaciones se dejan a las 10 de la manana.')) ?></p></div>
-      <div class="inc"><b>Ultimo servicio</b><p><?= e(lrAjuste('v27_h_ultimo',
-        'El almuerzo del ultimo dia. Despues del almuerzo se retiran.')) ?></p></div>
-    </div>
-  </div>
-</section>
 
 <!-- ══════════════ FORMULARIO ══════════════ -->
 <section id="reservar">

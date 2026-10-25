@@ -43,8 +43,8 @@ VERSIONS = {
     "/espacios.php": "3.2",
     "/retiros.php":  "2.9",
     "/galeria.php":  "1.4",
-    "/retiro.php?r=retiro-verano-enero-2027": "1.3",
-    "/verano2027.php": "4.1",
+    "/retiro.php?r=retiro-verano-enero-2027": "1.4",
+    "/verano2027.php": "4.2",
 }
 
 # Strings that must appear in a page. If one goes missing, a deploy overwrote
@@ -83,7 +83,7 @@ MUST_BE_GONE = [
 ]
 
 TIMEOUT = 20
-# v1.2: el User-Agent propio hacia que el WAF del hosting tratara al script
+# v1.3: el User-Agent propio hacia que el WAF del hosting tratara al script
 # como un scraper y respondiera a TODO con una pagina de desafio de 12 KB.
 # El resultado eran 17 fallas falsas, incluidos archivos borrados que
 # "existian". Con un User-Agent de navegador y una pausa entre pedidos, el
@@ -115,11 +115,26 @@ class Result:
 
 
 def es_desafio(body):
-    """La pagina de espera del WAF: misma respuesta para cualquier URL."""
+    """La pagina de espera del WAF, por su texto."""
     if not body or len(body) > 20000:
         return False
-    marcas = ("One moment, please", "window.location.reload", "Checking your browser")
-    return sum(m in body for m in marcas) >= 2
+    marcas = ("One moment, please", "window.location.reload", "Checking your browser",
+              "Just a moment", "cf-browser-verification", "DDoS protection",
+              "Please wait while", "ddos-guard", "Attention Required")
+    return any(m in body for m in marcas)
+
+
+def hay_catch_all(base):
+    """v1.3: la prueba que no falla nunca.
+
+    Pide una direccion que no puede existir. Si el servidor responde 200 con
+    una pagina, entonces esta contestando lo mismo para todo y ningun chequeo
+    de abajo significa nada. No depende de adivinar el texto del WAF: solo
+    depende de que un 404 tiene que ser un 404.
+    """
+    import uuid
+    code, body, _, _ = fetch(base + "/zz-" + uuid.uuid4().hex + ".php")
+    return code == 200 and body and len(body) > 500
 
 
 def fetch(url, follow=True):
@@ -189,10 +204,11 @@ def main():
     # chequeo de aca en adelante va a fallar por la misma razon. Mejor decirlo
     # una vez que repetirlo treinta y nueve veces.
     code0, body0, _, _ = fetch(base + "/")
-    if es_desafio(body0):
+    if es_desafio(body0) or hay_catch_all(base):
         print()
-        print("  El hosting esta mostrando su pagina de proteccion, no el sitio.")
-        print("  Todos los chequeos van a fallar por eso y no por el sitio.")
+        print("  El servidor esta contestando lo mismo para CUALQUIER direccion,")
+        print("  incluso para una inventada. Es la proteccion del hosting, no el")
+        print("  sitio. Todos los chequeos de abajo fallarian por esa razon.")
         print()
         print("  Que hacer:")
         print("    1. Abri lareserva.net.ar en el navegador. Si carga, es solo")

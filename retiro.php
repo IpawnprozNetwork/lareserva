@@ -1,5 +1,5 @@
 <?php
-/* retiro.php - VERSION 1.3
+/* retiro.php - VERSION 1.4
    1.2: detail copy moved into the right-hand column. The bajada and the
    descripcion used to render in a second grid row below the gallery because
    an unclosed wrapper div broke the two-column layout. */
@@ -63,7 +63,7 @@ $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/co
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- retiro.php VERSION 1.3 -->
+<!-- retiro.php VERSION 1.4 -->
 <style>
 @media(max-width:900px){.retiro-cols{grid-template-columns:1fr !important}}
 </style>
@@ -261,9 +261,37 @@ $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/co
         <div style="background:var(--card,#112233);border:1px solid rgba(0,180,150,.15);border-radius:6px;padding:18px;margin-bottom:18px">
           <p style="font-size:.72rem;letter-spacing:.14em;color:#00c9a7;margin-bottom:12px;font-weight:600">INCLUYE</p>
           <ul style="list-style:none;padding:0;margin:0">
-            <?php foreach(preg_split('/\r?\n/',trim($r['incluye'])) as $li): if(!trim($li)) continue; ?>
-              <li style="border-bottom:1px solid rgba(0,180,150,.1);padding:9px 0;color:#7a9ab8;font-size:.92rem"><?= e(trim($li)) ?></li>
-            <?php endforeach; ?>
+            <?php
+            /* v1.4: tres formas de escribir una linea en Incluye.
+
+                 Alojamiento (3 noches)        item simple
+                 Adulto | $442.000             etiqueta a la izquierda, valor a la derecha
+                 # 3 dias y 2 noches           subtitulo, separa grupos
+
+               Antes cada renglon era un item suelto, asi que pegar una tabla
+               de precios daba veinte bolitas en fila: "3 dias y 2 noches",
+               "$442.000", "Menores", "$221.000". Ilegible. */
+            foreach (preg_split('/\r?\n/', trim($r['incluye'])) as $li):
+              $li = trim($li);
+              if ($li === '') continue;
+
+              if ($li[0] === '#'):  /* subtitulo */ ?>
+                <li style="list-style:none;padding:16px 0 6px;color:#00c9a7;font-size:.78rem;
+                           letter-spacing:.12em;text-transform:uppercase;font-weight:600;
+                           border-bottom:1px solid rgba(0,180,150,.18)"><?= e(ltrim($li, '# ')) ?></li>
+            <?php elseif (strpos($li, '|') !== false):  /* etiqueta y valor */
+                [$et, $val] = array_map('trim', explode('|', $li, 2)); ?>
+                <li style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+                           border-bottom:1px solid rgba(0,180,150,.1);padding:9px 0;font-size:.92rem">
+                  <span style="color:#7a9ab8"><?= e($et) ?></span>
+                  <strong style="color:#e8f0f7;font-weight:600;white-space:nowrap"><?= e($val) ?></strong>
+                </li>
+            <?php else: /* item simple */ ?>
+                <li style="border-bottom:1px solid rgba(0,180,150,.1);padding:9px 0;color:#7a9ab8;
+                           font-size:.92rem;padding-left:18px;position:relative">
+                  <span style="position:absolute;left:0;top:15px;width:6px;height:6px;border-radius:50%;
+                               background:#00c9a7;opacity:.5"></span><?= e($li) ?></li>
+            <?php endif; endforeach; ?>
           </ul>
         </div>
         <?php endif; ?>

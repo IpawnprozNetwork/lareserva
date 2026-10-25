@@ -18,6 +18,7 @@ de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.
 | `11-mail-copia.sql` | direccion que recibe copia de cada consulta. Cambiarla es re-correr este script con otro valor |
 | `12-galeria-video.sql` | columna `video` en galeria y los clips que se reproducen al pasar el mouse |
 | `13-verano-editable.sql` | tabla `verano_media` y las baldosas iniciales de la pagina de verano |
+| `14-retiro-verano-texto.sql` | descripcion y precios del Retiro de Verano 2027, con el formato nuevo de Incluye |
 | `99-borrar-pruebas.sql` | **BORRA DATOS.** Limpieza de datos de prueba. Leer antes de correr |
 
 Si phpMyAdmin responde `#1060 Duplicate column name`, esa columna ya existia.
