@@ -44,7 +44,7 @@ VERSIONS = {
     "/retiros.php":  "2.9",
     "/galeria.php":  "1.4",
     "/retiro.php?r=retiro-verano-enero-2027": "1.4",
-    "/verano2027.php": "4.2",
+    "/verano2027.php": "4.3",
 }
 
 # Strings that must appear in a page. If one goes missing, a deploy overwrote

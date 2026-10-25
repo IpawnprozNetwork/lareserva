@@ -314,3 +314,30 @@ abajo siguen apareciendo.
 Hay un script de prueba de ese estilo en el historial: stubea `e()`,
 `lrAjuste()` y las constantes, inyecta `$baldosas` y `$fechas` con valores
 distintos y hace `eval` del HTML. Cuatro combinaciones, diez segundos.
+
+---
+
+## 22. Una rama `else` que envuelve HTML es una trampa que se repite
+
+La entrada 21 conto como un `elseif` sin cerrar se trago tres secciones. Al
+mover esas mismas secciones de lugar, volvio a pasar, por la misma razon de
+fondo: los dos mosaicos estaban escritos asi.
+
+```
+<?php if ($baldosas): ?>   ... baldosas de la base ...
+<?php else: ?>             ... copia fija de respaldo, escrita a mano ...
+<?php endif; ?>
+```
+
+Esa rama `else` tenia treinta lineas de HTML, y cualquier insercion que
+cayera en el lugar equivocado terminaba adentro. De hecho ya se habia tragado
+una seccion INCLUYE entera: el archivo tenia dos, y una no se veia nunca.
+
+La solucion no fue arreglar el anidamiento otra vez, fue sacar las ramas.
+Ahora hay una funcion, `v27mosaico()`, y las dos llamadas son una linea cada
+una. Sin baldosas no dibuja nada y listo.
+
+**La regla:** si una rama `if`/`else` envuelve mas de unas pocas lineas de
+HTML, conviene que sea una funcion. Un helper no se puede tragar la seccion
+de abajo. Y el respaldo escrito a mano de contenido que ya vive en la base no
+es un respaldo, es una segunda copia que se desincroniza y estorba.

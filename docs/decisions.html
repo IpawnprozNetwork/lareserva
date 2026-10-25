@@ -181,6 +181,15 @@ tr:hover td{background:#0a1420}
 <p>Lo peor es que el sintoma aparecio <strong>al correr el SQL</strong>, no al subir el archivo: con la tabla vacia la rama era verdadera y todo se veia bien.</p>
 <p><strong>La regla:</strong> <code>php -l</code> solo dice que el archivo parsea. Un <code>if</code> cerrado por el <code>endif</code> equivocado parsea perfecto. Despues de tocar condicionales que envuelven HTML, hay que <strong>renderizar la pagina</strong> con datos de prueba en los dos estados, con la tabla llena y vacia, y confirmar que las secciones de abajo siguen apareciendo.</p>
 <p>Hay un script de prueba de ese estilo en el historial: stubea <code>e()</code>, <code>lrAjuste()</code> y las constantes, inyecta <code>$baldosas</code> y <code>$fechas</code> con valores distintos y hace <code>eval</code> del HTML. Cuatro combinaciones, diez segundos.</p>
+<hr>
+<h2>22. Una rama <code>else</code> que envuelve HTML es una trampa que se repite</h2>
+<p>La entrada 21 conto como un <code>elseif</code> sin cerrar se trago tres secciones. Al mover esas mismas secciones de lugar, volvio a pasar, por la misma razon de fondo: los dos mosaicos estaban escritos asi.</p>
+<pre><code>&lt;?php if ($baldosas): ?&gt;   ... baldosas de la base ...
+&lt;?php else: ?&gt;             ... copia fija de respaldo, escrita a mano ...
+&lt;?php endif; ?&gt;</code></pre>
+<p>Esa rama <code>else</code> tenia treinta lineas de HTML, y cualquier insercion que cayera en el lugar equivocado terminaba adentro. De hecho ya se habia tragado una seccion INCLUYE entera: el archivo tenia dos, y una no se veia nunca.</p>
+<p>La solucion no fue arreglar el anidamiento otra vez, fue sacar las ramas. Ahora hay una funcion, <code>v27mosaico()</code>, y las dos llamadas son una linea cada una. Sin baldosas no dibuja nada y listo.</p>
+<p><strong>La regla:</strong> si una rama <code>if</code>/<code>else</code> envuelve mas de unas pocas lineas de HTML, conviene que sea una funcion. Un helper no se puede tragar la seccion de abajo. Y el respaldo escrito a mano de contenido que ya vive en la base no es un respaldo, es una segunda copia que se desincroniza y estorba.</p>
 <div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
 </main>
 </div>

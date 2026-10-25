@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 4.2
+/* verano2027.php - VERSION 4.3
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -150,7 +150,7 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 4.2 -->
+<!-- verano2027.php VERSION 4.3 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
 <meta name="description" content="Verano 2027 en familia: tres dias y dos noches en el campo a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pension completa o media.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
@@ -316,9 +316,53 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   </div>
 </header>
 
-<?php /* v4.2: la agenda, los precios y los horarios van arriba de todo.
-         Es lo primero que pregunta una familia y estaba al final, despues
-         de tres secciones de fotos. */ ?>
+<?php
+/* v4.3: un solo helper para los dos mosaicos.
+
+   Antes cada mosaico era un if/else con una copia fija de respaldo escrita
+   a mano, y esas ramas terminaron tragandose secciones enteras del medio de
+   la pagina mas de una vez. Un helper no tiene ramas que envuelvan HTML, asi
+   que el problema no puede volver.
+
+   Si no hay baldosas cargadas no se dibuja nada: el panel las carga en dos
+   minutos y una pagina sin mosaico es mejor que una pagina rota. */
+function v27mosaico(array $items, bool $primeraGrande = false): void {
+    if (!$items) return;
+    echo '<div class="mosaico">';
+    foreach ($items as $k => $b) {
+        $cls = ($primeraGrande && $k === 0) ? ' class="g2"' : '';
+        $vid = $b['video'] ?? '';
+        printf(
+          '<figure%s data-img="%s"%s data-t="%s" data-d="%s" data-datos="%s">'
+        . '<img src="%s" alt="%s" loading="lazy">',
+          $cls, e($b['archivo']),
+          $vid ? ' data-vid="' . e($vid) . '"' : '',
+          e($b['titulo']), e($b['descripcion']), e($b['datos']),
+          e($b['archivo']), e($b['titulo'])
+        );
+        if ($vid) {
+            printf('<video muted loop playsinline webkit-playsinline preload="none"'
+                 . ' disablePictureInPicture poster="%s"><source src="%s" type="video/mp4"></video>',
+                   e($b['archivo']), e($vid));
+        }
+        printf('<figcaption>%s</figcaption></figure>', e($b['titulo']));
+    }
+    echo '</div>';
+}
+?>
+
+<!-- ══════════════ EL LUGAR ══════════════ -->
+<section>
+  <div class="env">
+    <p class="rot-s">El programa</p>
+    <h2>Tres dias, dos noches,<br>sin salir del predio</h2>
+    <p class="lede">Llegan el viernes, se van el domingo. En el medio no hay traslados
+      ni horarios que cumplir: la pileta, el lago, el parque y el comedor estan
+      todos a distancia de caminar. Los chicos pueden andar sueltos.</p>
+    <?php v27mosaico(array_slice($baldosas, 0, 6), true); ?>
+  </div>
+</section>
+
 <?php if ($fechas): ?>
 <!-- ══════════════ FECHAS ══════════════ -->
 <section class="alt">
@@ -397,66 +441,6 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   </div>
 </section>
 
-<!-- ══════════════ EL LUGAR ══════════════ -->
-<section>
-  <div class="env">
-    <p class="rot-s">El programa</p>
-    <h2>Tres dias, dos noches,<br>sin salir del predio</h2>
-    <p class="lede">Llegan el viernes, se van el domingo. En el medio no hay traslados
-      ni horarios que cumplir: la pileta, el lago, el parque y el comedor estan
-      todos a distancia de caminar. Los chicos pueden andar sueltos.</p>
-
-    <?php if ($baldosas): ?>
-    <?php /* v4.0: desde la base. Las primeras cinco van en el primer mosaico,
-             el resto en el segundo, y la primera es la grande. */ ?>
-    <div class="mosaico">
-      <?php foreach (array_slice($baldosas, 0, 6) as $k => $b): ?>
-      <figure<?= $k === 0 ? ' class="g2"' : '' ?>
-              data-img="<?= e($b['archivo']) ?>"
-              <?= $b['video'] ? 'data-vid="'.e($b['video']).'"' : '' ?>
-              data-t="<?= e($b['titulo']) ?>"
-              data-d="<?= e($b['descripcion']) ?>"
-              data-datos="<?= e($b['datos']) ?>">
-        <img src="<?= e($b['archivo']) ?>" alt="<?= e($b['titulo']) ?>" loading="lazy">
-        <?php if ($b['video']): ?>
-        <video muted loop playsinline webkit-playsinline preload="none"
-               disablePictureInPicture poster="<?= e($b['archivo']) ?>">
-          <source src="<?= e($b['video']) ?>" type="video/mp4"></video>
-        <?php endif; ?>
-        <figcaption><?= e($b['titulo']) ?></figcaption>
-      </figure>
-      <?php endforeach; ?>
-    </div>
-    <?php else: ?>
-    <div class="mosaico">
-      <figure class="g2" data-img="assets/img/verano2027/pileta-aerea.jpg" data-t="La pileta" data-datos="Descubierta|Reposeras y sombra|Abierta todo el dia" data-d="Pileta descubierta con sector de reposeras y una pergola de sombra al lado. Para los ratos libres entre actividades, o para una tarde entera sin hacer nada.">
-        <img src="assets/img/verano2027/pileta-aerea.jpg" alt="Pileta al aire libre vista desde arriba" loading="lazy">
-        <figcaption>La pileta</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/lago-aereo.jpg" data-vid="assets/video/pages/v27-aereo.mp4" data-t="El lago" data-datos="Pasarela de madera|Esculturas en la orilla|Sin acceso al agua" data-d="Un lago de agua quieta rodeado de arboleda, con una pasarela de madera que lo cruza. Las esculturas de la orilla son de artistas que pasaron por el predio.">
-        <img src="assets/img/verano2027/lago-aereo.jpg" alt="El lago desde el aire" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/lago-aereo.jpg"><source src="assets/video/pages/v27-aereo.mp4" type="video/mp4"></video>
-        <figcaption>El lago</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/la-casa.jpg" data-vid="assets/video/pages/v27-casa.mp4" data-t="La casa" data-datos="Habitaciones arriba|Galeria al frente|Salon y comedor abajo" data-d="La casa principal, con la galeria que recorre todo el frente. Arriba estan las habitaciones; abajo, el salon y el comedor.">
-        <img src="assets/img/verano2027/la-casa.jpg" alt="La casa principal" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/la-casa.jpg"><source src="assets/video/pages/v27-casa.mp4" type="video/mp4"></video>
-        <figcaption>La casa</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/camino-arboles.jpg" data-vid="assets/video/pages/v27-camino.mp4" data-t="Los senderos" data-datos="Circuitos entre arboleda|Para caminar o andar en bici|Sin autos" data-d="Circuitos para caminar entre la arboleda, usados para caminatas conscientes y trabajo individual en silencio.">
-        <img src="assets/img/verano2027/camino-arboles.jpg" alt="Camino entre arboles" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/camino-arboles.jpg"><source src="assets/video/pages/v27-camino.mp4" type="video/mp4"></video>
-        <figcaption>Los senderos</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/ovejas-parque.jpg" data-vid="assets/video/pages/v27-lago-escultura.mp4" data-t="El parque" data-datos="Pasto abierto y sombra|Ovejas sueltas|Juegos al aire libre" data-d="Pasto abierto y sectores con sombra para practicar al aire libre. Hay ovejas pastando en el predio.">
-        <img src="assets/img/verano2027/ovejas-parque.jpg" alt="Ovejas en el parque" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/ovejas-parque.jpg"><source src="assets/video/pages/v27-lago-escultura.mp4" type="video/mp4"></video>
-        <figcaption>El parque</figcaption>
-      </figure>
-    </div>
-  </div>
-</section>
-
 <!-- ══════════════ INCLUYE ══════════════ -->
 <section class="alt">
   <div class="env">
@@ -471,25 +455,6 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
       <div class="inc"><b>Actividades recreativas</b><p>Juegos y propuestas al aire libre para los chicos, coordinadas durante el dia.</p></div>
       <div class="inc"><b>Paseo a caballo</b><p>Se puede sumar al programa. Se coordina al reservar segun las edades del grupo.</p></div>
     </div>
-    <?php endif; ?>
-  </div>
-</section>
-
-<!-- ══════════════ INCLUYE ══════════════ -->
-<section class="alt">
-  <div class="env">
-    <p class="rot-s">Que incluye</p>
-    <h2>Tres dias armados,<br>con la comida resuelta</h2>
-
-    <div class="incluye">
-      <div class="inc"><b>Dos noches</b><p>Habitaciones sobre la galeria principal o cabanas en el predio. Se arma segun cuantos sean y las edades de los chicos.</p></div>
-      <div class="inc"><b>Pension completa o media</b><p>Completa: desayuno, almuerzo y cena. Media: desayuno y una comida. Las dos con opciones vegetarianas, veganas y sin gluten.</p></div>
-      <div class="inc"><b>Menu para los chicos</b><p>Carta aparte, pensada para los mas chicos, con horarios que no dependen de los de los adultos.</p></div>
-      <div class="inc"><b>Pileta al aire libre</b><p>Descubierta, con sector de reposeras y sombra al lado. Abierta todo el dia durante la estadia.</p></div>
-      <div class="inc"><b>Actividades recreativas</b><p>Juegos y propuestas al aire libre para los chicos, coordinadas durante el dia.</p></div>
-      <div class="inc"><b>Paseo a caballo</b><p>Se puede sumar al programa. Se coordina al reservar segun las edades del grupo.</p></div>
-    </div>
-  </div>
   </div>
 </section>
 
@@ -501,56 +466,9 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
     <p class="lede">250 hectareas sin autos. Pileta, pasto, animales sueltos, un lago
       con pasarela y fogon a la noche. Los chicos se cansan solos y los grandes
       descansan de verdad.</p>
-    <?php if (count($baldosas) > 6): ?>
-    <div class="mosaico">
-      <?php foreach (array_slice($baldosas, 6) as $b): ?>
-      <figure data-img="<?= e($b['archivo']) ?>"
-              <?= $b['video'] ? 'data-vid="'.e($b['video']).'"' : '' ?>
-              data-t="<?= e($b['titulo']) ?>"
-              data-d="<?= e($b['descripcion']) ?>"
-              data-datos="<?= e($b['datos']) ?>">
-        <img src="<?= e($b['archivo']) ?>" alt="<?= e($b['titulo']) ?>" loading="lazy">
-        <?php if ($b['video']): ?>
-        <video muted loop playsinline webkit-playsinline preload="none"
-               disablePictureInPicture poster="<?= e($b['archivo']) ?>">
-          <source src="<?= e($b['video']) ?>" type="video/mp4"></video>
-        <?php endif; ?>
-        <figcaption><?= e($b['titulo']) ?></figcaption>
-      </figure>
-      <?php endforeach; ?>
-    </div>
-    <?php elseif (!$baldosas): ?>
-    <div class="mosaico">
-      <figure data-img="assets/img/verano2027/grupo-lago.jpg" data-vid="assets/video/pages/v27-lago-atardecer.mp4" data-t="Tardes junto al agua" data-datos="La hora preferida|Atardecer sobre el lago|Fogon despues" data-d="Las tardes se pasan en la orilla. El lago al atardecer es el momento que mas se recuerda.">
-        <img src="assets/img/verano2027/grupo-lago.jpg" alt="Grupo junto al lago" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/grupo-lago.jpg"><source src="assets/video/pages/v27-lago-atardecer.mp4" type="video/mp4"></video>
-        <figcaption>Tardes junto al agua</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/mesa.jpg" data-vid="assets/video/pages/v27-mesa.mp4" data-t="Mesas compartidas" data-datos="Mesas largas|Menu aparte para los chicos|Veg, vegano y sin gluten" data-d="Mesas largas, comida casera con opciones vegetarianas, veganas y sin gluten, coordinada con el grupo.">
-        <img src="assets/img/verano2027/mesa.jpg" alt="Mesa servida" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/mesa.jpg"><source src="assets/video/pages/v27-mesa.mp4" type="video/mp4"></video>
-        <figcaption>Mesas compartidas</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/meditacion.jpg" data-vid="assets/video/pages/v27-meditacion.mp4" data-t="Practica al amanecer" data-datos="Niebla sobre el lago|Para los que madrugan|Opcional" data-d="El predio al amanecer, con niebla sobre el lago. Muchos grupos arrancan el dia ahi.">
-        <img src="assets/img/verano2027/meditacion.jpg" alt="Practica al amanecer" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/meditacion.jpg"><source src="assets/video/pages/v27-meditacion.mp4" type="video/mp4"></video>
-        <figcaption>Practica al amanecer</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/cabanas-noche.jpg" data-vid="assets/video/pages/cabanas-1.mp4" data-t="Las cabanas" data-datos="Madera, dentro del predio|A pasos del comedor|Se arma segun el grupo" data-d="Cabanas de madera dentro del predio, a pasos del salon y del comedor. El grupo duerme, come y practica en el mismo lugar.">
-        <img src="assets/img/verano2027/cabanas-noche.jpg" alt="Las cabanas iluminadas al anochecer" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/cabanas-noche.jpg"><source src="assets/video/pages/cabanas-1.mp4" type="video/mp4"></video>
-        <figcaption>Las cabanas</figcaption>
-      </figure>
-      <figure data-img="assets/img/verano2027/cabana.jpg" data-vid="assets/video/pages/v27-pagoda.mp4" data-t="Salon Pagoda" data-datos="Octogonal, de madera|Dos banos propios|Parlante con microfonos" data-d="Salon octogonal de madera con deck, para practicas y ceremonias en ronda. Tiene dos banos propios y parlante con microfonos.">
-        <img src="assets/img/verano2027/cabana.jpg" alt="El Salon Pagoda, octogonal, desde afuera" loading="lazy">
-        <video muted loop playsinline preload="none" poster="assets/img/verano2027/cabana.jpg"><source src="assets/video/pages/v27-pagoda.mp4" type="video/mp4"></video>
-        <figcaption>Salon Pagoda</figcaption>
-      </figure>
-    </div>
+    <?php v27mosaico(array_slice($baldosas, 6)); ?>
   </div>
 </section>
-
-    <?php endif; ?>
 
 <!-- ══════════════ FORMULARIO ══════════════ -->
 <section id="reservar">

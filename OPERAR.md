@@ -226,7 +226,7 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `retiro.php` | 1.4 |
 | `galeria.php` | 1.4 |
 | `welcome.html` | 2.1 |
-| `verano2027.php` | 4.2 |
+| `verano2027.php` | 4.3 |
 | `track.php` | 1.3 |
 | `includes/config.php` | 2.8 |
 | `includes/nav.php` | 2.2 |
