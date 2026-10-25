@@ -44,7 +44,7 @@ VERSIONS = {
     "/retiros.php":  "2.9",
     "/galeria.php":  "1.4",
     "/retiro.php?r=retiro-verano-enero-2027": "1.3",
-    "/verano2027.php": "3.2",
+    "/verano2027.php": "4.1",
 }
 
 # Strings that must appear in a page. If one goes missing, a deploy overwrote
@@ -83,7 +83,14 @@ MUST_BE_GONE = [
 ]
 
 TIMEOUT = 20
-UA = "LaReserva-healthcheck/1.0"
+# v1.2: el User-Agent propio hacia que el WAF del hosting tratara al script
+# como un scraper y respondiera a TODO con una pagina de desafio de 12 KB.
+# El resultado eran 17 fallas falsas, incluidos archivos borrados que
+# "existian". Con un User-Agent de navegador y una pausa entre pedidos, el
+# script deja de parecer un bot.
+UA = ("Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 "
+      "(KHTML, like Gecko) Chrome/129.0.0.0 Safari/537.36")
+PAUSA = 0.4        # segundos entre pedidos
 
 GREEN, RED, YELLOW, GREY, RESET = "\033[32m", "\033[31m", "\033[33m", "\033[90m", "\033[0m"
 
@@ -107,10 +114,24 @@ class Result:
         return f"  {c}{row['estado']:4}{RESET}  {row['prueba']:<46}{d}"
 
 
+def es_desafio(body):
+    """La pagina de espera del WAF: misma respuesta para cualquier URL."""
+    if not body or len(body) > 20000:
+        return False
+    marcas = ("One moment, please", "window.location.reload", "Checking your browser")
+    return sum(m in body for m in marcas) >= 2
+
+
 def fetch(url, follow=True):
     """Returns (status, body, seconds, final_url). Never raises."""
     ctx = ssl.create_default_context()
-    req = urllib.request.Request(url, headers={"User-Agent": UA})
+    req = urllib.request.Request(url, headers={
+        "User-Agent": UA,
+        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+        "Accept-Language": "es-AR,es;q=0.9,en;q=0.8",
+        "Connection": "close",
+    })
+    time.sleep(PAUSA)
     t0 = time.time()
 
     class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -163,6 +184,23 @@ def main():
             r.add(estado, f"GET {path}", nota)
         else:
             r.add("FAIL", f"GET {path}", f"HTTP {code}" if code else body[:60])
+
+    # Antes de todo: si el WAF esta mostrando su pagina de espera, cada
+    # chequeo de aca en adelante va a fallar por la misma razon. Mejor decirlo
+    # una vez que repetirlo treinta y nueve veces.
+    code0, body0, _, _ = fetch(base + "/")
+    if es_desafio(body0):
+        print()
+        print("  El hosting esta mostrando su pagina de proteccion, no el sitio.")
+        print("  Todos los chequeos van a fallar por eso y no por el sitio.")
+        print()
+        print("  Que hacer:")
+        print("    1. Abri lareserva.net.ar en el navegador. Si carga, es solo")
+        print("       contra este script y se destraba solo en unos minutos.")
+        print("    2. Si usas VPN, apagala y proba de nuevo.")
+        print("    3. Esperar 10 minutos y volver a correr.")
+        print()
+        sys.exit(2)
 
     # 404.php responde 404 a proposito: es la pagina de error. Pedirla y
     # recibir 200 seria el problema, no al reves.

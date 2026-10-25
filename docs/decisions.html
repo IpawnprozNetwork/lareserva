@@ -171,6 +171,16 @@ tr:hover td{background:#0a1420}
 <ul><li>Trataba el 404 de <code>404.php</code> como falla. Esa pagina devuelve 404 a proposito:</li></ul>
 <p>un 200 ahi seria el problema.</p>
 <p><strong>La regla:</strong> cuando el chequeo falla, verificar el chequeo antes de tocar el sitio. Un script de control que da falsos positivos se empieza a ignorar, y entonces deja de servir para el dia que la falla es de verdad.</p>
+<hr>
+<h2>21. Un <code>elseif</code> sin cerrar se traga las secciones siguientes, y PHP no avisa</h2>
+<p>La pagina de verano perdio tres secciones enteras (Agenda, Tarifas y Horarios) despues de un deploy que pasaba <code>php -l</code> sin una sola queja.</p>
+<p>La causa: al pasar las baldosas a la base, el bloque quedo asi:</p>
+<pre><code>&lt;?php if (count($baldosas) &gt; 6): ?&gt;   ... baldosas de la base ...
+&lt;?php elseif (!$baldosas): ?&gt;         ... baldosas fijas de respaldo ...</code></pre>
+<p>y el <code>&lt;?php endif; ?&gt;</code> que debia cerrar ahi nunca se escribio. PHP encontro uno mas abajo, al final de Horarios, y lo uso. Resultado: todo lo que estaba en el medio quedo dentro de la rama <code>elseif</code>, que es falsa apenas hay baldosas cargadas.</p>
+<p>Lo peor es que el sintoma aparecio <strong>al correr el SQL</strong>, no al subir el archivo: con la tabla vacia la rama era verdadera y todo se veia bien.</p>
+<p><strong>La regla:</strong> <code>php -l</code> solo dice que el archivo parsea. Un <code>if</code> cerrado por el <code>endif</code> equivocado parsea perfecto. Despues de tocar condicionales que envuelven HTML, hay que <strong>renderizar la pagina</strong> con datos de prueba en los dos estados, con la tabla llena y vacia, y confirmar que las secciones de abajo siguen apareciendo.</p>
+<p>Hay un script de prueba de ese estilo en el historial: stubea <code>e()</code>, <code>lrAjuste()</code> y las constantes, inyecta <code>$baldosas</code> y <code>$fechas</code> con valores distintos y hace <code>eval</code> del HTML. Cuatro combinaciones, diez segundos.</p>
 <div class="foot">La Reserva Naturaleza Arte · lareserva.net.ar</div>
 </main>
 </div>

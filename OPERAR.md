@@ -226,7 +226,7 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `retiro.php` | 1.3 |
 | `galeria.php` | 1.4 |
 | `welcome.html` | 2.1 |
-| `verano2027.php` | 3.2 |
+| `verano2027.php` | 4.1 |
 | `track.php` | 1.3 |
 | `includes/config.php` | 2.8 |
 | `includes/nav.php` | 2.2 |
@@ -234,7 +234,7 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `includes/footer.php` | 1.1 |
 | `includes/ajustes.php` | 1.1 |
 | `includes/antispam.php` | 1.3 |
-| `admin/_sidebar.php` | 2.6 |
+| `admin/_sidebar.php` | 2.7 |
 | `admin/inbox.php` | 1.3 |
 | `admin/login.php` | 1.1 |
 | `admin/recuperar.php` | 1.0 |
@@ -243,6 +243,7 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `admin/espacios.php` | 3.7 |
 | `admin/retiros.php` | 3.6 |
 | `admin/portada.php` | 1.0 |
+| `admin/verano.php` | 1.0 |
 | `admin/referidos.php` | 1.4 |
 
 ---

@@ -282,3 +282,35 @@ script:
 **La regla:** cuando el chequeo falla, verificar el chequeo antes de tocar el
 sitio. Un script de control que da falsos positivos se empieza a ignorar, y
 entonces deja de servir para el dia que la falla es de verdad.
+
+---
+
+## 21. Un `elseif` sin cerrar se traga las secciones siguientes, y PHP no avisa
+
+La pagina de verano perdio tres secciones enteras (Agenda, Tarifas y Horarios)
+despues de un deploy que pasaba `php -l` sin una sola queja.
+
+La causa: al pasar las baldosas a la base, el bloque quedo asi:
+
+```
+<?php if (count($baldosas) > 6): ?>   ... baldosas de la base ...
+<?php elseif (!$baldosas): ?>         ... baldosas fijas de respaldo ...
+```
+
+y el `<?php endif; ?>` que debia cerrar ahi nunca se escribio. PHP encontro
+uno mas abajo, al final de Horarios, y lo uso. Resultado: todo lo que estaba
+en el medio quedo dentro de la rama `elseif`, que es falsa apenas hay
+baldosas cargadas.
+
+Lo peor es que el sintoma aparecio **al correr el SQL**, no al subir el
+archivo: con la tabla vacia la rama era verdadera y todo se veia bien.
+
+**La regla:** `php -l` solo dice que el archivo parsea. Un `if` cerrado por el
+`endif` equivocado parsea perfecto. Despues de tocar condicionales que
+envuelven HTML, hay que **renderizar la pagina** con datos de prueba en los
+dos estados, con la tabla llena y vacia, y confirmar que las secciones de
+abajo siguen apareciendo.
+
+Hay un script de prueba de ese estilo en el historial: stubea `e()`,
+`lrAjuste()` y las constantes, inyecta `$baldosas` y `$fechas` con valores
+distintos y hace `eval` del HTML. Cuatro combinaciones, diez segundos.

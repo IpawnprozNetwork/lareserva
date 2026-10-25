@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 3.0
+/* verano2027.php - VERSION 4.1
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -102,6 +102,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+/* v4.0: las baldosas salen de `verano_media`, editables desde
+   admin/verano.php. Si la tabla no existe todavia o esta vacia, la pagina
+   usa las fijas del HTML de mas abajo y no se rompe nada. */
+$baldosas = [];
+try {
+    if ($db = getDB()) {
+        $baldosas = $db->query(
+            "SELECT archivo, video, titulo, descripcion, datos
+               FROM verano_media WHERE activo = 1 ORDER BY orden ASC, id ASC"
+        )->fetchAll();
+    }
+} catch (Throwable $e) { error_log('[LR verano media] ' . $e->getMessage()); }
+
 /* Retiros publicados del verano 2027, si los hay. La seccion de fechas
    aparece sola cuando hay algo cargado y desaparece cuando no: una agenda
    vacia en una landing es peor que no tener agenda. */
@@ -137,7 +150,7 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 3.0 -->
+<!-- verano2027.php VERSION 4.1 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
 <meta name="description" content="Verano 2027 en familia: tres dias y dos noches en el campo a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pension completa o media.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
@@ -192,12 +205,25 @@ h2{font:300 clamp(1.9rem,4vw,2.9rem) 'Fraunces',Georgia,serif;line-height:1.12;m
 .mosaico figcaption{position:absolute;left:0;right:0;bottom:0;padding:22px 16px 12px;z-index:2;font-size:.8rem;letter-spacing:.06em;color:#fff;background:linear-gradient(transparent,rgba(6,14,24,.85))}
 @media(hover:none){.mosaico video{opacity:1}.mosaico figure:hover img{transform:none}}
 
+.tarifas{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;margin-top:34px}
+.tarifa{border:1px solid rgba(0,201,167,.22);border-radius:12px;padding:24px 22px;background:var(--card)}
+.tarifa b{display:block;font:300 1.45rem 'Fraunces',Georgia,serif;color:var(--teal);
+  margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid rgba(122,154,184,.16)}
+.tarifa .fila{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:8px 0}
+.tarifa .fila span{color:var(--t2);font-size:.92rem}
+.tarifa .fila em{font-style:normal;font-weight:600;color:var(--t1);font-size:1.02rem;white-space:nowrap}
+.nota-precio{margin-top:20px;font-size:.9rem;color:var(--t3);border-left:2px solid rgba(240,57,139,.4);padding-left:14px}
 .incluye{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:34px}
 .inc{border:1px solid rgba(0,201,167,.18);border-radius:12px;padding:22px 20px;background:var(--card)}
 .inc b{display:block;font:600 1.02rem 'Karla',sans-serif;margin-bottom:6px;color:var(--t1)}
 .inc p{font-size:.92rem;color:var(--t2);line-height:1.6}
 
-.fecha{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;padding:20px 0;border-bottom:1px solid rgba(122,154,184,.16)}
+.fecha{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;padding:20px 0;
+  border-bottom:1px solid rgba(122,154,184,.16);text-decoration:none;transition:padding .2s}
+.fecha:hover{padding-left:10px}
+.fecha:hover .t{color:var(--teal)}
+.fecha .fl{color:var(--teal);opacity:0;transition:opacity .2s;margin-left:auto}
+.fecha:hover .fl{opacity:1}
 .fecha .d{color:var(--teal);font-weight:600;min-width:220px;font-size:.96rem}
 .fecha .t{font:300 1.3rem 'Fraunces',Georgia,serif;flex:1;min-width:220px}
 .fecha .e{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;padding:3px 11px;border-radius:12px;border:1px solid rgba(0,201,167,.3);color:var(--teal)}
@@ -276,11 +302,9 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   <div class="velo"></div>
   <div class="env">
     <div class="hero-in">
-      <p class="rot">Capilla del Señor · A una hora de Buenos Aires</p>
+      <p class="rot"><?= e(lrAjuste('v27_hero_rotulo', 'Capilla del Señor · A una hora de Buenos Aires')) ?></p>
       <h1>Verano <em>2027</em><br>en familia</h1>
-      <p>Tres dias y dos noches en el campo, a una hora de Buenos Aires.
-         Pileta, actividades para los chicos y pension completa o media.
-         Enero, febrero y marzo.</p>
+      <p><?= e(lrAjuste('v27_hero_bajada', 'Tres dias y dos noches en el campo, a una hora de Buenos Aires. Pileta, actividades para los chicos y pension completa o media. Enero, febrero y marzo.')) ?></p>
       <div class="btns">
         <a class="btn btn-p" href="#reservar"
            onclick="lrTrack('click_rsvp','Reservar fecha hero')">Reservar mi fecha</a>
@@ -301,6 +325,28 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
       ni horarios que cumplir: la pileta, el lago, el parque y el comedor estan
       todos a distancia de caminar. Los chicos pueden andar sueltos.</p>
 
+    <?php if ($baldosas): ?>
+    <?php /* v4.0: desde la base. Las primeras cinco van en el primer mosaico,
+             el resto en el segundo, y la primera es la grande. */ ?>
+    <div class="mosaico">
+      <?php foreach (array_slice($baldosas, 0, 6) as $k => $b): ?>
+      <figure<?= $k === 0 ? ' class="g2"' : '' ?>
+              data-img="<?= e($b['archivo']) ?>"
+              <?= $b['video'] ? 'data-vid="'.e($b['video']).'"' : '' ?>
+              data-t="<?= e($b['titulo']) ?>"
+              data-d="<?= e($b['descripcion']) ?>"
+              data-datos="<?= e($b['datos']) ?>">
+        <img src="<?= e($b['archivo']) ?>" alt="<?= e($b['titulo']) ?>" loading="lazy">
+        <?php if ($b['video']): ?>
+        <video muted loop playsinline webkit-playsinline preload="none"
+               disablePictureInPicture poster="<?= e($b['archivo']) ?>">
+          <source src="<?= e($b['video']) ?>" type="video/mp4"></video>
+        <?php endif; ?>
+        <figcaption><?= e($b['titulo']) ?></figcaption>
+      </figure>
+      <?php endforeach; ?>
+    </div>
+    <?php else: ?>
     <div class="mosaico">
       <figure class="g2" data-img="assets/img/verano2027/pileta-aerea.jpg" data-t="La pileta" data-datos="Descubierta|Reposeras y sombra|Abierta todo el dia" data-d="Pileta descubierta con sector de reposeras y una pergola de sombra al lado. Para los ratos libres entre actividades, o para una tarde entera sin hacer nada.">
         <img src="assets/img/verano2027/pileta-aerea.jpg" alt="Pileta al aire libre vista desde arriba" loading="lazy">
@@ -344,6 +390,24 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
       <div class="inc"><b>Actividades recreativas</b><p>Juegos y propuestas al aire libre para los chicos, coordinadas durante el dia.</p></div>
       <div class="inc"><b>Paseo a caballo</b><p>Se puede sumar al programa. Se coordina al reservar segun las edades del grupo.</p></div>
     </div>
+    <?php endif; ?>
+  </div>
+</section>
+
+<!-- ══════════════ INCLUYE ══════════════ -->
+<section class="alt">
+  <div class="env">
+    <p class="rot-s">Que incluye</p>
+    <h2>Tres dias armados,<br>con la comida resuelta</h2>
+
+    <div class="incluye">
+      <div class="inc"><b>Dos noches</b><p>Habitaciones sobre la galeria principal o cabanas en el predio. Se arma segun cuantos sean y las edades de los chicos.</p></div>
+      <div class="inc"><b>Pension completa o media</b><p>Completa: desayuno, almuerzo y cena. Media: desayuno y una comida. Las dos con opciones vegetarianas, veganas y sin gluten.</p></div>
+      <div class="inc"><b>Menu para los chicos</b><p>Carta aparte, pensada para los mas chicos, con horarios que no dependen de los de los adultos.</p></div>
+      <div class="inc"><b>Pileta al aire libre</b><p>Descubierta, con sector de reposeras y sombra al lado. Abierta todo el dia durante la estadia.</p></div>
+      <div class="inc"><b>Actividades recreativas</b><p>Juegos y propuestas al aire libre para los chicos, coordinadas durante el dia.</p></div>
+      <div class="inc"><b>Paseo a caballo</b><p>Se puede sumar al programa. Se coordina al reservar segun las edades del grupo.</p></div>
+    </div>
   </div>
   </div>
 </section>
@@ -356,6 +420,25 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
     <p class="lede">250 hectareas sin autos. Pileta, pasto, animales sueltos, un lago
       con pasarela y fogon a la noche. Los chicos se cansan solos y los grandes
       descansan de verdad.</p>
+    <?php if (count($baldosas) > 6): ?>
+    <div class="mosaico">
+      <?php foreach (array_slice($baldosas, 6) as $b): ?>
+      <figure data-img="<?= e($b['archivo']) ?>"
+              <?= $b['video'] ? 'data-vid="'.e($b['video']).'"' : '' ?>
+              data-t="<?= e($b['titulo']) ?>"
+              data-d="<?= e($b['descripcion']) ?>"
+              data-datos="<?= e($b['datos']) ?>">
+        <img src="<?= e($b['archivo']) ?>" alt="<?= e($b['titulo']) ?>" loading="lazy">
+        <?php if ($b['video']): ?>
+        <video muted loop playsinline webkit-playsinline preload="none"
+               disablePictureInPicture poster="<?= e($b['archivo']) ?>">
+          <source src="<?= e($b['video']) ?>" type="video/mp4"></video>
+        <?php endif; ?>
+        <figcaption><?= e($b['titulo']) ?></figcaption>
+      </figure>
+      <?php endforeach; ?>
+    </div>
+    <?php elseif (!$baldosas): ?>
     <div class="mosaico">
       <figure data-img="assets/img/verano2027/grupo-lago.jpg" data-vid="assets/video/pages/v27-lago-atardecer.mp4" data-t="Tardes junto al agua" data-datos="La hora preferida|Atardecer sobre el lago|Fogon despues" data-d="Las tardes se pasan en la orilla. El lago al atardecer es el momento que mas se recuerda.">
         <img src="assets/img/verano2027/grupo-lago.jpg" alt="Grupo junto al lago" loading="lazy">
@@ -386,6 +469,8 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   </div>
 </section>
 
+    <?php endif; ?>
+
 <?php if ($fechas): ?>
 <!-- ══════════════ FECHAS ══════════════ -->
 <section class="alt">
@@ -394,13 +479,17 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
     <h2>Fechas abiertas</h2>
     <div style="margin-top:28px">
       <?php foreach ($fechas as $f): ?>
-        <div class="fecha">
+        <?php /* v4.0: la fila entera es un link al retiro, igual que en la
+                 agenda. Antes se leia como una lista muerta. */ ?>
+        <a class="fecha" href="retiro.php?r=<?= e($f['slug']) ?>"
+           onclick="lrTrack('abrir_retiro','<?= e($f['titulo']) ?>')">
           <span class="d"><?= e(v27fecha($f['fecha_inicio'], $f['fecha_fin'])) ?></span>
           <span class="t"><?= e($f['titulo']) ?></span>
           <span class="e <?= $f['estado'] === 'agotado' ? 'ag' : '' ?>">
             <?= $f['estado'] === 'agotado' ? 'Sin cupos' : 'Abierto' ?>
           </span>
-        </div>
+          <span class="fl" aria-hidden="true">&rarr;</span>
+        </a>
       <?php endforeach; ?>
     </div>
     <p class="lede" style="margin-top:22px">Enero, febrero y marzo de 2027. Las fechas
@@ -409,6 +498,56 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   </div>
 </section>
 <?php endif; ?>
+
+<!-- ══════════════ PRECIOS ══════════════ -->
+<section class="alt" id="precios">
+  <div class="env">
+    <p class="rot-s">Tarifas</p>
+    <h2><?= e(lrAjuste('v27_precios_titulo', 'Cuanto sale')) ?></h2>
+    <p class="lede"><?= e(lrAjuste('v27_precios_bajada',
+       'Precio por persona, con alojamiento y pension. Los menores de 1 a 3 anos casi no pagan.')) ?></p>
+
+    <div class="tarifas">
+      <?php
+      /* v4.0: las dos tarifas salen de `ajustes`, una clave por celda, asi
+         Johnny cambia un numero desde el panel sin tocar el archivo. */
+      $planes = [
+        ['v27_p1_nombre','3 dias y 2 noches','v27_p1_adulto','442.000','v27_p1_menor','221.000','v27_p1_bebe','46.000'],
+        ['v27_p2_nombre','4 dias y 3 noches','v27_p2_adulto','616.000','v27_p2_menor','308.000','v27_p2_bebe','52.000'],
+      ];
+      foreach ($planes as $pl): ?>
+      <div class="tarifa">
+        <b><?= e(lrAjuste($pl[0], $pl[1])) ?></b>
+        <div class="fila"><span>Adulto</span><em>$<?= e(lrAjuste($pl[2], $pl[3])) ?></em></div>
+        <div class="fila"><span>Menores de 4 a 10 anos</span><em>$<?= e(lrAjuste($pl[4], $pl[5])) ?></em></div>
+        <div class="fila"><span>De 1 a 3 anos</span><em>$<?= e(lrAjuste($pl[6], $pl[7])) ?></em></div>
+      </div>
+      <?php endforeach; ?>
+    </div>
+
+    <p class="nota-precio"><?= e(lrAjuste('v27_precios_nota',
+       'Precio por persona. No se aceptan mascotas.')) ?></p>
+  </div>
+</section>
+
+<!-- ══════════════ HORARIOS ══════════════ -->
+<section>
+  <div class="env">
+    <p class="rot-s">Como funciona</p>
+    <h2><?= e(lrAjuste('v27_horarios_titulo', 'Entradas y salidas')) ?></h2>
+
+    <div class="incluye">
+      <div class="inc"><b>Dias de ingreso</b><p><?= e(lrAjuste('v27_h_ingreso',
+        'De lunes a jueves, o de jueves a domingo.')) ?></p></div>
+      <div class="inc"><b>Check in</b><p><?= e(lrAjuste('v27_h_checkin',
+        'Desde las 14 horas.')) ?></p></div>
+      <div class="inc"><b>Check out</b><p><?= e(lrAjuste('v27_h_checkout',
+        'Las habitaciones se dejan a las 10 de la manana.')) ?></p></div>
+      <div class="inc"><b>Ultimo servicio</b><p><?= e(lrAjuste('v27_h_ultimo',
+        'El almuerzo del ultimo dia. Despues del almuerzo se retiran.')) ?></p></div>
+    </div>
+  </div>
+</section>
 
 <!-- ══════════════ FORMULARIO ══════════════ -->
 <section id="reservar">

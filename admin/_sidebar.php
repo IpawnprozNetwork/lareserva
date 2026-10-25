@@ -1,5 +1,5 @@
 <?php
-/* admin/_sidebar.php - VERSION 2.6
+/* admin/_sidebar.php - VERSION 2.7
    The one sidebar for every admin page.
 
    Replaces the <nav class="sb" id="sb">...</nav>
@@ -122,6 +122,9 @@ function lrNav(string $file, string $label, string $actual, int $badge = 0, bool
   <ul class="sb-nav">
     <?php
       lrNav('portada.php',        'Portada',           $lrPag);
+      /* v2.7: editor de la landing de temporada. Cuando termine el verano
+         se saca esta linea y el archivo. */
+      if (is_file(__DIR__.'/verano.php')) lrNav('verano.php', 'Verano 2027', $lrPag);
       lrNav('retiros.php',        'Retiros',           $lrPag);
       lrNav('espacios.php',       'Espacios',          $lrPag);
       lrNav('consultas.php',      'Consultas',         $lrPag, $lrNuevas);
