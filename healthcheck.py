@@ -43,7 +43,7 @@ VERSIONS = {
     "/espacios.php": "3.2",
     "/retiros.php":  "2.9",
     "/galeria.php":  "1.4",
-    "/retiro.php?r=retiro-verano-enero-2027": "1.4",
+    "/retiro.php?r=retiro-verano-enero-2027": "1.6",
     "/verano2027.php": "4.3",
 }
 

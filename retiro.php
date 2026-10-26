@@ -1,5 +1,5 @@
 <?php
-/* retiro.php - VERSION 1.4
+/* retiro.php - VERSION 1.6
    1.2: detail copy moved into the right-hand column. The bajada and the
    descripcion used to render in a second grid row below the gallery because
    an unclosed wrapper div broke the two-column layout. */
@@ -63,7 +63,7 @@ $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/co
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- retiro.php VERSION 1.4 -->
+<!-- retiro.php VERSION 1.6 -->
 <style>
 @media(max-width:900px){.retiro-cols{grid-template-columns:1fr !important}}
 </style>
@@ -237,7 +237,47 @@ $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/co
         <?php if($r['facilitador']): ?>
         <div style="margin-bottom:24px">
           <p style="font-size:.72rem;letter-spacing:.14em;color:#4a6a85;margin-bottom:6px">COORDINA</p>
-          <p style="font-size:1.05rem;font-weight:600;color:#e8f0f7"><?= e($r['facilitador']) ?></p>
+          <?php
+          /* v1.6: el campo Coordina es texto libre, y a veces se escribe un
+             mail o un telefono en vez de un nombre. Antes quedaba muerto en
+             pantalla. Ahora, si parece un mail o un telefono, se enlaza; si
+             es un nombre, se muestra como siempre.
+
+             Tambien acepta "Nombre <mail o telefono>", que es lo mas util:
+             se ve el nombre y el contacto queda clickeable debajo. */
+          $fac = trim((string)$r['facilitador']);
+          $nom = $fac; $cont = '';
+          if (preg_match('/^(.*?)\s*[<(]\s*([^>)]+)\s*[>)]\s*$/', $fac, $mm)) {
+              $nom = trim($mm[1]); $cont = trim($mm[2]);
+          } elseif (filter_var($fac, FILTER_VALIDATE_EMAIL)
+                 || (preg_match('/^[\d\s()+.-]{8,20}$/', $fac))) {
+              $nom = ''; $cont = $fac;
+          }
+          $chref = '';
+          if ($cont !== '') {
+              $dg = preg_replace('/\D/', '', $cont);
+              if (filter_var($cont, FILTER_VALIDATE_EMAIL)) {
+                  $chref = 'mailto:' . $cont . '?subject='
+                         . rawurlencode('Consulta: ' . $r['titulo']);
+              } elseif (strlen($dg) >= 8 && strlen($dg) <= 15) {
+                  $chref = 'https://wa.me/' . $dg . '?text='
+                         . rawurlencode('Hola, quiero info sobre ' . $r['titulo']);
+              }
+          }
+          ?>
+          <?php if ($nom !== ''): ?>
+            <p style="font-size:1.05rem;font-weight:600;color:#e8f0f7"><?= e($nom) ?></p>
+          <?php endif; ?>
+          <?php if ($cont !== ''): ?>
+            <?php if ($chref): ?>
+              <a href="<?= e($chref) ?>" <?= strpos($chref,'mailto:')===0 ? '' : 'target="_blank" rel="noopener"' ?>
+                 style="font-size:<?= $nom === '' ? '1.02rem' : '.9rem' ?>;color:#00c9a7;
+                        display:inline-block;margin-top:<?= $nom === '' ? '0' : '4px' ?>;
+                        text-decoration:none;border-bottom:1px dotted rgba(0,201,167,.5)"><?= e($cont) ?></a>
+            <?php else: ?>
+              <p style="font-size:.9rem;color:#7a9ab8;margin-top:4px"><?= e($cont) ?></p>
+            <?php endif; ?>
+          <?php endif; ?>
           <?php if($r['facilitador_ig']??''): ?>
             <a href="https://instagram.com/<?= e(ltrim($r['facilitador_ig'],'@')) ?>" target="_blank" rel="noopener"
                style="font-size:.86rem;color:#00c9a7;display:inline-block;margin-top:4px">@<?= e(ltrim($r['facilitador_ig'],'@')) ?></a>
@@ -306,12 +346,46 @@ $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/co
         <?php elseif($r['estado']==='finalizado'): ?>
           <p style="color:#4a6a85;font-size:.9rem;margin-bottom:12px">Este encuentro ya sucedió.</p>
           <a href="retiros.php" class="boton hueco" style="display:block;text-align:center">Ver próximas fechas</a>
-        <?php elseif($r['url_inscripcion']??''): ?>
-          <a href="<?= e($r['url_inscripcion']) ?>" class="boton" target="_blank" rel="noopener" style="display:block;text-align:center">Inscribirme</a>
         <?php else: ?>
-          <?php $wa=$r['wa_contacto']??SITE_WA; ?>
-          <a href="https://wa.me/<?= e(preg_replace('/\D/','',$wa)) ?>?text=<?= rawurlencode('Hola, quiero información sobre '.$r['titulo']) ?>"
-             class="boton" target="_blank" rel="noopener" style="display:block;text-align:center">Consultar por WhatsApp</a>
+          <?php
+          /* v1.5: el campo "URL inscripcion" recibe lo que se le ponga. Si
+             alguien escribe un mail, antes salia como <a href="mail@x.com">,
+             que el navegador lee como una pagina del sitio y da 404. Ahora se
+             mira que es y se arma el link que corresponde.
+
+             Ademas el boton de WhatsApp salia SOLO cuando el campo estaba
+             vacio, asi que llenarlo lo hacia desaparecer. Ahora van los dos:
+             el de inscripcion arriba y WhatsApp abajo. */
+          $insc = trim((string)($r['url_inscripcion'] ?? ''));
+          $href = $texto = '';
+          if ($insc !== '') {
+              $soloDigitos = preg_replace('/\D/', '', $insc);
+              if (filter_var($insc, FILTER_VALIDATE_EMAIL)) {
+                  $href  = 'mailto:' . $insc . '?subject=' . rawurlencode('Inscripcion: ' . $r['titulo']);
+                  $texto = 'Inscribirme por mail';
+              } elseif (preg_match('~^https?://~i', $insc)) {
+                  $href = $insc; $texto = 'Inscribirme';
+              } elseif (strlen($soloDigitos) >= 8 && strlen($soloDigitos) <= 15
+                        && !preg_match('/[a-z]/i', $insc)) {
+                  $href  = 'https://wa.me/' . $soloDigitos . '?text='
+                         . rawurlencode('Hola, quiero inscribirme en ' . $r['titulo']);
+                  $texto = 'Inscribirme por WhatsApp';
+              } else {
+                  /* Le falta el esquema: "miweb.com/form" */
+                  $href = 'https://' . ltrim($insc, '/'); $texto = 'Inscribirme';
+              }
+          }
+          $wa = preg_replace('/\D/', '', $r['wa_contacto'] ?? '') ?: preg_replace('/\D/', '', SITE_WA);
+          ?>
+          <?php if ($href): ?>
+            <a href="<?= e($href) ?>" class="boton" <?= strpos($href,'mailto:')===0 ? '' : 'target="_blank" rel="noopener"' ?>
+               style="display:block;text-align:center"><?= e($texto) ?></a>
+          <?php endif; ?>
+          <?php if ($wa): ?>
+            <a href="https://wa.me/<?= e($wa) ?>?text=<?= rawurlencode('Hola, quiero información sobre '.$r['titulo']) ?>"
+               class="boton <?= $href ? 'hueco' : '' ?>" target="_blank" rel="noopener"
+               style="display:block;text-align:center;margin-top:<?= $href ? '10px' : '0' ?>">Consultar por WhatsApp</a>
+          <?php endif; ?>
         <?php endif; ?>
 
         <a href="retiros.php" style="display:block;text-align:center;margin-top:14px;font-size:.82rem;color:#4a6a85">← Ver toda la agenda</a>
