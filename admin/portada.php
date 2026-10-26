@@ -1,5 +1,5 @@
 <?php
-/* admin/portada.php - VERSION 1.0
+/* admin/portada.php - VERSION 1.1
    Edicion de los textos de la portada.
 
    Que se edita aca: solo los bloques de texto que estaban escritos a mano en
@@ -46,6 +46,16 @@ $campos = [
   'ubic_texto'  => ['Ubicacion, texto', 'area',
      'El parrafo de la seccion de ubicacion.',
      'La Reserva es un predio de 250 hectáreas en Capilla del Señor.'],
+
+  /* v1.1: los contactos del pie, que antes solo estaban en config.php.
+     Vacio = usa el valor original de config.php. */
+  'pie_wa'        => ['Pie: WhatsApp principal', 'texto', 'Solo numeros o con signos, da igual.', ''],
+  'pie_wa_label'  => ['Pie: como se muestra', 'texto', 'Ej: +54 9 11 3362-9514', ''],
+  'pie_wa2'       => ['Pie: segundo WhatsApp', 'texto', 'Opcional. Vacio = no aparece.', ''],
+  'pie_wa2_label' => ['Pie: como se muestra el segundo', 'texto', '', ''],
+  'pie_email'     => ['Pie: e-mail principal', 'texto', '', ''],
+  'pie_email2'    => ['Pie: segundo e-mail', 'texto', 'Opcional. Vacio = no aparece.', ''],
+  'pie_ig'        => ['Pie: Instagram', 'texto', 'Sin la arroba.', ''],
 
   'cifra1_n' => ['Cifra 1, numero', 'texto', '', '250'],
   'cifra1_t' => ['Cifra 1, texto',  'texto', '', 'hectáreas de parque, lago y arboleda'],
@@ -115,7 +125,7 @@ try {
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Portada · Panel La Reserva</title>
-<!-- admin/portada.php VERSION 1.0 -->
+<!-- admin/portada.php VERSION 1.1 -->
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}

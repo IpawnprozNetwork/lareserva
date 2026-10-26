@@ -3,7 +3,7 @@
 .lr-credito{color:#7a9ab8;text-decoration:none;border-bottom:1px solid transparent;transition:color .2s,border-color .2s}
 .lr-credito:hover{color:#00c9a7;border-bottom-color:rgba(0,201,167,.4)}
 </style>
-<!-- includes/footer.php VERSION 1.1 -->
+<!-- includes/footer.php VERSION 1.2 -->
 <footer class="pie">
   <div class="envoltura">
     <div class="pie-grilla">
@@ -19,9 +19,41 @@
       <div>
         <h4>Contacto</h4>
         <ul>
-          <li><a href="<?= e(waLink('Hola, quiero consultar por fechas en La Reserva.')) ?>" target="_blank" rel="noopener">WhatsApp <?= e(SITE_WA_LABEL) ?></a></li>
-          <li><a href="mailto:<?= e(SITE_EMAIL) ?>"><?= e(SITE_EMAIL) ?></a></li>
-          <li><a href="https://instagram.com/<?= e(SITE_IG) ?>" target="_blank" rel="noopener">@<?= e(SITE_IG) ?></a></li>
+          <?php
+          /* v1.2: los contactos del pie salen de `ajustes`, con las constantes
+             de config.php como valor por defecto. Asi se cambian desde
+             admin/portada.php sin tocar archivos, y se puede sumar un segundo
+             WhatsApp o un segundo mail, que solo aparecen si estan cargados.
+
+             function_exists porque no todas las paginas incluyen ajustes.php;
+             sin el, el pie sigue funcionando con las constantes. */
+          $pieAj  = function ($k, $d) {
+              return function_exists('lrAjuste') ? (trim((string)lrAjuste($k, $d)) ?: $d) : $d;
+          };
+          $waNum  = preg_replace('/\D/', '', $pieAj('pie_wa',  SITE_WA));
+          $waTxt  = $pieAj('pie_wa_label', SITE_WA_LABEL);
+          $mail   = $pieAj('pie_email', SITE_EMAIL);
+          $ig     = ltrim($pieAj('pie_ig', SITE_IG), '@');
+          $wa2    = preg_replace('/\D/', '', $pieAj('pie_wa2', ''));
+          $wa2Txt = $pieAj('pie_wa2_label', '');
+          $mail2  = $pieAj('pie_email2', '');
+          $saludo = rawurlencode('Hola, quiero consultar por fechas en La Reserva.');
+          ?>
+          <?php if ($waNum): ?>
+            <li><a href="https://wa.me/<?= e($waNum) ?>?text=<?= $saludo ?>" target="_blank" rel="noopener">WhatsApp <?= e($waTxt) ?></a></li>
+          <?php endif; ?>
+          <?php if ($wa2): ?>
+            <li><a href="https://wa.me/<?= e($wa2) ?>?text=<?= $saludo ?>" target="_blank" rel="noopener">WhatsApp <?= e($wa2Txt ?: $wa2) ?></a></li>
+          <?php endif; ?>
+          <?php if ($mail): ?>
+            <li><a href="mailto:<?= e($mail) ?>"><?= e($mail) ?></a></li>
+          <?php endif; ?>
+          <?php if ($mail2): ?>
+            <li><a href="mailto:<?= e($mail2) ?>"><?= e($mail2) ?></a></li>
+          <?php endif; ?>
+          <?php if ($ig): ?>
+            <li><a href="https://instagram.com/<?= e($ig) ?>" target="_blank" rel="noopener">@<?= e($ig) ?></a></li>
+          <?php endif; ?>
         </ul>
       </div>
 

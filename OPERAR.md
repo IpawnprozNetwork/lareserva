@@ -231,7 +231,7 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `includes/config.php` | 2.8 |
 | `includes/nav.php` | 2.2 |
 | `includes/auth.php` | 1.1 |
-| `includes/footer.php` | 1.1 |
+| `includes/footer.php` | 1.2 |
 | `includes/ajustes.php` | 1.1 |
 | `includes/antispam.php` | 1.3 |
 | `admin/_sidebar.php` | 2.7 |
@@ -242,7 +242,7 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `admin/seguridad.php` | 1.3 |
 | `admin/espacios.php` | 3.7 |
 | `admin/retiros.php` | 3.9 |
-| `admin/portada.php` | 1.0 |
+| `admin/portada.php` | 1.1 |
 | `admin/verano.php` | 1.0 |
 | `admin/referidos.php` | 1.4 |
 

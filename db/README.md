@@ -19,6 +19,7 @@ de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.
 | `12-galeria-video.sql` | columna `video` en galeria y los clips que se reproducen al pasar el mouse |
 | `13-verano-editable.sql` | tabla `verano_media` y las baldosas iniciales de la pagina de verano |
 | `14-retiro-verano-texto.sql` | descripcion y precios del Retiro de Verano 2027, con el formato nuevo de Incluye |
+| `15-pie-contactos.sql` | segundo WhatsApp y segundo mail en el pie del sitio |
 | `99-borrar-pruebas.sql` | **BORRA DATOS.** Limpieza de datos de prueba. Leer antes de correr |
 
 Si phpMyAdmin responde `#1060 Duplicate column name`, esa columna ya existia.
