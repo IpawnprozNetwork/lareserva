@@ -1,5 +1,5 @@
 <?php
-/* admin/verano.php - VERSION 1.4
+/* admin/verano.php - VERSION 1.5
    Editor de la pagina de Verano 2027.
 
    Dos cosas en una pantalla:
@@ -37,6 +37,12 @@ $campos = [
   'v27_programa_titulo' => ['Programa, titulo', 'texto', '', '4 días y 3 noches, o 3 días y 2 noches'],
   'v27_programa_bajada' => ['Programa, bajada', 'area', '',
      'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.'],
+
+  'v27_eventos_titulo' => ['Encuentros, titulo', 'texto', '', 'Encuentros con fecha fija'],
+  'v27_eventos_bajada' => ['Encuentros, bajada', 'area', '',
+     'El Family Plan se reserva cualquier día del verano. Aparte de eso, estos encuentros tienen fecha puesta y cupos propios.'],
+  'v27_eventos_nota'   => ['Encuentros, nota al pie', 'area', '',
+     'Para reservar cualquiera de los dos, escribile a Johnny por WhatsApp.'],
 
   'v27_pension_tit'   => ['Pension, titulo', 'texto', 'La que entra en el valor publicado.', 'Pensión completa'],
   'v27_pension_txt'   => ['Pension, detalle', 'area', '',
@@ -202,7 +208,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- admin/verano.php VERSION 1.4 -->
+<!-- admin/verano.php VERSION 1.5 -->
 <title>Verano 2027 · Panel La Reserva</title>
 <link rel="stylesheet" href="../css/style.css?v=4">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
@@ -270,6 +276,7 @@ textarea{min-height:76px;resize:vertical;line-height:1.6}
     $grupos = [
       'Encabezado'  => ['v27_hero_rotulo','v27_hero_bajada','v27_wa','v27_wa_label'],
       'Programa'    => ['v27_programa_titulo','v27_programa_bajada'],
+      'Encuentros'  => ['v27_eventos_titulo','v27_eventos_bajada','v27_eventos_nota'],
       'Pension'     => ['v27_pension_tit','v27_pension_txt'],
       'Valores'     => ['v27_precios_titulo','v27_precios_bajada'],
       'Plan 1'      => ['v27_p1_nombre','v27_p1_adulto','v27_p1_menor','v27_p1_bebe'],

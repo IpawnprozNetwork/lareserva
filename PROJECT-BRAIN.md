@@ -112,7 +112,7 @@ Bump these here and in `healthcheck.py` when you deploy.
 ```
 index.php                1.8    espacios.php             3.2
 verano2027.php           2.1    welcome.html             2.0
-retiros.php              2.9    retiro.php               1.6
+retiros.php              3.0    retiro.php               1.6
 galeria.php              1.4
 track.php                1.3
 

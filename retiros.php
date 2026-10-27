@@ -1,5 +1,5 @@
 <?php
-/* retiros.php - VERSION 2.9
+/* retiros.php - VERSION 3.0
    2.0: clicking an agenda row opens a lightbox with the same shape as the
    espacios popup: media carousel on the left, detail panel on the right.
    The panel carries a month calendar with the retiro dates marked, an RSVP
@@ -202,7 +202,7 @@ $retData = array_values(array_map(function($r) use ($media_map, $ocupados) {
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400;9..144,600&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- retiros.php VERSION 2.9 -->
+<!-- retiros.php VERSION 3.0 -->
 <style>
 /* ── Retiro lightbox ─────────────────────────────────────── */
 .rt-lb{position:fixed;inset:0;background:rgba(4,10,20,.9);backdrop-filter:blur(6px);z-index:120;
@@ -256,6 +256,12 @@ $retData = array_values(array_map(function($r) use ($media_map, $ocupados) {
 .rt-desc p{color:#7a9ab8;font-size:.92rem;line-height:1.7;margin:0 0 12px}
 .rt-rot{font-size:.68rem;letter-spacing:.14em;color:#4a6a85;text-transform:uppercase;margin:20px 0 8px;font-weight:600}
 .rt-inc{list-style:none;padding:0;margin:0}
+.rt-inc .rt-sub{list-style:none;margin-left:-18px;padding:14px 0 5px;color:#00c9a7;
+  font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;font-weight:600;
+  border-bottom:1px solid rgba(0,201,167,.18)}
+.rt-inc .rt-par{list-style:none;margin-left:-18px;display:flex;justify-content:space-between;
+  align-items:baseline;gap:14px}
+.rt-inc .rt-par strong{color:#e8f0f7;font-weight:600;white-space:nowrap}
 .rt-inc li{border-bottom:1px solid rgba(0,180,150,.1);padding:8px 0;color:#7a9ab8;font-size:.88rem}
 .rt-price{color:#e8f0f7;font-size:1rem;margin:16px 0 0}
 .rt-price strong{color:#00c9a7}
@@ -602,8 +608,26 @@ function rtRenderInfo(d){
   }
 
   if (d.incluye && d.incluye.length) {
+    /* v3.0: el campo Incluye entiende tres formas, igual que en retiro.php.
+         # Titulo          subtitulo que separa grupos
+         Etiqueta | valor  etiqueta a la izquierda, valor a la derecha
+         Texto suelto      item normal
+       Antes esta pagina los mostraba crudos y se veia "# 3 dias y 2 noches"
+       y "Adulto | $442.000" con el simbolo a la vista. */
     h += '<div class="rt-rot">Incluye</div><ul class="rt-inc">';
-    d.incluye.forEach(function(li){ h += '<li>' + esc(li) + '</li>'; });
+    d.incluye.forEach(function(li){
+      li = String(li).trim();
+      if (!li) return;
+      if (li.charAt(0) === '#') {
+        h += '<li class="rt-sub">' + esc(li.replace(/^#\s*/, '')) + '</li>';
+      } else if (li.indexOf('|') >= 0) {
+        var par = li.split('|');
+        h += '<li class="rt-par"><span>' + esc(par[0].trim())
+           + '</span><strong>' + esc(par.slice(1).join('|').trim()) + '</strong></li>';
+      } else {
+        h += '<li>' + esc(li) + '</li>';
+      }
+    });
     h += '</ul>';
   }
 

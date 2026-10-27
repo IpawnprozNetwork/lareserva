@@ -41,10 +41,10 @@ HOST_DEFAULT = "lareserva.net.ar"
 VERSIONS = {
     "/index.php":    "1.9",
     "/espacios.php": "3.2",
-    "/retiros.php":  "2.9",
+    "/retiros.php":  "3.0",
     "/galeria.php":  "1.4",
     "/retiro.php?r=retiro-verano-enero-2027": "1.6",
-    "/verano2027.php": "5.1",
+    "/verano2027.php": "5.2",
 }
 
 # Strings that must appear in a page. If one goes missing, a deploy overwrote

@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 5.1
+/* verano2027.php - VERSION 5.2
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -102,6 +102,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
+/* v5.2: los encuentros del verano vuelven, pero abajo de todo y como lo
+   que son: propuestas con fecha fija que se suman al Family Plan, no la
+   lista de fechas disponibles. El Family Plan corre todo el verano y eso
+   queda dicho arriba, en El programa. */
+$eventos = [];
+try {
+    if ($db = getDB()) {
+        $eventos = $db->query(
+            "SELECT slug,titulo,bajada,fecha_inicio,fecha_fin,estado,imagen
+               FROM retiros
+              WHERE estado IN('publicado','agotado')
+                AND fecha_inicio BETWEEN '2026-12-01' AND '2027-03-31'
+              ORDER BY fecha_inicio ASC"
+        )->fetchAll();
+    }
+} catch (Throwable $e) { error_log('[LR verano eventos] '.$e->getMessage()); }
+
+function v27fecha($i, $f) {
+    $meses = [1=>'enero','febrero','marzo','abril','mayo','junio','julio',
+              'agosto','septiembre','octubre','noviembre','diciembre'];
+    $a = strtotime((string)$i); $b = $f ? strtotime((string)$f) : null;
+    if (!$a) return '';
+    $di = (int)date('j',$a); $mi = (int)date('n',$a); $yi = date('Y',$a);
+    if (!$b || date('Y-m-d',$a) === date('Y-m-d',$b)) return "$di de {$meses[$mi]} $yi";
+    $df = (int)date('j',$b); $mf = (int)date('n',$b);
+    return $mi === $mf ? "$di al $df de {$meses[$mi]} $yi"
+                       : "$di de {$meses[$mi]} al $df de {$meses[$mf]} $yi";
+}
+
 /* v4.0: las baldosas salen de `verano_media`, editables desde
    admin/verano.php. Si la tabla no existe todavia o esta vacia, la pagina
    usa las fijas del HTML de mas abajo y no se rompe nada. */
@@ -128,7 +157,7 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 5.1 -->
+<!-- verano2027.php VERSION 5.2 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
 <meta name="description" content="Verano 2027 en familia: 4 días y 3 noches o 3 días y 2 noches a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pensión completa.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
@@ -195,6 +224,20 @@ h2{font:300 clamp(1.9rem,4vw,2.9rem) 'Fraunces',Georgia,serif;line-height:1.12;m
 .tarifa .fila{display:flex;justify-content:space-between;align-items:baseline;gap:14px;padding:8px 0}
 .tarifa .fila span{color:var(--t2);font-size:.92rem}
 .tarifa .fila em{font-style:normal;font-weight:600;color:var(--t1);font-size:1.02rem;white-space:nowrap}
+.eventos{display:flex;flex-direction:column;gap:12px;margin-top:30px}
+.ev{display:flex;gap:18px;align-items:center;padding:16px;border-radius:12px;
+  background:var(--card);border:1px solid rgba(0,201,167,.18);text-decoration:none;
+  transition:border-color .2s,transform .15s}
+.ev:hover{border-color:var(--teal);transform:translateX(4px)}
+.ev img{width:120px;height:84px;object-fit:cover;border-radius:8px;flex:0 0 auto}
+.ev-txt{flex:1;min-width:0}
+.ev-f{display:block;color:var(--teal);font-size:.84rem;font-weight:600;margin-bottom:3px}
+.ev-txt b{display:block;font:300 1.3rem 'Fraunces',Georgia,serif;color:var(--t1);margin-bottom:4px}
+.ev-txt p{color:var(--t2);font-size:.9rem;line-height:1.55;margin:0 0 7px}
+.ev-e{display:inline-block;font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;
+  padding:3px 11px;border-radius:12px;border:1px solid rgba(0,201,167,.35);color:var(--teal)}
+.ev-e.ag{border-color:rgba(240,57,139,.4);color:#f0398b}
+@media(max-width:620px){.ev{flex-direction:column;align-items:flex-start}.ev img{width:100%;height:150px}}
 .nota-precio{margin-top:20px;font-size:.9rem;color:var(--t3);border-left:2px solid rgba(240,57,139,.4);padding-left:14px}
 .incluye{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:34px}
 .inc{border:1px solid rgba(0,201,167,.18);border-radius:12px;padding:22px 20px;background:var(--card)}
@@ -504,6 +547,44 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
     </div>
   </div>
 </section>
+
+<?php if ($eventos): ?>
+<!-- ══════════════ EVENTOS ══════════════ -->
+<section class="alt" id="eventos">
+  <div class="env">
+    <p class="rot-s">Además</p>
+    <h2><?= e(lrAjuste('v27_eventos_titulo', 'Encuentros con fecha fija')) ?></h2>
+    <p class="lede"><?= e(lrAjuste('v27_eventos_bajada',
+       'El Family Plan se reserva cualquier día del verano. Aparte de eso, estos encuentros tienen fecha puesta y cupos propios. Hacé clic para ver cada uno.')) ?></p>
+
+    <div class="eventos">
+      <?php foreach ($eventos as $ev): ?>
+      <a class="ev" href="retiro.php?r=<?= e($ev['slug']) ?>"
+         onclick="lrTrack('abrir_retiro','<?= e($ev['titulo']) ?>')">
+        <?php if (!empty($ev['imagen'])): ?>
+          <img src="<?= e($ev['imagen']) ?>" alt="" loading="lazy">
+        <?php endif; ?>
+        <div class="ev-txt">
+          <span class="ev-f"><?= e(v27fecha($ev['fecha_inicio'], $ev['fecha_fin'])) ?></span>
+          <b><?= e($ev['titulo']) ?></b>
+          <?php if (!empty($ev['bajada'])): ?><p><?= e($ev['bajada']) ?></p><?php endif; ?>
+          <span class="ev-e <?= $ev['estado'] === 'agotado' ? 'ag' : '' ?>">
+            <?= $ev['estado'] === 'agotado' ? 'Sin cupos' : 'Abierto' ?></span>
+        </div>
+      </a>
+      <?php endforeach; ?>
+    </div>
+
+    <p class="nota-precio" style="margin-top:22px"><?= e(lrAjuste('v27_eventos_nota',
+       'Para reservar cualquiera de los dos, escribile a Johnny por WhatsApp y te pasa disponibilidad y forma de pago.')) ?></p>
+    <div class="btns" style="justify-content:flex-start;margin-top:18px">
+      <a class="btn btn-p" href="https://wa.me/<?= e($v27wa) ?>?text=<?= $waTexto ?>"
+         target="_blank" rel="noopener"
+         onclick="lrTrack('click_wa','WhatsApp eventos')">Consultar por WhatsApp</a>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
 
 <!-- ══════════════ CIERRE ══════════════ -->
 <div class="cierre">
