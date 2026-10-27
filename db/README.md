@@ -20,6 +20,13 @@ de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.
 | `13-verano-editable.sql` | tabla `verano_media` y las baldosas iniciales de la pagina de verano |
 | `14-retiro-verano-texto.sql` | descripcion y precios del Retiro de Verano 2027, con el formato nuevo de Incluye |
 | `15-pie-contactos.sql` | segundo WhatsApp y segundo mail en el pie del sitio |
+| `16-acentos-y-hero.sql` | acentos y enyes en los textos de la base, y el titulo nuevo del hero |
+| `17-acentos-faltantes.sql` | lo que la pasada 16 dejo a medias: datos de las baldosas y el hero |
+| `18-hero-tres-lineas.sql` | el texto del hero de verano en dos renglones |
+| `19-verano-wa-y-hero.sql` | WhatsApp propio de la landing de verano y el texto del hero en tres renglones |
+| `20-valores-texto.sql` | los textos de precios en castellano rioplatense |
+| `21-fechas-y-pension.sql` | la agenda deja de leerse como fechas unicas, y la pension deja de decir "completa o media" |
+| `22-programa-dos-opciones.sql` | el programa muestra las dos duraciones; la agenda de retiros salio de la landing |
 | `99-borrar-pruebas.sql` | **BORRA DATOS.** Limpieza de datos de prueba. Leer antes de correr |
 
 Si phpMyAdmin responde `#1060 Duplicate column name`, esa columna ya existia.

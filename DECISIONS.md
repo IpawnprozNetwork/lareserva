@@ -341,3 +341,30 @@ una. Sin baldosas no dibuja nada y listo.
 HTML, conviene que sea una funcion. Un helper no se puede tragar la seccion
 de abajo. Y el respaldo escrito a mano de contenido que ya vive en la base no
 es un respaldo, es una segunda copia que se desincroniza y estorba.
+
+---
+
+## 23. Agregar un rol por arriba rompe toda comparacion escrita a mano
+
+Al crear `superadmin` se reviso el sidebar y `seguridad.php`, pero dos
+pantallas comparaban el rol directamente:
+
+```php
+if (usuarioActual()['rol'] !== 'admin') { die('Acceso denegado.'); }
+```
+
+Con eso, el rol mas alto del sistema quedo afuera de `videos.php` y, peor,
+de `usuarios.php`, que es justamente donde se arreglan los roles. El dueno
+del sitio no podia entrar a la pantalla que necesitaba para destrabarse.
+
+No dio error en ningun lado: la pagina respondia 403 como si fuera lo
+correcto.
+
+**La regla:** el rol se pregunta con `esAdmin()`, `esSuperadmin()` o
+`exigirSuperadmin()`, nunca comparando la cadena. Y al sumar un nivel nuevo,
+buscar en todo el proyecto cualquier comparacion literal antes de dar el
+cambio por terminado:
+
+```bash
+grep -rn "rol'\] *[!=]== *'" admin/ includes/
+```

@@ -1,7 +1,11 @@
 <?php
+/* admin/videos.php - VERSION 1.1 */
 require_once __DIR__.'/../includes/auth.php';
 exigirSesion();
-if (usuarioActual()['rol'] !== 'admin') { http_response_code(403); die('Acceso denegado.'); }
+/* v1.1: comparaba el rol contra 'admin' a mano, asi que al crear el nivel
+   superadmin esta pantalla quedo cerrada justamente para el rol mas alto.
+   esAdmin() acepta admin y superadmin, que es lo que corresponde. */
+if (!esAdmin()) { http_response_code(403); die('Acceso denegado.'); }
 
 $aviso = null;
 $pages = [

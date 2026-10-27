@@ -1,5 +1,5 @@
 <?php
-/* admin/_sidebar.php - VERSION 2.7
+/* admin/_sidebar.php - VERSION 2.8
    The one sidebar for every admin page.
 
    Replaces the <nav class="sb" id="sb">...</nav>
@@ -125,6 +125,8 @@ function lrNav(string $file, string $label, string $actual, int $badge = 0, bool
       /* v2.7: editor de la landing de temporada. Cuando termine el verano
          se saca esta linea y el archivo. */
       if (is_file(__DIR__.'/verano.php')) lrNav('verano.php', 'Verano 2027', $lrPag);
+      /* v2.8: armador de flyers. Vive en Herramientas porque no es contenido
+         del sitio: es material para imprimir y para redes. */
       lrNav('retiros.php',        'Retiros',           $lrPag);
       lrNav('espacios.php',       'Espacios',          $lrPag);
       lrNav('consultas.php',      'Consultas',         $lrPag, $lrNuevas);
@@ -145,6 +147,7 @@ function lrNav(string $file, string $label, string $actual, int $badge = 0, bool
          IPs y el bloqueo. */
       if ($lrRol === 'superadmin') { if (is_file(__DIR__.'/seguridad.php')) lrNav('seguridad.php', 'Trafico y seguridad', $lrPag); }
       elseif (is_file(__DIR__.'/trafico.php'))                               lrNav('trafico.php',   'Trafico',             $lrPag);
+      if (is_file(__DIR__.'/flyer.php')) lrNav('flyer.php', 'Armar un flyer', $lrPag);
     ?>
   </ul>
 

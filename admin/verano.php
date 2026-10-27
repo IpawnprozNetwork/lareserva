@@ -1,5 +1,5 @@
 <?php
-/* admin/verano.php - VERSION 1.0
+/* admin/verano.php - VERSION 1.4
    Editor de la pagina de Verano 2027.
 
    Dos cosas en una pantalla:
@@ -29,9 +29,22 @@ $campos = [
   'v27_hero_bajada' => ['Parrafo del hero', 'area', 'Dos o tres lineas debajo del titulo.',
      'Tres dias y dos noches en el campo, a una hora de Buenos Aires. Pileta, actividades para los chicos y pension completa o media. Enero, febrero y marzo.'],
 
-  'v27_precios_titulo' => ['Tarifas, titulo', 'texto', '', 'Cuanto sale'],
-  'v27_precios_bajada' => ['Tarifas, bajada', 'area', '',
-     'Precio por persona, con alojamiento y pension. Los menores de 1 a 3 anos casi no pagan.'],
+  'v27_wa'        => ['WhatsApp de esta pagina', 'texto', 'Solo para Verano 2027. Vacio = el del sitio.', ''],
+  'v27_wa_label'  => ['WhatsApp, como se muestra', 'texto', 'Ej: +54 9 11 6939-0659', ''],
+
+  /* v1.4: los campos de Agenda salieron: la pagina ya no lista retiros.
+     Las filas viejas quedan en la base sin molestar. */
+  'v27_programa_titulo' => ['Programa, titulo', 'texto', '', '4 días y 3 noches, o 3 días y 2 noches'],
+  'v27_programa_bajada' => ['Programa, bajada', 'area', '',
+     'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.'],
+
+  'v27_pension_tit'   => ['Pension, titulo', 'texto', 'La que entra en el valor publicado.', 'Pensión completa'],
+  'v27_pension_txt'   => ['Pension, detalle', 'area', '',
+     'Desayuno, almuerzo y cena, con opciones vegetarianas, veganas y sin gluten. Si preferís media pensión, consultanos el valor.'],
+
+  'v27_precios_titulo' => ['Valores, titulo', 'texto', '', 'Valor de la estadía'],
+  'v27_precios_bajada' => ['Valores, bajada', 'area', '',
+     'Los valores son por persona e incluyen alojamiento y pensión completa o media. Los más chiquitos casi no pagan.'],
   'v27_p1_nombre' => ['Plan 1, nombre', 'texto', '', '3 dias y 2 noches'],
   'v27_p1_adulto' => ['Plan 1, adulto', 'texto', 'Solo el numero, sin el signo peso.', '442.000'],
   'v27_p1_menor'  => ['Plan 1, de 4 a 10 anos', 'texto', '', '221.000'],
@@ -40,9 +53,9 @@ $campos = [
   'v27_p2_adulto' => ['Plan 2, adulto', 'texto', '', '616.000'],
   'v27_p2_menor'  => ['Plan 2, de 4 a 10 anos', 'texto', '', '308.000'],
   'v27_p2_bebe'   => ['Plan 2, de 1 a 3 anos', 'texto', '', '52.000'],
-  'v27_precios_nota' => ['Tarifas, nota al pie', 'area',
+  'v27_precios_nota' => ['Valores, nota al pie', 'area',
      'Aparece debajo de las dos tarifas, en rojo.',
-     'Precio por persona. No se aceptan mascotas.'],
+     'Los valores son por persona. No recibimos mascotas.'],
 
   'v27_horarios_titulo' => ['Horarios, titulo', 'texto', '', 'Entradas y salidas'],
   'v27_h_ingreso'  => ['Dias de ingreso', 'area', '', 'De lunes a jueves, o de jueves a domingo.'],
@@ -189,7 +202,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- admin/verano.php VERSION 1.0 -->
+<!-- admin/verano.php VERSION 1.4 -->
 <title>Verano 2027 · Panel La Reserva</title>
 <link rel="stylesheet" href="../css/style.css?v=4">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
@@ -255,8 +268,10 @@ textarea{min-height:76px;resize:vertical;line-height:1.6}
 
     <?php
     $grupos = [
-      'Encabezado'  => ['v27_hero_rotulo','v27_hero_bajada'],
-      'Tarifas'     => ['v27_precios_titulo','v27_precios_bajada'],
+      'Encabezado'  => ['v27_hero_rotulo','v27_hero_bajada','v27_wa','v27_wa_label'],
+      'Programa'    => ['v27_programa_titulo','v27_programa_bajada'],
+      'Pension'     => ['v27_pension_tit','v27_pension_txt'],
+      'Valores'     => ['v27_precios_titulo','v27_precios_bajada'],
       'Plan 1'      => ['v27_p1_nombre','v27_p1_adulto','v27_p1_menor','v27_p1_bebe'],
       'Plan 2'      => ['v27_p2_nombre','v27_p2_adulto','v27_p2_menor','v27_p2_bebe'],
       'Nota'        => ['v27_precios_nota'],

@@ -1,5 +1,5 @@
 <?php
-/* admin/retiros.php - VERSION 3.9
+/* admin/retiros.php - VERSION 4.0
    3.5 changes:
    - display_errors is set AFTER the require. config.php turns it off at the bottom,
      so setting it before the include had no effect and every fatal came back blank.
@@ -302,7 +302,7 @@ if ($editar && $db) {
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<!-- admin/retiros.php VERSION 3.9 -->
+<!-- admin/retiros.php VERSION 4.0 -->
 <title>Retiros · Panel La Reserva</title>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
@@ -366,6 +366,7 @@ tr:last-child td{border-bottom:0}tr:hover td{background:var(--hover)}
 .dz{border:2px dashed var(--border);border-radius:8px;padding:22px;text-align:center;cursor:pointer;transition:.2s;background:var(--bg2);margin-bottom:10px}
 .dz:hover{border-color:var(--tb)}.dz input{display:none}
 .stars{color:var(--amber)}
+.pista{display:block;color:#4a6a85;font-size:.78rem;margin-top:5px;line-height:1.55}
 </style>
 </head>
 <body>
@@ -410,8 +411,9 @@ tr:last-child td{border-bottom:0}tr:hover td{background:var(--hover)}
           <div class="grid2">
             <div class="campo w"><label>Titulo *</label><input name="titulo" required value="<?= ve($editar,'titulo') ?>"></div>
             <div class="campo w"><label>Bajada</label><input name="bajada" value="<?= ve($editar,'bajada') ?>"></div>
-            <div class="campo"><label>Facilitador</label><input name="facilitador" value="<?= ve($editar,'facilitador') ?>
-            <small style="display:block;color:#4a6a85;font-size:.8rem;margin-top:6px;line-height:1.6">Nombre, o nombre y contacto entre parentesis:<br><code>Johnny (Jonathanr@fasedos.com.ar)</code><br><code>Johnny (+54 9 11 6939-0659)</code><br>El contacto queda clickeable en la pagina.</small>"></div>
+            <div class="campo"><label>Facilitador</label><input name="facilitador" value="<?= ve($editar,'facilitador') ?>"
+                   placeholder="Johnny (Jonathanr@fasedos.com.ar)">
+              <small class="pista">Nombre solo, o nombre y contacto entre parentesis. El contacto queda clickeable en la pagina.</small></div>
             <div class="campo"><label>Instagram facilitador</label><input name="facilitador_ig" value="<?= ve($editar,'facilitador_ig') ?>" placeholder="sin @"></div>
             <div class="campo"><label>Fecha inicio</label><input type="date" name="fecha_inicio" value="<?= ve($editar,'fecha_inicio') ?>"></div>
             <div class="campo"><label>Fecha fin</label><input type="date" name="fecha_fin" value="<?= ve($editar,'fecha_fin') ?>"></div>
@@ -433,8 +435,9 @@ tr:last-child td{border-bottom:0}tr:hover td{background:var(--hover)}
             <div class="campo"><label>Moneda</label><input name="moneda" value="<?= ve($editar,'moneda') ?: 'ARS' ?>"></div>
             <div class="campo"><label>Cupos</label><input type="number" name="cupos" value="<?= ve($editar,'cupos') ?>"></div>
             <div class="campo"><label>WhatsApp</label><input name="wa_contacto" value="<?= ve($editar,'wa_contacto') ?>" placeholder="5491133629514"></div>
-            <div class="campo"><label>URL inscripcion</label><input name="url_inscripcion" value="<?= ve($editar,'url_inscripcion') ?>
-            <small style="display:block;color:#4a6a85;font-size:.8rem;margin-top:6px;line-height:1.6">Acepta cuatro cosas y arma el boton solo:<br>un mail, y abre el programa de correo<br>un telefono, y abre WhatsApp<br>una direccion web completa<br>vacio, y queda solo el boton de WhatsApp</small>"></div>
+            <div class="campo"><label>URL inscripcion</label><input name="url_inscripcion" value="<?= ve($editar,'url_inscripcion') ?>"
+                   placeholder="mail, telefono o direccion web">
+              <small class="pista">Arma el boton solo: un mail abre el correo, un telefono abre WhatsApp, una direccion web se usa tal cual. Vacio deja solo el boton de WhatsApp.</small></div>
             <div class="campo"><label>Imagen cover (ruta)</label><input name="imagen" value="<?= ve($editar,'imagen') ?>" placeholder="uploads/retiros/foto.jpg"></div>
             <div class="campo w" style="flex-direction:row;align-items:center;gap:10px;padding:8px 0">
               <input type="checkbox" id="esp" name="es_propio" value="1"<?= ($editar['es_propio']??0)?' checked':'' ?>>
@@ -442,7 +445,7 @@ tr:last-child td{border-bottom:0}tr:hover td{background:var(--hover)}
             </div>
             <div class="campo w"><label>Descripcion</label><textarea name="descripcion" rows="5"><?= ve($editar,'descripcion') ?></textarea></div>
             <div class="campo w"><label>Incluye</label><textarea name="incluye" rows="4"><?= ve($editar,'incluye') ?></textarea>
-            <small style="display:block;color:#4a6a85;font-size:.8rem;margin-top:6px;line-height:1.6">Tres formas de escribir cada renglon:<br><code>Alojamiento (3 noches)</code> es un item suelto.<br><code>Adulto | $442.000</code> pone el valor alineado a la derecha.<br><code># 3 dias y 2 noches</code> es un subtitulo que separa grupos.</small></div>
+            <small class="pista">Tres formas de escribir cada renglon:<br><code>Alojamiento (3 noches)</code> es un item suelto.<br><code>Adulto | $442.000</code> pone el valor alineado a la derecha.<br><code># 3 dias y 2 noches</code> es un subtitulo que separa grupos.</small></div>
           </div>
         </fieldset>
         <button type="submit" class="btn btn-t">Guardar cambios</button>

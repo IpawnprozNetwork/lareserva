@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 4.3
+/* verano2027.php - VERSION 5.1
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -115,34 +115,12 @@ try {
     }
 } catch (Throwable $e) { error_log('[LR verano media] ' . $e->getMessage()); }
 
-/* Retiros publicados del verano 2027, si los hay. La seccion de fechas
-   aparece sola cuando hay algo cargado y desaparece cuando no: una agenda
-   vacia en una landing es peor que no tener agenda. */
-$fechas = [];
-try {
-    if ($db = getDB()) {
-        $fechas = $db->query(
-            "SELECT slug,titulo,fecha_inicio,fecha_fin,cupos,estado
-               FROM retiros
-              WHERE estado IN('publicado','agotado')
-                AND fecha_inicio BETWEEN '2026-12-01' AND '2027-03-31'
-              ORDER BY fecha_inicio ASC"
-        )->fetchAll();
-    }
-} catch (Throwable $e) { error_log('[LR verano fechas] ' . $e->getMessage()); }
 
-function v27fecha($i, $f) {
-    $meses = [1=>'enero','febrero','marzo','abril','mayo','junio','julio',
-              'agosto','septiembre','octubre','noviembre','diciembre'];
-    $a = strtotime($i); $b = $f ? strtotime($f) : null;
-    if (!$a) return '';
-    $di = (int)date('j', $a); $mi = (int)date('n', $a); $yi = date('Y', $a);
-    if (!$b || date('Y-m-d', $a) === date('Y-m-d', $b)) return "$di de {$meses[$mi]} $yi";
-    $df = (int)date('j', $b); $mf = (int)date('n', $b);
-    return $mi === $mf ? "$di al $df de {$meses[$mi]} $yi"
-                       : "$di de {$meses[$mi]} al $df de {$meses[$mf]} $yi";
-}
-
+/* v4.8: el WhatsApp de esta pagina sale de `ajustes`, no de SITE_WA. La
+   landing de verano la atiende otra persona que el resto del sitio, asi que
+   necesita su propio numero sin tocar config.php. Vacio = usa SITE_WA. */
+$v27wa    = preg_replace('/\D/', '', (string)lrAjuste('v27_wa', '')) ?: preg_replace('/\D/', '', SITE_WA);
+$v27waTxt = trim((string)lrAjuste('v27_wa_label', '')) ?: SITE_WA_LABEL;
 $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Reserva.');
 ?>
 <!DOCTYPE html>
@@ -150,11 +128,11 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 4.3 -->
+<!-- verano2027.php VERSION 5.1 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
-<meta name="description" content="Verano 2027 en familia: tres dias y dos noches en el campo a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pension completa o media.">
+<meta name="description" content="Verano 2027 en familia: 4 días y 3 noches o 3 días y 2 noches a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pensión completa.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
-<meta property="og:description" content="Tres dias y dos noches en familia. Pileta, actividades para los chicos y pension completa. Enero, febrero y marzo de 2027.">
+<meta property="og:description" content="4 días y 3 noches, o 3 días y 2 noches, en familia. Pileta, actividades para los chicos y pensión completa. Enero, febrero y marzo de 2027.">
 <meta property="og:image" content="https://<?= SITE_DOMAIN ?>/assets/img/verano2027/pileta-aerea.jpg">
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -171,17 +149,22 @@ body{background:var(--bg);color:var(--t1);font-family:'Karla',sans-serif;overflo
 img,video{max-width:100%;display:block}
 .env{max-width:1180px;margin:0 auto;padding:0 24px}
 
-.hero{position:relative;min-height:92svh;display:flex;align-items:flex-end;overflow:hidden;padding:120px 0 7vh}
+.hero{position:relative;min-height:78svh;display:flex;align-items:flex-end;overflow:hidden;padding:110px 0 6vh}
 .hero video,.hero .posterimg{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0}
 /* v2.2: pointer-events:none, igual que en welcome. Un velo a pantalla
    completa se come el boton de play que iOS dibuja si bloquea el autoplay. */
 .hero .velo{position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,rgba(10,22,40,.55) 0%,rgba(10,22,40,.25) 40%,rgba(10,22,40,.92) 100%)}
 .hero .env{position:relative;z-index:2;width:100%}
-.hero-in{width:fit-content;max-width:min(820px,100%);margin-inline:auto;text-align:center}
-.rot{font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--teal);margin-bottom:16px;font-weight:600}
-h1{font:300 clamp(2.6rem,7vw,5rem) 'Fraunces',Georgia,serif;line-height:1.02;margin-bottom:18px}
+/* v4.7: 680px obligaba al titulo a partirse justo antes del 2027.
+   Con mas ancho y un pelo menos de cuerpo entra en un renglon solo. */
+.hero-in{width:fit-content;max-width:min(900px,100%);margin-inline:auto;text-align:center}
+.hero h1{text-wrap:balance}
+.rot{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;color:var(--teal);margin-bottom:12px;font-weight:600}
+/* v4.6: el hero era demasiado grande. A 5rem el titulo se partia en dos
+   renglones y empujaba todo lo demas fuera de la primera pantalla. */
+h1{font:300 clamp(1.8rem,3.8vw,3rem) 'Fraunces',Georgia,serif;line-height:1.1;margin-bottom:14px;white-space:nowrap}
 h1 em{font-style:normal;color:var(--teal)}
-.hero p{font-size:clamp(1rem,2.2vw,1.18rem);color:#cfe0ee;line-height:1.65;max-width:54ch;margin:0 auto 30px}
+.hero p{font-size:clamp(.95rem,1.5vw,1.06rem);color:#cfe0ee;line-height:1.7;max-width:46ch;margin:0 auto 26px}
 .btns{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
 .btn{display:inline-block;padding:13px 28px;border-radius:30px;text-decoration:none;font-weight:600;font-size:.95rem;transition:transform .15s,background .2s}
 .btn:hover{transform:translateY(-2px)}
@@ -218,6 +201,11 @@ h2{font:300 clamp(1.9rem,4vw,2.9rem) 'Fraunces',Georgia,serif;line-height:1.12;m
 .inc b{display:block;font:600 1.02rem 'Karla',sans-serif;margin-bottom:6px;color:var(--t1)}
 .inc p{font-size:.92rem;color:var(--t2);line-height:1.6}
 
+.aviso-fechas{margin-top:22px;padding:16px 20px;border-radius:12px;
+  background:rgba(0,201,167,.08);border:1px solid rgba(0,201,167,.3);
+  color:var(--t1);font-size:1.02rem;line-height:1.7;max-width:62ch}
+.rot-mini{margin-top:30px;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;
+  color:var(--t3);font-weight:600}
 .fecha{display:flex;gap:18px;align-items:baseline;flex-wrap:wrap;padding:20px 0;
   border-bottom:1px solid rgba(122,154,184,.16);text-decoration:none;transition:padding .2s}
 .fecha:hover{padding-left:10px}
@@ -283,6 +271,7 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   .vl-info{padding:22px 20px}
 }
 @media(max-width:900px){.mosaico{grid-template-columns:repeat(2,1fr)}.mosaico .g2{grid-column:span 2;grid-row:auto;aspect-ratio:4/3}}
+@media(max-width:780px){ h1{white-space:normal} }
 @media(max-width:620px){section{padding:58px 0}.f2,.f3{grid-template-columns:1fr}.form-wrap{padding:26px 20px}.hero{min-height:88svh;padding-top:96px}.hero-in{width:auto}}
 </style>
 </head>
@@ -303,12 +292,16 @@ textarea{min-height:96px;resize:vertical;line-height:1.6}
   <div class="env">
     <div class="hero-in">
       <p class="rot"><?= e(lrAjuste('v27_hero_rotulo', 'Capilla del Señor · A una hora de Buenos Aires')) ?></p>
-      <h1>Verano <em>2027</em><br>en familia</h1>
-      <p><?= e(lrAjuste('v27_hero_bajada', 'Tres dias y dos noches en el campo, a una hora de Buenos Aires. Pileta, actividades para los chicos y pension completa o media. Enero, febrero y marzo.')) ?></p>
+      <h1>Vení a disfrutar del verano <em>2027</em></h1>
+      <?php /* v4.5: nl2br sobre el texto YA escapado. Asi Johnny escribe una
+               linea por renglon en el panel y salen como renglones, sin que
+               pueda meter HTML: e() primero, los <br> despues. */ ?>
+      <p><?= nl2br(e(lrAjuste('v27_hero_bajada',
+            "Naturaleza y diversión.\nConsultá por nuestro Family Plan."))) ?></p>
       <div class="btns">
         <a class="btn btn-p" href="#reservar"
            onclick="lrTrack('click_rsvp','Reservar fecha hero')">Reservar mi fecha</a>
-        <a class="btn btn-s" href="https://wa.me/<?= e(SITE_WA) ?>?text=<?= $waTexto ?>"
+        <a class="btn btn-s" href="https://wa.me/<?= e($v27wa) ?>?text=<?= $waTexto ?>"
            target="_blank" rel="noopener"
            onclick="lrTrack('click_wa','WhatsApp hero')">Consultar por WhatsApp</a>
       </div>
@@ -355,88 +348,64 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
 <section>
   <div class="env">
     <p class="rot-s">El programa</p>
-    <h2>Tres dias, dos noches,<br>sin salir del predio</h2>
-    <p class="lede">Llegan el viernes, se van el domingo. En el medio no hay traslados
-      ni horarios que cumplir: la pileta, el lago, el parque y el comedor estan
-      todos a distancia de caminar. Los chicos pueden andar sueltos.</p>
+    <h2><?= e(lrAjuste('v27_programa_titulo', '4 días y 3 noches, o 3 días y 2 noches')) ?></h2>
+    <p class="lede"><?= e(lrAjuste('v27_programa_bajada',
+       'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.')) ?></p>
     <?php v27mosaico(array_slice($baldosas, 0, 6), true); ?>
   </div>
 </section>
 
-<?php if ($fechas): ?>
-<!-- ══════════════ FECHAS ══════════════ -->
-<section class="alt">
-  <div class="env">
-    <p class="rot-s">Agenda</p>
-    <h2>Fechas abiertas</h2>
-    <div style="margin-top:28px">
-      <?php foreach ($fechas as $f): ?>
-        <?php /* v4.0: la fila entera es un link al retiro, igual que en la
-                 agenda. Antes se leia como una lista muerta. */ ?>
-        <a class="fecha" href="retiro.php?r=<?= e($f['slug']) ?>"
-           onclick="lrTrack('abrir_retiro','<?= e($f['titulo']) ?>')">
-          <span class="d"><?= e(v27fecha($f['fecha_inicio'], $f['fecha_fin'])) ?></span>
-          <span class="t"><?= e($f['titulo']) ?></span>
-          <span class="e <?= $f['estado'] === 'agotado' ? 'ag' : '' ?>">
-            <?= $f['estado'] === 'agotado' ? 'Sin cupos' : 'Abierto' ?>
-          </span>
-          <span class="fl" aria-hidden="true">&rarr;</span>
-        </a>
-      <?php endforeach; ?>
-    </div>
-    <p class="lede" style="margin-top:22px">Enero, febrero y marzo de 2027. Las fechas
-      se coordinan a medida: decinos cuando podes y cuantos son, y te confirmamos
-      disponibilidad y precio.</p>
-  </div>
-</section>
-<?php endif; ?>
+<?php /* v5.1: la agenda de retiros salio de esta pagina. Los retiros son
+         otra propuesta y tienen su propia seccion en el sitio; mezclarlos
+         con el Family Plan confundia a quien entra buscando una escapada
+         en familia. Viven en retiros.php. */ ?>
 
 <!-- ══════════════ PRECIOS ══════════════ -->
 <section class="alt" id="precios">
   <div class="env">
-    <p class="rot-s">Tarifas</p>
-    <h2><?= e(lrAjuste('v27_precios_titulo', 'Cuanto sale')) ?></h2>
+    <p class="rot-s">Valores</p>
+    <h2><?= e(lrAjuste('v27_precios_titulo', 'Valor de la estadía')) ?></h2>
     <p class="lede"><?= e(lrAjuste('v27_precios_bajada',
-       'Precio por persona, con alojamiento y pension. Los menores de 1 a 3 anos casi no pagan.')) ?></p>
+       'Los valores son por persona e incluyen alojamiento y pensión completa. Los más chiquitos casi no pagan.')) ?></p>
 
     <div class="tarifas">
       <?php
       /* v4.0: las dos tarifas salen de `ajustes`, una clave por celda, asi
          Johnny cambia un numero desde el panel sin tocar el archivo. */
       $planes = [
-        ['v27_p1_nombre','3 dias y 2 noches','v27_p1_adulto','442.000','v27_p1_menor','221.000','v27_p1_bebe','46.000'],
-        ['v27_p2_nombre','4 dias y 3 noches','v27_p2_adulto','616.000','v27_p2_menor','308.000','v27_p2_bebe','52.000'],
+        ['v27_p1_nombre','3 días y 2 noches','v27_p1_adulto','442.000','v27_p1_menor','221.000','v27_p1_bebe','46.000'],
+        ['v27_p2_nombre','4 días y 3 noches','v27_p2_adulto','616.000','v27_p2_menor','308.000','v27_p2_bebe','52.000'],
       ];
       foreach ($planes as $pl): ?>
       <div class="tarifa">
         <b><?= e(lrAjuste($pl[0], $pl[1])) ?></b>
         <div class="fila"><span>Adulto</span><em>$<?= e(lrAjuste($pl[2], $pl[3])) ?></em></div>
-        <div class="fila"><span>Menores de 4 a 10 anos</span><em>$<?= e(lrAjuste($pl[4], $pl[5])) ?></em></div>
-        <div class="fila"><span>De 1 a 3 anos</span><em>$<?= e(lrAjuste($pl[6], $pl[7])) ?></em></div>
+        <div class="fila"><span>Menores de 4 a 10 años</span><em>$<?= e(lrAjuste($pl[4], $pl[5])) ?></em></div>
+        <div class="fila"><span>De 1 a 3 años</span><em>$<?= e(lrAjuste($pl[6], $pl[7])) ?></em></div>
       </div>
       <?php endforeach; ?>
     </div>
 
     <p class="nota-precio"><?= e(lrAjuste('v27_precios_nota',
-       'Precio por persona. No se aceptan mascotas.')) ?></p>
+       'Los valores son por persona. No recibimos mascotas.')) ?></p>
   </div>
 </section>
 
 <!-- ══════════════ HORARIOS ══════════════ -->
 <section>
   <div class="env">
-    <p class="rot-s">Como funciona</p>
+    <p class="rot-s">Cómo funciona</p>
     <h2><?= e(lrAjuste('v27_horarios_titulo', 'Entradas y salidas')) ?></h2>
 
     <div class="incluye">
-      <div class="inc"><b>Dias de ingreso</b><p><?= e(lrAjuste('v27_h_ingreso',
+      <div class="inc"><b>Días de ingreso</b><p><?= e(lrAjuste('v27_h_ingreso',
         'De lunes a jueves, o de jueves a domingo.')) ?></p></div>
       <div class="inc"><b>Check in</b><p><?= e(lrAjuste('v27_h_checkin',
         'Desde las 14 horas.')) ?></p></div>
       <div class="inc"><b>Check out</b><p><?= e(lrAjuste('v27_h_checkout',
-        'Las habitaciones se dejan a las 10 de la manana.')) ?></p></div>
-      <div class="inc"><b>Ultimo servicio</b><p><?= e(lrAjuste('v27_h_ultimo',
-        'El almuerzo del ultimo dia. Despues del almuerzo se retiran.')) ?></p></div>
+        'Las habitaciones se dejan a las 10 de la mañana.')) ?></p></div>
+      <div class="inc"><b>Último servicio</b><p><?= e(lrAjuste('v27_h_ultimo',
+        'El almuerzo del último día. Después del almuerzo se retiran.')) ?></p></div>
     </div>
   </div>
 </section>
@@ -444,16 +413,20 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
 <!-- ══════════════ INCLUYE ══════════════ -->
 <section class="alt">
   <div class="env">
-    <p class="rot-s">Que incluye</p>
-    <h2>Tres dias armados,<br>con la comida resuelta</h2>
+    <p class="rot-s">Qué incluye</p>
+    <h2>Los días armados,<br>con la comida resuelta</h2>
 
     <div class="incluye">
-      <div class="inc"><b>Dos noches</b><p>Habitaciones sobre la galeria principal o cabanas en el predio. Se arma segun cuantos sean y las edades de los chicos.</p></div>
-      <div class="inc"><b>Pension completa o media</b><p>Completa: desayuno, almuerzo y cena. Media: desayuno y una comida. Las dos con opciones vegetarianas, veganas y sin gluten.</p></div>
-      <div class="inc"><b>Menu para los chicos</b><p>Carta aparte, pensada para los mas chicos, con horarios que no dependen de los de los adultos.</p></div>
-      <div class="inc"><b>Pileta al aire libre</b><p>Descubierta, con sector de reposeras y sombra al lado. Abierta todo el dia durante la estadia.</p></div>
-      <div class="inc"><b>Actividades recreativas</b><p>Juegos y propuestas al aire libre para los chicos, coordinadas durante el dia.</p></div>
-      <div class="inc"><b>Paseo a caballo</b><p>Se puede sumar al programa. Se coordina al reservar segun las edades del grupo.</p></div>
+      <div class="inc"><b>2 o 3 noches</b><p>Habitaciones sobre la galería principal o cabañas en el predio. Se arma según cuántos sean y las edades de los chicos.</p></div>
+      <?php /* v5.0: antes decia "completa o media" y el valor de arriba no
+         aclaraba cual, asi que todos preguntaban lo mismo. Ahora el titulo
+         dice la que esta incluida en el precio y el texto aclara la otra
+         como opcional. Se edita desde el panel. */ ?>
+      <div class="inc"><b><?= e(lrAjuste('v27_pension_tit', 'Pensión completa')) ?></b><p><?= e(lrAjuste('v27_pension_txt', 'Desayuno, almuerzo y cena, con opciones vegetarianas, veganas y sin gluten. Si preferís media pensión, consultanos el valor.')) ?></p></div>
+      <div class="inc"><b>Menú para los chicos</b><p>Carta aparte, pensada para los más chicos, con horarios que no dependen de los de los adultos.</p></div>
+      <div class="inc"><b>Pileta al aire libre</b><p>Descubierta, con sector de reposeras y sombra al lado. Abierta todo el día durante la estadía.</p></div>
+      <div class="inc"><b>Actividades recreativas</b><p>Juegos y propuestas al aire libre para los chicos, coordinadas durante el día.</p></div>
+      <div class="inc"><b>Paseo a caballo</b><p>Se puede sumar al programa. Se coordina al reservar según las edades del grupo.</p></div>
     </div>
   </div>
 </section>
@@ -463,7 +436,7 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
   <div class="env">
     <p class="rot-s">Los chicos</p>
     <h2>El campo hace<br>la mitad del trabajo</h2>
-    <p class="lede">250 hectareas sin autos. Pileta, pasto, animales sueltos, un lago
+    <p class="lede">250 hectáreas sin autos. Pileta, pasto, animales sueltos, un lago
       con pasarela y fogon a la noche. Los chicos se cansan solos y los grandes
       descansan de verdad.</p>
     <?php v27mosaico(array_slice($baldosas, 6)); ?>
@@ -476,7 +449,7 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
     <div style="text-align:center">
       <p class="rot-s">Reservar</p>
       <h2>Consultar disponibilidad</h2>
-      <p class="lede" style="margin:0 auto">Decinos cuando y cuantos son. Te
+      <p class="lede" style="margin:0 auto">Decinos cuándo y cuántos son. Te
         respondemos con fechas libres y precio, por mail o por WhatsApp.</p>
     </div>
 
@@ -512,21 +485,21 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
           <label><span>Edades</span>
             <input type="text" name="edades" placeholder="4, 7 y 11" value="<?= e($_POST['edades'] ?? '') ?>"></label>
         </div>
-        <label><span>Pension</span>
+        <label><span>Pensión</span>
           <select name="pension">
             <option value="">A definir</option>
-            <option value="completa" <?= (($_POST['pension'] ?? '')==='completa')?'selected':'' ?>>Completa</option>
-            <option value="media" <?= (($_POST['pension'] ?? '')==='media')?'selected':'' ?>>Media</option>
+            <option value="completa" <?= (($_POST['pension'] ?? '')==='completa')?'selected':'' ?>>Completa, la del valor publicado</option>
+            <option value="media" <?= (($_POST['pension'] ?? '')==='media')?'selected':'' ?>>Media, consultar valor</option>
           </select></label>
-        <label><span>Algo mas que tengamos que saber</span>
-          <textarea name="mensaje" placeholder="Dietas, cumpleanos, si quieren sumar el paseo a caballo"><?= e($_POST['mensaje'] ?? '') ?></textarea></label>
+        <label><span>Algo más que tengamos que saber</span>
+          <textarea name="mensaje" placeholder="Dietas, cumpleaños, si quieren sumar el paseo a caballo"><?= e($_POST['mensaje'] ?? '') ?></textarea></label>
 
         <button class="sub" onclick="lrTrack('click_rsvp','Enviar formulario verano')">Enviar consulta</button>
       </form>
 
       <p class="nota">O escribinos directo por
-        <a href="https://wa.me/<?= e(SITE_WA) ?>?text=<?= $waTexto ?>" target="_blank" rel="noopener"
-           onclick="lrTrack('click_wa','WhatsApp formulario')">WhatsApp <?= e(SITE_WA_LABEL) ?></a>
+        <a href="https://wa.me/<?= e($v27wa) ?>?text=<?= $waTexto ?>" target="_blank" rel="noopener"
+           onclick="lrTrack('click_wa','WhatsApp formulario')">WhatsApp <?= e($v27waTxt) ?></a>
       </p>
     </div>
   </div>
@@ -551,7 +524,7 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
   </div>
 </div>
 
-<a class="wa-float" href="https://wa.me/<?= e(SITE_WA) ?>?text=<?= $waTexto ?>"
+<a class="wa-float" href="https://wa.me/<?= e($v27wa) ?>?text=<?= $waTexto ?>"
    target="_blank" rel="noopener" aria-label="WhatsApp"
    onclick="lrTrack('click_wa','WhatsApp flotante')"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38a9.9 9.9 0 0 0 4.79 1.22h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2Zm0 18.15h-.01a8.2 8.2 0 0 1-4.19-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.19 8.19 0 0 1-1.26-4.38c0-4.54 3.7-8.23 8.25-8.23a8.2 8.2 0 0 1 8.24 8.24c0 4.54-3.7 8.23-8.24 8.23Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.24-.64.8-.79.97-.14.16-.29.18-.54.06-.25-.13-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.01-.38.11-.5.11-.11.25-.29.37-.43.13-.15.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.4-.42-.56-.43h-.47c-.17 0-.43.06-.66.31-.22.25-.87.85-.87 2.07s.89 2.4 1.02 2.56c.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.47-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.14-1.18-.06-.11-.22-.17-.47-.29Z"/></svg></a>
 
@@ -579,7 +552,7 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
       <ul class="vl-datos" id="vlDatos"></ul>
       <div class="btns" style="justify-content:flex-start">
         <a class="btn btn-p" href="#reservar" id="vlRes">Reservar mi fecha</a>
-        <a class="btn btn-s" href="https://wa.me/<?= e(SITE_WA) ?>?text=<?= $waTexto ?>" target="_blank" rel="noopener"
+        <a class="btn btn-s" href="https://wa.me/<?= e($v27wa) ?>?text=<?= $waTexto ?>" target="_blank" rel="noopener"
            onclick="lrTrack('click_wa','WhatsApp visor')">WhatsApp</a>
       </div>
     </div>

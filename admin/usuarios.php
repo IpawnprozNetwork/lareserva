@@ -1,8 +1,11 @@
 <?php
+/* admin/usuarios.php - VERSION 1.1 */
 require_once __DIR__.'/../includes/auth.php';
 exigirSesion();
 $u = usuarioActual();
-if ($u['rol'] !== 'admin') { http_response_code(403); die('Acceso denegado.'); }
+/* v1.1: mismo problema que videos.php. Un superadmin no podia entrar a
+   Usuarios, que es la pantalla donde se arreglan los roles. */
+if (!esAdmin()) { http_response_code(403); die('Acceso denegado.'); }
 $db = getDB();
 $aviso = null;
 
