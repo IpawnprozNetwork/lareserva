@@ -28,6 +28,8 @@ de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.
 | `21-fechas-y-pension.sql` | la agenda deja de leerse como fechas unicas, y la pension deja de decir "completa o media" |
 | `22-programa-dos-opciones.sql` | el programa muestra las dos duraciones; la agenda de retiros salio de la landing |
 | `23-eventos-y-pension.sql` | seccion de encuentros al pie de la landing y la bajada de Valores sin ambiguedad |
+| `24-fecha-fin-retiro.sql` | revisa y corrige fechas de fin cargadas antes de la de inicio |
+| `25-calculadora-contacto.sql` | textos de la calculadora y datos de contacto de Jonathan |
 | `99-borrar-pruebas.sql` | **BORRA DATOS.** Limpieza de datos de prueba. Leer antes de correr |
 
 Si phpMyAdmin responde `#1060 Duplicate column name`, esa columna ya existia.

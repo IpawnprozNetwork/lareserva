@@ -223,10 +223,10 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `index.php` | 1.9 |
 | `espacios.php` | 3.2 |
 | `retiros.php` | 3.0 |
-| `retiro.php` | 1.6 |
+| `retiro.php` | 1.9 |
 | `galeria.php` | 1.4 |
 | `welcome.html` | 2.1 |
-| `verano2027.php` | 5.2 |
+| `verano2027.php` | 5.5 |
 | `track.php` | 1.3 |
 | `includes/config.php` | 2.8 |
 | `includes/nav.php` | 2.2 |
@@ -243,7 +243,7 @@ Actualizar esta tabla con cada deploy. Es lo que compara `healthcheck.py`.
 | `admin/espacios.php` | 3.7 |
 | `admin/retiros.php` | 4.0 |
 | `admin/portada.php` | 1.1 |
-| `admin/verano.php` | 1.5 |
+| `admin/verano.php` | 1.6 |
 | `admin/flyer.php` | 1.2 |
 | `admin/videos.php` | 1.1 |
 | `admin/usuarios.php` | 1.1 |

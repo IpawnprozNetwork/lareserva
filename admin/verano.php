@@ -1,5 +1,5 @@
 <?php
-/* admin/verano.php - VERSION 1.5
+/* admin/verano.php - VERSION 1.6
    Editor de la pagina de Verano 2027.
 
    Dos cosas en una pantalla:
@@ -37,6 +37,14 @@ $campos = [
   'v27_programa_titulo' => ['Programa, titulo', 'texto', '', '4 días y 3 noches, o 3 días y 2 noches'],
   'v27_programa_bajada' => ['Programa, bajada', 'area', '',
      'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.'],
+
+  'v27_calc_titulo'    => ['Calculadora, titulo', 'texto', '', 'Calculá tu estadía'],
+  'v27_calc_nota'      => ['Calculadora, nota', 'area', '',
+     'Es una estimación. El valor final lo confirmamos por WhatsApp junto con la disponibilidad y la forma de pago.'],
+  'v27_contacto_nombre'=> ['Contacto, nombre', 'texto', '', 'Jonathan Ramírez'],
+  'v27_contacto_cargo' => ['Contacto, que hace', 'area', '',
+     'Coordina las reservas del Family Plan y de los encuentros del verano.'],
+  'v27_contacto_mail'  => ['Contacto, e-mail', 'texto', '', 'Jonathanr@fasedos.com.ar'],
 
   'v27_eventos_titulo' => ['Encuentros, titulo', 'texto', '', 'Encuentros con fecha fija'],
   'v27_eventos_bajada' => ['Encuentros, bajada', 'area', '',
@@ -208,7 +216,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- admin/verano.php VERSION 1.5 -->
+<!-- admin/verano.php VERSION 1.6 -->
 <title>Verano 2027 · Panel La Reserva</title>
 <link rel="stylesheet" href="../css/style.css?v=4">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
@@ -279,6 +287,8 @@ textarea{min-height:76px;resize:vertical;line-height:1.6}
       'Encuentros'  => ['v27_eventos_titulo','v27_eventos_bajada','v27_eventos_nota'],
       'Pension'     => ['v27_pension_tit','v27_pension_txt'],
       'Valores'     => ['v27_precios_titulo','v27_precios_bajada'],
+      'Calculadora' => ['v27_calc_titulo','v27_calc_nota'],
+      'Contacto'    => ['v27_contacto_nombre','v27_contacto_cargo','v27_contacto_mail'],
       'Plan 1'      => ['v27_p1_nombre','v27_p1_adulto','v27_p1_menor','v27_p1_bebe'],
       'Plan 2'      => ['v27_p2_nombre','v27_p2_adulto','v27_p2_menor','v27_p2_bebe'],
       'Nota'        => ['v27_precios_nota'],

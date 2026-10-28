@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 5.2
+/* verano2027.php - VERSION 5.5
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -124,6 +124,10 @@ function v27fecha($i, $f) {
               'agosto','septiembre','octubre','noviembre','diciembre'];
     $a = strtotime((string)$i); $b = $f ? strtotime((string)$f) : null;
     if (!$a) return '';
+    /* v5.3: si la fecha de fin quedo antes que la de inicio, cargada mal en
+       el panel, antes salia "16 al 4 de enero". Mejor mostrar solo la de
+       inicio que un rango imposible. */
+    if ($b && $b < $a) $b = null;
     $di = (int)date('j',$a); $mi = (int)date('n',$a); $yi = date('Y',$a);
     if (!$b || date('Y-m-d',$a) === date('Y-m-d',$b)) return "$di de {$meses[$mi]} $yi";
     $df = (int)date('j',$b); $mf = (int)date('n',$b);
@@ -157,7 +161,7 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 5.2 -->
+<!-- verano2027.php VERSION 5.5 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
 <meta name="description" content="Verano 2027 en familia: 4 días y 3 noches o 3 días y 2 noches a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pensión completa.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
@@ -238,6 +242,36 @@ h2{font:300 clamp(1.9rem,4vw,2.9rem) 'Fraunces',Georgia,serif;line-height:1.12;m
   padding:3px 11px;border-radius:12px;border:1px solid rgba(0,201,167,.35);color:var(--teal)}
 .ev-e.ag{border-color:rgba(240,57,139,.4);color:#f0398b}
 @media(max-width:620px){.ev{flex-direction:column;align-items:flex-start}.ev img{width:100%;height:150px}}
+.calc{margin-top:34px;background:var(--card);border:1px solid rgba(0,201,167,.25);
+  border-radius:16px;padding:26px 24px}
+.calc-tit{font:300 1.5rem 'Fraunces',Georgia,serif;color:var(--t1);margin-bottom:18px}
+.calc-planes{display:flex;gap:9px;flex-wrap:wrap;margin-bottom:20px}
+.calc-plan{background:none;border:1px solid #26405c;color:var(--t2);border-radius:22px;
+  padding:9px 18px;font:inherit;font-size:.9rem;cursor:pointer;transition:border-color .2s,color .2s}
+.calc-plan:hover{border-color:var(--teal);color:var(--teal)}
+.calc-plan.on{border-color:var(--teal);color:#0a1628;background:var(--teal);font-weight:600}
+.calc-filas{display:flex;flex-direction:column;gap:12px}
+.calc-fila{display:flex;justify-content:space-between;align-items:center;gap:14px;
+  padding-bottom:12px;border-bottom:1px solid rgba(122,154,184,.14)}
+.calc-fila label{color:var(--t2);font-size:.95rem}
+.calc-num{display:flex;align-items:center;gap:6px}
+.calc-num button{width:34px;height:34px;border-radius:50%;border:1px solid #26405c;
+  background:none;color:var(--t1);font-size:1.05rem;cursor:pointer;line-height:1}
+.calc-num button:hover{border-color:var(--teal);color:var(--teal)}
+.calc-num input{width:56px;text-align:center;background:#0a1420;border:1px solid #1c3247;
+  border-radius:8px;color:var(--t1);font:inherit;font-size:1rem;padding:7px 4px}
+.calc-num input::-webkit-outer-spin-button,.calc-num input::-webkit-inner-spin-button{
+  -webkit-appearance:none;margin:0}
+.calc-num input{-moz-appearance:textfield}
+.calc-det{margin-top:16px;font-size:.88rem;color:var(--t2);line-height:1.9}
+.calc-det div{display:flex;justify-content:space-between;gap:14px}
+.calc-det em{font-style:normal;color:var(--t1)}
+.calc-total{display:flex;justify-content:space-between;align-items:baseline;gap:14px;
+  margin-top:16px;padding-top:16px;border-top:1px solid rgba(0,201,167,.3)}
+.calc-total span{color:var(--t2);font-size:.95rem}
+.calc-total strong{font:300 2rem 'Fraunces',Georgia,serif;color:var(--teal)}
+.calc-nota{margin:12px 0 18px;font-size:.84rem;color:var(--t3);line-height:1.6}
+@media(max-width:620px){.calc{padding:20px 16px}.calc-total strong{font-size:1.6rem}}
 .nota-precio{margin-top:20px;font-size:.9rem;color:var(--t3);border-left:2px solid rgba(240,57,139,.4);padding-left:14px}
 .incluye{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:16px;margin-top:34px}
 .inc{border:1px solid rgba(0,201,167,.18);border-radius:12px;padding:22px 20px;background:var(--card)}
@@ -403,6 +437,46 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
          con el Family Plan confundia a quien entra buscando una escapada
          en familia. Viven en retiros.php. */ ?>
 
+<?php if ($eventos): ?>
+<!-- ══════════════ EVENTOS ══════════════ -->
+<section class="alt" id="eventos">
+  <div class="env">
+    <p class="rot-s">Además</p>
+    <h2><?= e(lrAjuste('v27_eventos_titulo', 'Encuentros con fecha fija')) ?></h2>
+    <p class="lede"><?= e(lrAjuste('v27_eventos_bajada',
+       'El Family Plan se reserva cualquier día del verano. Aparte de eso, estos encuentros tienen fecha puesta y cupos propios. Hacé clic para ver cada uno.')) ?></p>
+
+    <div class="eventos">
+      <?php foreach ($eventos as $ev): ?>
+      <a class="ev" href="retiro.php?r=<?= e($ev['slug']) ?>"
+         onclick="lrTrack('abrir_retiro','<?= e($ev['titulo']) ?>')">
+        <?php if (!empty($ev['imagen'])): ?>
+          <img src="<?= e($ev['imagen']) ?>" alt="" loading="lazy">
+        <?php endif; ?>
+        <div class="ev-txt">
+          <span class="ev-f"><?= e(v27fecha($ev['fecha_inicio'], $ev['fecha_fin'])) ?></span>
+          <b><?= e($ev['titulo']) ?></b>
+          <?php if (!empty($ev['bajada'])): ?><p><?= e($ev['bajada']) ?></p><?php endif; ?>
+          <span class="ev-e <?= $ev['estado'] === 'agotado' ? 'ag' : '' ?>">
+            <?= $ev['estado'] === 'agotado' ? 'Sin cupos' : 'Abierto' ?></span>
+        </div>
+      </a>
+      <?php endforeach; ?>
+    </div>
+
+    <p class="nota-precio" style="margin-top:22px"><?= e(lrAjuste('v27_eventos_nota',
+       'Para reservar, escribile a Jonathan Ramírez por WhatsApp o por mail y te pasa disponibilidad y forma de pago.')) ?></p>
+    <div class="btns" style="justify-content:flex-start;margin-top:18px">
+      <a class="btn btn-p" href="https://wa.me/<?= e($v27wa) ?>?text=<?= $waTexto ?>"
+         target="_blank" rel="noopener"
+         onclick="lrTrack('click_wa','WhatsApp eventos')">WhatsApp <?= e($v27waTxt) ?></a>
+      <a class="btn btn-s" href="mailto:<?= e(lrAjuste('v27_contacto_mail','Jonathanr@fasedos.com.ar')) ?>?subject=<?= rawurlencode('Consulta Verano 2027') ?>"
+         onclick="lrTrack('click_url','Mail eventos')"><?= e(lrAjuste('v27_contacto_mail','Jonathanr@fasedos.com.ar')) ?></a>
+    </div>
+  </div>
+</section>
+<?php endif; ?>
+
 <!-- ══════════════ PRECIOS ══════════════ -->
 <section class="alt" id="precios">
   <div class="env">
@@ -432,6 +506,62 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
     <p class="nota-precio"><?= e(lrAjuste('v27_precios_nota',
        'Los valores son por persona. No recibimos mascotas.')) ?></p>
   </div>
+    <?php /* v5.4: calculadora. Lee los mismos valores de `ajustes` que las
+             tarjetas de arriba, asi que si se cambia un precio en el panel la
+             cuenta cambia sola. Corre entera en el navegador: no manda nada
+             al servidor hasta que la persona aprieta el boton de WhatsApp. */ ?>
+    <div class="calc" id="calc">
+      <p class="calc-tit"><?= e(lrAjuste('v27_calc_titulo', 'Calculá tu estadía')) ?></p>
+
+      <div class="calc-planes">
+        <button type="button" class="calc-plan on" data-plan="1">
+          <?= e(lrAjuste('v27_p1_nombre','3 días y 2 noches')) ?></button>
+        <button type="button" class="calc-plan" data-plan="2">
+          <?= e(lrAjuste('v27_p2_nombre','4 días y 3 noches')) ?></button>
+      </div>
+
+      <div class="calc-filas">
+        <div class="calc-fila">
+          <label for="c-ad">Adultos</label>
+          <div class="calc-num">
+            <button type="button" data-paso="-1" data-campo="c-ad">&minus;</button>
+            <input type="number" id="c-ad" min="0" max="40" value="2" inputmode="numeric">
+            <button type="button" data-paso="1" data-campo="c-ad">+</button>
+          </div>
+        </div>
+        <div class="calc-fila">
+          <label for="c-me">Chicos de 4 a 10</label>
+          <div class="calc-num">
+            <button type="button" data-paso="-1" data-campo="c-me">&minus;</button>
+            <input type="number" id="c-me" min="0" max="40" value="0" inputmode="numeric">
+            <button type="button" data-paso="1" data-campo="c-me">+</button>
+          </div>
+        </div>
+        <div class="calc-fila">
+          <label for="c-be">Chicos de 1 a 3</label>
+          <div class="calc-num">
+            <button type="button" data-paso="-1" data-campo="c-be">&minus;</button>
+            <input type="number" id="c-be" min="0" max="40" value="0" inputmode="numeric">
+            <button type="button" data-paso="1" data-campo="c-be">+</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="calc-det" id="calc-det"></div>
+
+      <div class="calc-total">
+        <span>Total estimado</span>
+        <strong id="calc-total">$0</strong>
+      </div>
+      <p class="calc-nota"><?= e(lrAjuste('v27_calc_nota',
+        'Es una estimación. El valor final lo confirmamos por WhatsApp junto con la disponibilidad y la forma de pago.')) ?></p>
+
+      <div class="btns" style="justify-content:flex-start">
+        <a class="btn btn-p" id="calc-wa" href="#" target="_blank" rel="noopener"
+           onclick="lrTrack('click_wa','WhatsApp calculadora')">Pedir este presupuesto</a>
+      </div>
+    </div>
+
 </section>
 
 <!-- ══════════════ HORARIOS ══════════════ -->
@@ -548,45 +678,23 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
   </div>
 </section>
 
-<?php if ($eventos): ?>
-<!-- ══════════════ EVENTOS ══════════════ -->
-<section class="alt" id="eventos">
-  <div class="env">
-    <p class="rot-s">Además</p>
-    <h2><?= e(lrAjuste('v27_eventos_titulo', 'Encuentros con fecha fija')) ?></h2>
-    <p class="lede"><?= e(lrAjuste('v27_eventos_bajada',
-       'El Family Plan se reserva cualquier día del verano. Aparte de eso, estos encuentros tienen fecha puesta y cupos propios. Hacé clic para ver cada uno.')) ?></p>
-
-    <div class="eventos">
-      <?php foreach ($eventos as $ev): ?>
-      <a class="ev" href="retiro.php?r=<?= e($ev['slug']) ?>"
-         onclick="lrTrack('abrir_retiro','<?= e($ev['titulo']) ?>')">
-        <?php if (!empty($ev['imagen'])): ?>
-          <img src="<?= e($ev['imagen']) ?>" alt="" loading="lazy">
-        <?php endif; ?>
-        <div class="ev-txt">
-          <span class="ev-f"><?= e(v27fecha($ev['fecha_inicio'], $ev['fecha_fin'])) ?></span>
-          <b><?= e($ev['titulo']) ?></b>
-          <?php if (!empty($ev['bajada'])): ?><p><?= e($ev['bajada']) ?></p><?php endif; ?>
-          <span class="ev-e <?= $ev['estado'] === 'agotado' ? 'ag' : '' ?>">
-            <?= $ev['estado'] === 'agotado' ? 'Sin cupos' : 'Abierto' ?></span>
-        </div>
-      </a>
-      <?php endforeach; ?>
-    </div>
-
-    <p class="nota-precio" style="margin-top:22px"><?= e(lrAjuste('v27_eventos_nota',
-       'Para reservar cualquiera de los dos, escribile a Johnny por WhatsApp y te pasa disponibilidad y forma de pago.')) ?></p>
-    <div class="btns" style="justify-content:flex-start;margin-top:18px">
+<!-- ══════════════ CIERRE ══════════════ -->
+<!-- ══════════════ CONTACTO ══════════════ -->
+<section class="alt" id="contacto">
+  <div class="env" style="text-align:center">
+    <p class="rot-s">Contacto</p>
+    <h2><?= e(lrAjuste('v27_contacto_nombre', 'Jonathan Ramírez')) ?></h2>
+    <p class="lede" style="margin:0 auto 22px"><?= e(lrAjuste('v27_contacto_cargo',
+       'Coordina las reservas del Family Plan y de los encuentros del verano.')) ?></p>
+    <div class="btns">
       <a class="btn btn-p" href="https://wa.me/<?= e($v27wa) ?>?text=<?= $waTexto ?>"
-         target="_blank" rel="noopener"
-         onclick="lrTrack('click_wa','WhatsApp eventos')">Consultar por WhatsApp</a>
+         target="_blank" rel="noopener" onclick="lrTrack('click_wa','WhatsApp contacto')">WhatsApp <?= e($v27waTxt) ?></a>
+      <a class="btn btn-s" href="mailto:<?= e(lrAjuste('v27_contacto_mail','Jonathanr@fasedos.com.ar')) ?>?subject=<?= rawurlencode('Consulta Verano 2027') ?>"
+         onclick="lrTrack('click_url','Mail contacto')"><?= e(lrAjuste('v27_contacto_mail','Jonathanr@fasedos.com.ar')) ?></a>
     </div>
   </div>
 </section>
-<?php endif; ?>
 
-<!-- ══════════════ CIERRE ══════════════ -->
 <div class="cierre">
   <div class="env">
     <h2 style="margin-bottom:10px">La Reserva</h2>
@@ -651,8 +759,71 @@ function lrTrack(tipo, detalle){
   try { fetch('track.php', {method:'POST', body: body, headers:{'Content-Type':'application/json'}, keepalive:true}); } catch(e){}
   return true;
 }
+var WA_V27 = <?= json_encode($v27wa) ?>;
 lrTrack('abrir_espacio','Landing Verano 2027');
 
+
+/* ── Calculadora ────────────────────────────────────────────────────
+   Los precios vienen del HTML que genero PHP, no estan escritos aca:
+   cambiarlos en el panel alcanza para que la cuenta cambie. */
+(function(){
+  var caja = document.getElementById('calc');
+  if (!caja) return;
+  var P = {
+    1: {n: <?= json_encode(lrAjuste('v27_p1_nombre','3 días y 2 noches')) ?>, ad: <?= (int)preg_replace('/\D/','',lrAjuste('v27_p1_adulto','442.000')) ?>, me: <?= (int)preg_replace('/\D/','',lrAjuste('v27_p1_menor','221.000')) ?>, be: <?= (int)preg_replace('/\D/','',lrAjuste('v27_p1_bebe','46.000')) ?>},
+    2: {n: <?= json_encode(lrAjuste('v27_p2_nombre','4 días y 3 noches')) ?>, ad: <?= (int)preg_replace('/\D/','',lrAjuste('v27_p2_adulto','616.000')) ?>, me: <?= (int)preg_replace('/\D/','',lrAjuste('v27_p2_menor','308.000')) ?>, be: <?= (int)preg_replace('/\D/','',lrAjuste('v27_p2_bebe','52.000')) ?>}
+  };
+  var plan = 1;
+  var $c = function(i){ return document.getElementById(i); };
+
+  function num(s){ return parseInt(String(s).replace(/\D/g,''), 10) || 0; }
+  function plata(n){ return '$' + n.toLocaleString('es-AR'); }
+
+  function recalcular(){
+    var ad = Math.max(0, num($c('c-ad').value)),
+        me = Math.max(0, num($c('c-me').value)),
+        be = Math.max(0, num($c('c-be').value));
+    var p = P[plan];
+    var filas = [], total = 0;
+    [[ad,'Adulto','Adultos',p.ad],[me,'Chico de 4 a 10','Chicos de 4 a 10',p.me],
+     [be,'Chico de 1 a 3','Chicos de 1 a 3',p.be]].forEach(function(f){
+      if (!f[0]) return;
+      var sub = f[0] * f[3];
+      total += sub;
+      filas.push('<div><span>' + f[0] + ' ' + (f[0] === 1 ? f[1] : f[2])
+               + ' x ' + plata(f[3]) + '</span><em>' + plata(sub) + '</em></div>');
+    });
+    $c('calc-det').innerHTML = filas.join('') ||
+      '<div style="color:#4a6a85">Elegí cuántos son para ver el total.</div>';
+    $c('calc-total').textContent = plata(total);
+
+    var texto = 'Hola, quiero consultar por el Family Plan de Verano 2027.\n'
+      + p.n + '\n'
+      + (ad ? ad + ' adulto' + (ad > 1 ? 's' : '') + '\n' : '')
+      + (me ? me + ' chico' + (me > 1 ? 's' : '') + ' de 4 a 10\n' : '')
+      + (be ? be + ' chico' + (be > 1 ? 's' : '') + ' de 1 a 3\n' : '')
+      + 'Total estimado: ' + plata(total);
+    $c('calc-wa').href = 'https://wa.me/' + WA_V27 + '?text=' + encodeURIComponent(texto);
+  }
+
+  caja.querySelectorAll('.calc-plan').forEach(function(b){
+    b.addEventListener('click', function(){
+      caja.querySelectorAll('.calc-plan').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); plan = +b.dataset.plan; recalcular();
+    });
+  });
+  caja.querySelectorAll('.calc-num button').forEach(function(b){
+    b.addEventListener('click', function(){
+      var i = $c(b.dataset.campo);
+      i.value = Math.max(0, Math.min(40, num(i.value) + (+b.dataset.paso)));
+      recalcular();
+    });
+  });
+  ['c-ad','c-me','c-be'].forEach(function(i){
+    $c(i).addEventListener('input', recalcular);
+  });
+  recalcular();
+})();
 
 /* ── Visor ──────────────────────────────────────────────────────────── */
 (function(){

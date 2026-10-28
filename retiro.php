@@ -1,5 +1,5 @@
 <?php
-/* retiro.php - VERSION 1.6
+/* retiro.php - VERSION 1.9
    1.2: detail copy moved into the right-hand column. The bajada and the
    descripcion used to render in a second grid row below the gallery because
    an unclosed wrapper div broke the two-column layout. */
@@ -53,6 +53,32 @@ $hero_vid = file_exists($vid_file) ? 'assets/video/pages/retiro-'.$slug.'.mp4' :
 
 // Average rating
 $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/count($resenas),1) : null;
+
+/* v1.7: calculadora del retiro.
+
+   Los precios no tienen columnas propias: viven dentro del campo Incluye,
+   escritos como "Adulto | $442.000" debajo de un subtitulo "# 3 dias y 2
+   noches". En vez de inventar tablas nuevas se leen de ahi, asi cualquier
+   retiro que use ese formato tiene calculadora sin tocar nada mas.
+
+   Solo cuentan las filas cuyo valor tiene numeros: "Alojamiento" o
+   "No se aceptan mascotas" quedan afuera solas. */
+$rtPlanes = [];
+$rtIdx = -1;
+foreach (preg_split('/\r?\n/', (string)($r['incluye'] ?? '')) as $rtLi) {
+    $rtLi = trim($rtLi);
+    if ($rtLi === '') continue;
+    if ($rtLi[0] === '#') {
+        $rtPlanes[] = ['nombre' => trim(ltrim($rtLi, '# ')), 'filas' => []];
+        $rtIdx++;
+        continue;
+    }
+    if ($rtIdx < 0 || strpos($rtLi, '|') === false) continue;
+    $par = array_map('trim', explode('|', $rtLi, 2));
+    $rtN = (int)preg_replace('/[^0-9]/', '', $par[1]);
+    if ($rtN > 0) $rtPlanes[$rtIdx]['filas'][] = ['et' => $par[0], 'n' => $rtN];
+}
+$rtPlanes = array_values(array_filter($rtPlanes, function ($g) { return count($g['filas']) > 0; }));
 ?>
 <!DOCTYPE html>
 <html lang="es-AR">
@@ -63,9 +89,45 @@ $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/co
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,400&family=Karla:wght@300;400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css?v=4">
-<!-- retiro.php VERSION 1.6 -->
+<!-- retiro.php VERSION 1.9 -->
 <style>
 @media(max-width:900px){.retiro-cols{grid-template-columns:1fr !important}}
+
+/* v1.7: la calculadora */
+.rt-calc{margin-top:18px;padding:20px 18px;border:1px solid rgba(0,201,167,.25);
+  border-radius:14px;background:rgba(17,34,51,.6)}
+.rt-calc-tit{font:300 1.25rem 'Fraunces',Georgia,serif;color:#e8f0f7;margin-bottom:14px}
+.rt-calc-planes{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:16px}
+.rt-calc-plan{background:none;border:1px solid #26405c;color:#7a9ab8;border-radius:18px;
+  padding:7px 14px;font:inherit;font-size:.82rem;cursor:pointer}
+.rt-calc-plan:hover{border-color:#00c9a7;color:#00c9a7}
+.rt-calc-plan.on{background:#00c9a7;border-color:#00c9a7;color:#0a1628;font-weight:600}
+.rt-calc-fila{display:flex;justify-content:space-between;align-items:center;gap:12px;
+  padding:8px 0;border-bottom:1px solid rgba(122,154,184,.12)}
+.rt-calc-fila label{color:#7a9ab8;font-size:.88rem;flex:1;min-width:0}
+.rt-calc-num{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.rt-calc-num button{width:30px;height:30px;border-radius:50%;border:1px solid #26405c;
+  background:none;color:#e8f0f7;font-size:1rem;cursor:pointer;line-height:1}
+.rt-calc-num button:hover{border-color:#00c9a7;color:#00c9a7}
+.rt-calc-num input{width:48px;text-align:center;background:#0a1420;border:1px solid #1c3247;
+  border-radius:7px;color:#e8f0f7;font:inherit;font-size:.92rem;padding:6px 3px;-moz-appearance:textfield}
+.rt-calc-num input::-webkit-outer-spin-button,
+.rt-calc-num input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.rt-calc-det{margin-top:12px;font-size:.84rem;color:#7a9ab8;line-height:1.8}
+.rt-calc-det div{display:flex;justify-content:space-between;gap:12px}
+.rt-calc-det em{font-style:normal;color:#e8f0f7}
+.rt-calc-total{display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+  margin-top:12px;padding-top:12px;border-top:1px solid rgba(0,201,167,.3)}
+.rt-calc-total span{color:#7a9ab8;font-size:.9rem}
+.rt-calc-total strong{font:300 1.6rem 'Fraunces',Georgia,serif;color:#00c9a7}
+.rt-calc-nota{margin:10px 0 14px;font-size:.78rem;color:#4a6a85;line-height:1.6}
+.rt-contacto{margin-top:16px;padding:14px 16px;border-radius:10px;background:rgba(17,34,51,.5);
+  border:1px solid #1c3247;text-align:center}
+.rt-ct-rot{font-size:.66rem;letter-spacing:.18em;text-transform:uppercase;color:#00c9a7;margin-bottom:5px}
+.rt-ct-nom{color:#e8f0f7;font-size:.98rem;font-weight:600;margin-bottom:6px}
+.rt-contacto a{display:inline-block;margin:0 7px;color:#7a9ab8;font-size:.84rem;
+  text-decoration:none;border-bottom:1px dotted rgba(122,154,184,.5)}
+.rt-contacto a:hover{color:#00c9a7;border-bottom-color:#00c9a7}
 </style>
 <style>
 /* Slideshow */
@@ -388,6 +450,39 @@ $avg = count($resenas) ? round(array_sum(array_column($resenas,'puntuacion'))/co
           <?php endif; ?>
         <?php endif; ?>
 
+        <?php if ($rtPlanes): ?>
+        <div class="rt-calc" id="rtCalc">
+          <p class="rt-calc-tit">Calculá tu estadía</p>
+          <?php if (count($rtPlanes) > 1): ?>
+          <div class="rt-calc-planes">
+            <?php foreach ($rtPlanes as $k => $pl): ?>
+            <button type="button" class="rt-calc-plan<?= $k === 0 ? ' on' : '' ?>" data-plan="<?= $k ?>"><?= e($pl['nombre']) ?></button>
+            <?php endforeach; ?>
+          </div>
+          <?php endif; ?>
+          <div class="rt-calc-filas" id="rtCalcFilas"></div>
+          <div class="rt-calc-det" id="rtCalcDet"></div>
+          <div class="rt-calc-total"><span>Total estimado</span><strong id="rtCalcTotal">$0</strong></div>
+          <p class="rt-calc-nota">Es una estimación. Jonathan Ramírez te confirma el valor
+            final, la disponibilidad y la forma de pago.</p>
+          <a class="boton" id="rtCalcWa" href="#" target="_blank" rel="noopener"
+             style="display:block;text-align:center">Pedir este presupuesto</a>
+        </div>
+        <?php endif; ?>
+
+        <?php /* v1.8: a quien escribirle. Antes el boton decia WhatsApp a
+                 secas y no quedaba claro con quien hablabas. */ ?>
+        <div class="rt-contacto">
+          <p class="rt-ct-rot">Consultas</p>
+          <p class="rt-ct-nom"><?= e(function_exists('lrAjuste') ? lrAjuste('v27_contacto_nombre','Jonathan Ramírez') : 'Jonathan Ramírez') ?></p>
+          <?php $rtMail = function_exists('lrAjuste') ? lrAjuste('v27_contacto_mail','Jonathanr@fasedos.com.ar') : 'Jonathanr@fasedos.com.ar'; ?>
+          <a href="mailto:<?= e($rtMail) ?>?subject=<?= rawurlencode('Consulta: '.$r['titulo']) ?>"><?= e($rtMail) ?></a>
+          <?php if ($wa): ?>
+            <a href="https://wa.me/<?= e($wa) ?>?text=<?= rawurlencode('Hola, quiero información sobre '.$r['titulo']) ?>"
+               target="_blank" rel="noopener">WhatsApp</a>
+          <?php endif; ?>
+        </div>
+
         <a href="retiros.php" style="display:block;text-align:center;margin-top:14px;font-size:.82rem;color:#4a6a85">← Ver toda la agenda</a>
       </div>
     </div>
@@ -557,5 +652,77 @@ if (function_exists('sesionIniciada') && sesionIniciada()): ?>
 <?php include __DIR__.'/includes/footer.php'; ?>
 
 
+<?php if ($rtPlanes): ?>
+<script>
+/* v1.7: la calculadora. Los planes y los precios los escribe PHP desde el
+   campo Incluye, asi que editar ese campo en el panel cambia la cuenta. */
+(function(){
+  var PLANES = <?= json_encode($rtPlanes, JSON_UNESCAPED_UNICODE) ?>;
+  var WA = <?= json_encode(preg_replace('/\D/', '', $r['wa_contacto'] ?? '') ?: preg_replace('/\D/', '', SITE_WA)) ?>;
+  var TITULO = <?= json_encode($r['titulo']) ?>;
+  var plan = 0, cant = {};
+  var $ = function(i){ return document.getElementById(i); };
+  function plata(n){ return '$' + n.toLocaleString('es-AR'); }
+
+  function dibujarFilas(){
+    var cont = $('rtCalcFilas'); cont.innerHTML = '';
+    PLANES[plan].filas.forEach(function(f, i){
+      var id = 'rtq' + i;
+      if (cant[plan] === undefined) cant[plan] = {};
+      if (cant[plan][i] === undefined) cant[plan][i] = (i === 0 ? 2 : 0);
+      var d = document.createElement('div');
+      d.className = 'rt-calc-fila';
+      d.innerHTML = '<label for="' + id + '">' + f.et + '</label>'
+        + '<div class="rt-calc-num">'
+        + '<button type="button" data-i="' + i + '" data-p="-1">&minus;</button>'
+        + '<input type="number" id="' + id + '" min="0" max="40" inputmode="numeric" value="' + cant[plan][i] + '">'
+        + '<button type="button" data-i="' + i + '" data-p="1">+</button></div>';
+      cont.appendChild(d);
+    });
+    cont.querySelectorAll('button').forEach(function(b){
+      b.addEventListener('click', function(){
+        var i = +b.dataset.i;
+        cant[plan][i] = Math.max(0, Math.min(40, (cant[plan][i] || 0) + (+b.dataset.p)));
+        dibujarFilas(); recalcular();
+      });
+    });
+    cont.querySelectorAll('input').forEach(function(inp, i){
+      inp.addEventListener('input', function(){
+        cant[plan][i] = Math.max(0, Math.min(40, parseInt(inp.value, 10) || 0));
+        recalcular();
+      });
+    });
+  }
+
+  function recalcular(){
+    var p = PLANES[plan], total = 0, filas = [];
+    p.filas.forEach(function(f, i){
+      var q = cant[plan][i] || 0;
+      if (!q) return;
+      var sub = q * f.n; total += sub;
+      filas.push('<div><span>' + q + ' x ' + f.et + '</span><em>' + plata(sub) + '</em></div>');
+    });
+    $('rtCalcDet').innerHTML = filas.join('')
+      || '<div style="color:#4a6a85">Elegí cuántos son para ver el total.</div>';
+    $('rtCalcTotal').textContent = plata(total);
+    var txt = 'Hola, quiero consultar por ' + TITULO + '.\n' + p.nombre + '\n';
+    p.filas.forEach(function(f, i){
+      var q = cant[plan][i] || 0;
+      if (q) txt += q + ' x ' + f.et + '\n';
+    });
+    txt += 'Total estimado: ' + plata(total);
+    $('rtCalcWa').href = 'https://wa.me/' + WA + '?text=' + encodeURIComponent(txt);
+  }
+
+  document.querySelectorAll('.rt-calc-plan').forEach(function(b){
+    b.addEventListener('click', function(){
+      document.querySelectorAll('.rt-calc-plan').forEach(function(x){ x.classList.remove('on'); });
+      b.classList.add('on'); plan = +b.dataset.plan; dibujarFilas(); recalcular();
+    });
+  });
+  dibujarFilas(); recalcular();
+})();
+</script>
+<?php endif; ?>
 </body>
 </html>
