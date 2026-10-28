@@ -1,5 +1,5 @@
 <?php
-/* admin/verano.php - VERSION 1.6
+/* admin/verano.php - VERSION 1.7
    Editor de la pagina de Verano 2027.
 
    Dos cosas en una pantalla:
@@ -37,6 +37,10 @@ $campos = [
   'v27_programa_titulo' => ['Programa, titulo', 'texto', '', '4 días y 3 noches, o 3 días y 2 noches'],
   'v27_programa_bajada' => ['Programa, bajada', 'area', '',
      'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.'],
+
+  'v27_programa_pie'   => ['Programa, pie', 'area',
+     'Aparece debajo de las fotos, en recuadro destacado.',
+     'Temporada familiar disponible de enero a marzo. Para gestionar su reserva y confirmar disponibilidad, requerimos que nos indique la fecha exacta de su visita junto con el número total de acompañantes.'],
 
   'v27_calc_titulo'    => ['Calculadora, titulo', 'texto', '', 'Calculá tu estadía'],
   'v27_calc_nota'      => ['Calculadora, nota', 'area', '',
@@ -216,7 +220,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- admin/verano.php VERSION 1.6 -->
+<!-- admin/verano.php VERSION 1.7 -->
 <title>Verano 2027 · Panel La Reserva</title>
 <link rel="stylesheet" href="../css/style.css?v=4">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">
@@ -283,7 +287,7 @@ textarea{min-height:76px;resize:vertical;line-height:1.6}
     <?php
     $grupos = [
       'Encabezado'  => ['v27_hero_rotulo','v27_hero_bajada','v27_wa','v27_wa_label'],
-      'Programa'    => ['v27_programa_titulo','v27_programa_bajada'],
+      'Programa'    => ['v27_programa_titulo','v27_programa_bajada','v27_programa_pie'],
       'Encuentros'  => ['v27_eventos_titulo','v27_eventos_bajada','v27_eventos_nota'],
       'Pension'     => ['v27_pension_tit','v27_pension_txt'],
       'Valores'     => ['v27_precios_titulo','v27_precios_bajada'],

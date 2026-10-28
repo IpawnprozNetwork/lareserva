@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 5.5
+/* verano2027.php - VERSION 5.6
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -161,7 +161,7 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 5.5 -->
+<!-- verano2027.php VERSION 5.6 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
 <meta name="description" content="Verano 2027 en familia: 4 días y 3 noches o 3 días y 2 noches a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pensión completa.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
@@ -278,6 +278,9 @@ h2{font:300 clamp(1.9rem,4vw,2.9rem) 'Fraunces',Georgia,serif;line-height:1.12;m
 .inc b{display:block;font:600 1.02rem 'Karla',sans-serif;margin-bottom:6px;color:var(--t1)}
 .inc p{font-size:.92rem;color:var(--t2);line-height:1.6}
 
+.pie-programa{margin-top:26px;padding:18px 22px;border-radius:12px;
+  background:rgba(0,201,167,.07);border-left:3px solid var(--teal);
+  color:var(--t1);font-size:1rem;line-height:1.75;max-width:68ch}
 .aviso-fechas{margin-top:22px;padding:16px 20px;border-radius:12px;
   background:rgba(0,201,167,.08);border:1px solid rgba(0,201,167,.3);
   color:var(--t1);font-size:1.02rem;line-height:1.7;max-width:62ch}
@@ -429,6 +432,11 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
     <p class="lede"><?= e(lrAjuste('v27_programa_bajada',
        'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.')) ?></p>
     <?php v27mosaico(array_slice($baldosas, 0, 6), true); ?>
+    <?php /* v5.6: el pie del programa. Johnny lo pidio debajo de las fotos:
+             es la frase que fija la temporada y dice que hace falta para
+             reservar, antes de que la persona siga bajando a los precios. */ ?>
+    <p class="pie-programa"><?= e(lrAjuste('v27_programa_pie',
+       'Temporada familiar disponible de enero a marzo. Para gestionar su reserva y confirmar disponibilidad, requerimos que nos indique la fecha exacta de su visita junto con el número total de acompañantes.')) ?></p>
   </div>
 </section>
 

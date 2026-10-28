@@ -30,6 +30,7 @@ de cero. Todos son idempotentes: se pueden correr dos veces sin romper nada.
 | `23-eventos-y-pension.sql` | seccion de encuentros al pie de la landing y la bajada de Valores sin ambiguedad |
 | `24-fecha-fin-retiro.sql` | revisa y corrige fechas de fin cargadas antes de la de inicio |
 | `25-calculadora-contacto.sql` | textos de la calculadora y datos de contacto de Jonathan |
+| `26-pie-programa.sql` | la frase de temporada y requisitos de reserva, al pie de El programa |
 | `99-borrar-pruebas.sql` | **BORRA DATOS.** Limpieza de datos de prueba. Leer antes de correr |
 
 Si phpMyAdmin responde `#1060 Duplicate column name`, esa columna ya existia.
