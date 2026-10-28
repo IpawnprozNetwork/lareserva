@@ -1,5 +1,5 @@
 <?php
-/* admin/verano.php - VERSION 1.7
+/* admin/verano.php - VERSION 1.9
    Editor de la pagina de Verano 2027.
 
    Dos cosas en una pantalla:
@@ -36,11 +36,10 @@ $campos = [
      Las filas viejas quedan en la base sin molestar. */
   'v27_programa_titulo' => ['Programa, titulo', 'texto', '', '4 días y 3 noches, o 3 días y 2 noches'],
   'v27_programa_bajada' => ['Programa, bajada', 'area', '',
-     'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.'],
+     'Temporada familiar disponible de enero a marzo. Para gestionar su reserva y confirmar disponibilidad, requerimos que nos indique la fecha exacta de su visita junto con el número total de acompañantes.'],
 
   'v27_programa_pie'   => ['Programa, pie', 'area',
-     'Aparece debajo de las fotos, en recuadro destacado.',
-     'Temporada familiar disponible de enero a marzo. Para gestionar su reserva y confirmar disponibilidad, requerimos que nos indique la fecha exacta de su visita junto con el número total de acompañantes.'],
+     'Opcional. Si lo dejas vacio no aparece nada debajo de las fotos.', ''],
 
   'v27_calc_titulo'    => ['Calculadora, titulo', 'texto', '', 'Calculá tu estadía'],
   'v27_calc_nota'      => ['Calculadora, nota', 'area', '',
@@ -220,7 +219,7 @@ try {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- admin/verano.php VERSION 1.7 -->
+<!-- admin/verano.php VERSION 1.9 -->
 <title>Verano 2027 · Panel La Reserva</title>
 <link rel="stylesheet" href="../css/style.css?v=4">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300&family=Karla:wght@400;500;600&display=swap" rel="stylesheet">

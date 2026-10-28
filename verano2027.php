@@ -1,5 +1,5 @@
 <?php
-/* verano2027.php - VERSION 5.6
+/* verano2027.php - VERSION 5.8
    Landing de Verano 2027.
 
    Pagina suelta, no entra en el menu principal. La idea es compartir un link
@@ -161,7 +161,7 @@ $waTexto = rawurlencode('Hola, quiero info sobre Verano 2027 en familia en La Re
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<!-- verano2027.php VERSION 5.6 -->
+<!-- verano2027.php VERSION 5.8 -->
 <title>Verano 2027 en familia · La Reserva Naturaleza Arte</title>
 <meta name="description" content="Verano 2027 en familia: 4 días y 3 noches o 3 días y 2 noches a una hora de Buenos Aires. Pileta, actividades para chicos, paseo a caballo y pensión completa.">
 <meta property="og:title" content="Verano 2027 · La Reserva">
@@ -430,13 +430,16 @@ function v27mosaico(array $items, bool $primeraGrande = false): void {
     <p class="rot-s">El programa</p>
     <h2><?= e(lrAjuste('v27_programa_titulo', '4 días y 3 noches, o 3 días y 2 noches')) ?></h2>
     <p class="lede"><?= e(lrAjuste('v27_programa_bajada',
-       'Elegís vos cuántas noches. En el medio no hay traslados ni horarios que cumplir: la pileta, el lago, el parque y el comedor están todos a distancia de caminar. Los chicos pueden andar sueltos.')) ?></p>
-    <?php v27mosaico(array_slice($baldosas, 0, 6), true); ?>
-    <?php /* v5.6: el pie del programa. Johnny lo pidio debajo de las fotos:
-             es la frase que fija la temporada y dice que hace falta para
-             reservar, antes de que la persona siga bajando a los precios. */ ?>
-    <p class="pie-programa"><?= e(lrAjuste('v27_programa_pie',
        'Temporada familiar disponible de enero a marzo. Para gestionar su reserva y confirmar disponibilidad, requerimos que nos indique la fecha exacta de su visita junto con el número total de acompañantes.')) ?></p>
+    <?php v27mosaico(array_slice($baldosas, 0, 6), true); ?>
+    <?php /* v5.8: el pie quedo vacio. El texto que iba aca Johnny lo queria
+             arriba, como bajada del titulo, y ahi esta. La caja sigue
+             disponible por si mas adelante hace falta decir algo debajo de
+             las fotos: se escribe en el panel y aparece sola. */
+          $v27pie = trim((string)lrAjuste('v27_programa_pie', ''));
+          if ($v27pie !== ''): ?>
+      <p class="pie-programa"><?= e($v27pie) ?></p>
+    <?php endif; ?>
   </div>
 </section>
 
